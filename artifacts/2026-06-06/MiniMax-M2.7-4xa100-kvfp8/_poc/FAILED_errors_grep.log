@@ -1,0 +1,200 @@
+(APIServer pid=1) INFO 06-05 22:05:12 [engine_patch.py:160] PoC engine patch applied successfully to AsyncLLM (V1)
+(EngineCore pid=446) INFO 06-05 22:21:29 [engine_patch.py:160] PoC engine patch applied successfully to AsyncLLM (V1)
+(Worker_TP2 pid=670) INFO 06-05 22:21:30 [engine_patch.py:160] PoC engine patch applied successfully to AsyncLLM (V1)
+(Worker_TP3 pid=671) INFO 06-05 22:21:30 [engine_patch.py:160] PoC engine patch applied successfully to AsyncLLM (V1)
+(Worker_TP1 pid=669) INFO 06-05 22:21:30 [engine_patch.py:160] PoC engine patch applied successfully to AsyncLLM (V1)
+(Worker_TP0 pid=668) INFO 06-05 22:21:30 [engine_patch.py:160] PoC engine patch applied successfully to AsyncLLM (V1)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962] WorkerProc hit an exception.
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962] Traceback (most recent call last):
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 957, in worker_busy_loop
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output = func(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return func(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/poc/poc_model_runner.py", line 245, in execute_poc_forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = model(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/compilation/cuda_graph.py", line 254, in __call__
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.runnable(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 551, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = self.model(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/compilation/decorators.py", line 473, in __call__
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.forward(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 382, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states, residual = layer(positions, hidden_states, residual)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1885, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return inner()
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1833, in inner
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     result = forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 299, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = self.self_attn(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 232, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     qkv, _ = self.qkv_proj(hidden_states)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 587, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 474, in apply
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/marlin.py", line 114, in apply_weights
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return apply_fp8_marlin_linear(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/utils/marlin_utils_fp8.py", line 69, in apply_fp8_marlin_linear
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output = ops.marlin_gemm(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/_custom_ops.py", line 1409, in marlin_gemm
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return torch.ops._C.marlin_gemm(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1269, in __call__
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._op(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962] RuntimeError: unsupported `a` scalar_type
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962] Traceback (most recent call last):
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 957, in worker_busy_loop
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output = func(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return func(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/poc/poc_model_runner.py", line 245, in execute_poc_forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = model(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/compilation/cuda_graph.py", line 254, in __call__
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.runnable(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 551, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = self.model(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/compilation/decorators.py", line 473, in __call__
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.forward(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 382, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states, residual = layer(positions, hidden_states, residual)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1885, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return inner()
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1833, in inner
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     result = forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 299, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = self.self_attn(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 232, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     qkv, _ = self.qkv_proj(hidden_states)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/linear.py", line 587, in forward
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output_parallel = self.quant_method.apply(self, input_, bias)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/fp8.py", line 474, in apply
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.fp8_linear.apply_weights(layer, x, bias)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/kernels/linear/scaled_mm/marlin.py", line 114, in apply_weights
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return apply_fp8_marlin_linear(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/layers/quantization/utils/marlin_utils_fp8.py", line 69, in apply_fp8_marlin_linear
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output = ops.marlin_gemm(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/_custom_ops.py", line 1409, in marlin_gemm
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return torch.ops._C.marlin_gemm(
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/_ops.py", line 1269, in __call__
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._op(*args, **kwargs)
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962] RuntimeError: unsupported `a` scalar_type
+(Worker_TP2 pid=670) ERROR 06-05 22:21:30 [multiproc_executor.py:962] 
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962] WorkerProc hit an exception.
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962] Traceback (most recent call last):
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/executor/multiproc_executor.py", line 957, in worker_busy_loop
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     output = func(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return func(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/poc/poc_model_runner.py", line 245, in execute_poc_forward
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = model(
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/compilation/cuda_graph.py", line 254, in __call__
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.runnable(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return forward_call(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 551, in forward
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = self.model(
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/compilation/decorators.py", line 473, in __call__
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self.forward(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 382, in forward
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states, residual = layer(positions, hidden_states, residual)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1885, in _call_impl
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return inner()
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1833, in inner
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     result = forward_call(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/vllm/model_executor/models/minimax_m2.py", line 299, in forward
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     hidden_states = self.self_attn(
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]                     ^^^^^^^^^^^^^^^
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]   File "/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]     return self._call_impl(*args, **kwargs)
+(Worker_TP0 pid=668) ERROR 06-05 22:21:30 [multiproc_executor.py:962]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

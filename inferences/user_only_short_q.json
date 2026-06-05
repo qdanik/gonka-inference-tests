@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is the meaning of recursion in computer science? Provide examples and explain why it can be elegant but tricky."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 301
+}

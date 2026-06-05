@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a strict code reviewer. Find bugs, suggest improvements."
+    },
+    {
+      "role": "user",
+      "content": "Review this Python:\n```python\ndef average(nums):\n  total = 0\n  for n in nums: total += n\n  return total / len(nums)\n```\nIdentify all problems and rewrite. Be thorough."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 208
+}

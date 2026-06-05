@@ -1,0 +1,22 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You answer questions concisely with examples."
+    },
+    {
+      "role": "user",
+      "content": "What is recursion?"
+    },
+    {
+      "role": "assistant",
+      "content": "Recursion is when a function calls itself to solve a smaller subproblem."
+    },
+    {
+      "role": "user",
+      "content": "Now show me a recursive Fibonacci with memoization in Python, and explain why memoization helps."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 203
+}

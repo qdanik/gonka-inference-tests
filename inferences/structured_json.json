@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You output structured JSON when asked. Always valid JSON."
+    },
+    {
+      "role": "user",
+      "content": "Generate a complete user profile schema with fields: id, name, email, age, address (nested with street, city, zip), preferences (array of strings), created_at. Include example values 中英文 mixed."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 212
+}

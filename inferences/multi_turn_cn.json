@@ -1,0 +1,22 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "用简洁中文回答,附实例。"
+    },
+    {
+      "role": "user",
+      "content": "什么是递归?"
+    },
+    {
+      "role": "assistant",
+      "content": "递归就是一个函数调用自身来解决更小的子问题。"
+    },
+    {
+      "role": "user",
+      "content": "请用Python写一个带记忆化的斐波那契递归实现,并解释为什么记忆化能加速。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 204
+}

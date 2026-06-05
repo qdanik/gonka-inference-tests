@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You output answers in strict YAML format with these keys: question, approach, steps (array), result, verification, confidence (low/medium/high)."
+    },
+    {
+      "role": "user",
+      "content": "Solve x^2 - 5x + 6 = 0 step by step."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 218
+}

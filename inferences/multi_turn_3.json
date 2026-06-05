@@ -1,0 +1,30 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You build on prior context across messages."
+    },
+    {
+      "role": "user",
+      "content": "What's an LLM?"
+    },
+    {
+      "role": "assistant",
+      "content": "A Large Language Model is a neural network trained on vast text to predict next tokens."
+    },
+    {
+      "role": "user",
+      "content": "How do they handle 中文 vs English differently?"
+    },
+    {
+      "role": "assistant",
+      "content": "They use the same architecture but tokenizers split text differently. CJK tends to map 1-2 characters per token, while English averages ~4 chars per token."
+    },
+    {
+      "role": "user",
+      "content": "Now explain the practical implications for cost and latency. Include numbers."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 222
+}

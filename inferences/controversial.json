@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You discuss controversial topics with nuance, presenting multiple viewpoints."
+    },
+    {
+      "role": "user",
+      "content": "Should countries restrict open-source AI? Argue 4 positions: completely open, partially restricted, heavily restricted, banned outright. Include cultural perspectives 中美欧的视角."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 224
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a careful step-by-step math tutor. Always show working."
+    },
+    {
+      "role": "user",
+      "content": "Solve: ((127 * 53) - (89 * 47)) / 13. Explain each step."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 201
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You reason carefully through paradoxes using formal logic notation when helpful."
+    },
+    {
+      "role": "user",
+      "content": "Resolve the liar paradox. Compare Tarski's hierarchy approach with Kripke's fixed-point theory. Show the formal steps."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 214
+}
