@@ -289,8 +289,11 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
                 if not passed:
                     failed += 1
 
-                payload = {"request": req, "response": resp,
-                           "similarity": similarity}
+                # `similarity` first — it's the headline number every
+                # consumer looks for; `request`/`response` are the bulky
+                # supporting evidence that follows.
+                payload = {"similarity": similarity,
+                           "request": req, "response": resp}
                 if err is not None:
                     payload["error"] = err
                 out_file.write_text(json.dumps(payload, ensure_ascii=False,

@@ -1,4 +1,5 @@
 {
+  "similarity": 0.979808864274926,
   "request": {
     "messages": [
       {
@@ -27001,6 +27002,5 @@
     "prompt_logprobs": null,
     "prompt_token_ids": null,
     "kv_transfer_params": null
-  },
-  "similarity": 0.979808864274926
+  }
 }
