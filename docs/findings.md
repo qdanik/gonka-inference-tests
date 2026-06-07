@@ -83,3 +83,37 @@ The kaitakuai reference plot ("Inference Validation WITHOUT processed_logprobs")
 - F1 = 0.980, FP = 0.6%, TP = 96.6%
 
 Our equivalent in `--type=inference` mode reads inference response logprobs directly (no validator-side regen) and computes `customDistance` locally. F1 ≈ 0.86-0.87 on the PoC nonce L2 distances we have so far; inference-distance numbers depend on how aggressive the AWQ fraud is.
+
+## 2026-06-07 — full 3-arch inference-validation matrix (post `logprobs_mode` fix)
+
+Inference data and validations re-collected with `--logprobs-mode raw_logprobs` (or `processed`) pinned **per-request body** for both `e2e infer` and `e2e validate`. Before the fix, even same-arch validation gave sim ≈ 0.83 on `rf_*` / `tool_*` prompts (see [`gotchas.md`](gotchas.md) entry "Same-arch validation gives only sim ≈ 0.83"). After fix: 4559/4560 PASS at threshold 0.9 across 20 cross-validation directions × 228 prompts.
+
+### Full F1/TP/FP matrix (12 directions, MiniMax M2.7 FP8 honest vs AWQ-4bit fraud)
+
+Sorted by F1 descending:
+
+| executor → validator | mode | F1 | TP | FP | Δ (fraud-honest) |
+|---|---|---:|---:|---:|---:|
+| **A100 → H200** | **raw** | **0.841** | 86.4% | **19.3%** | 0.0272 |
+| H200 → A100 | raw | 0.835 | 85.5% | 19.3% | 0.0263 |
+| H200 → B200 | raw | 0.804 | 88.2% | 31.1% | 0.0250 |
+| B200 → H200 | raw | 0.802 | 84.6% | 26.8% | 0.0255 |
+| B200 → A100 | raw | 0.786 | 81.6% | 25.9% | 0.0241 |
+| A100 → B200 | raw | 0.785 | 89.0% | 37.7% | 0.0240 |
+| H200 → A100 | processed | 0.746 | 80.7% | 36.0% | 0.0184 |
+| A100 → H200 | processed | 0.739 | 75.4% | 28.9% | 0.0198 |
+| H200 → B200 | processed | 0.725 | 78.1% | 37.3% | 0.0174 |
+| B200 → H200 | processed | 0.723 | 74.6% | 31.6% | 0.0181 |
+| B200 → A100 | processed | 0.716 | 73.2% | 31.6% | 0.0171 |
+| A100 → B200 | processed | 0.713 | 76.3% | 37.7% | 0.0181 |
+
+### Takeaways
+
+1. **`raw` consistently beats `processed`** (F1 0.78–0.84 vs 0.71–0.75). Processed mode's temperature + mask transformations compress logit ranges, blurring the FP8↔AWQ gap.
+2. **A100 ↔ H200 raw is the production pair** — both directions ~F1 0.83, FP ≈ 19% (lowest across all combos). Production chain validators should prefer this pairing.
+3. **B200 as validator has the highest FP** (26–38% vs A100/H200's 19–32%). Blackwell's tighter native-FP8 distributions pull honest and fraud means closer together; B200 is fine as executor but the worst validator choice of the three.
+4. **No direction asymmetry** — A→B and B→A produce comparable F1 (within ±0.01–0.02). With the `logprobs_mode` fix, the old `customSimilarity` ASYMMETRY finding (A100 only safe as validator without kvfp8) no longer applies in the rf_*/tool_* domain either.
+5. **Pass rate 99.98%** at chain threshold 0.9 (4559/4560). The single FAIL was on AWQ-4bit A100 → B200 processed — an edge case prompt at the F1 boundary, not a systematic issue.
+6. **Earlier `rf_*` "asymmetry" was an artifact of broken executor data**, not API behavior. With clean data, executor and validator both show identical -9999 sentinel patterns at schema-constrained positions (because `apply_grammar_bitmask` runs BEFORE `compute_logprobs` in [gpu_model_runner.py:4178](../vllm/v1/worker/gpu_model_runner.py#L4178), so raw-mode top-K already reflects the schema constraint).
+
+Plots: [`artifacts/2026-06-07/_plots/`](../artifacts/2026-06-07/_plots/) figures 09-20.

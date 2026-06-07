@@ -134,7 +134,29 @@ Do NOT suffix `-awq` when running AWQ models — the model basename already says
 
 ## Cross-arch validation findings (chain `customSimilarity`)
 
-Empirical matrix from 2026-06-05 on MiniMax M2.7 (5 inferences × 3 repeats per pair):
+### 2026-06-07 — full 3-arch × 2-mode matrix on rf_*/tool_*/all 228 prompts (post `logprobs_mode` fix)
+
+228 prompts × 20 cross-val directions = 4560 validations, 4559 PASS at threshold 0.9. F1 sorted descending:
+
+| executor → validator | mode | F1 | TP | FP |
+|---|---|---:|---:|---:|
+| **A100 → H200** | **raw** | **0.841** | 86.4% | **19.3%** |
+| H200 → A100 | raw | 0.835 | 85.5% | 19.3% |
+| H200 → B200 | raw | 0.804 | 88.2% | 31.1% |
+| B200 → H200 | raw | 0.802 | 84.6% | 26.8% |
+| B200 → A100 | raw | 0.786 | 81.6% | 25.9% |
+| A100 → B200 | raw | 0.785 | 89.0% | 37.7% |
+| (any) | processed | 0.71-0.75 | 73-81% | 29-38% |
+
+**Practical implications**:
+- `raw` consistently beats `processed` by ~0.07 F1 — always use `--logprobs-mode raw_logprobs`.
+- **A100 ↔ H200 raw** is the production pair (both directions F1 ≈ 0.83, FP ≈ 19%).
+- **B200 as validator** has the highest FP (26–38%) — Blackwell's tight native-FP8 distributions compress honest and fraud means. Prefer A100 or H200 as validators.
+- No A → B vs B → A asymmetry on clean data. The 2026-06-05 asymmetry finding below applied to a different (now superseded) bug.
+
+### Older asymmetry findings (2026-06-05, BF16 KV, no `logprobs_mode` pin)
+
+Same `customSimilarity` test on 5 inferences × 3 repeats per pair, WITHOUT `--kv-cache-dtype fp8` and WITHOUT per-request `logprobs_mode` pin:
 
 ```
 executor \ validator   2xb200    2xh200    4xa100
@@ -143,12 +165,7 @@ executor \ validator   2xb200    2xh200    4xa100
 4xa100                  0.84 ❌  0.82 ❌     —
 ```
 
-**Key insight — ASYMMETRY**: Marlin emulation (A100) works fine as **validator** (B200/H200→A100 ≈ 0.97) but fails as **executor** (A100→B200/H200 ≈ 0.82-0.84). Cause: `customSimilarity`'s `nextOriginalLogprob = 2*min1 - min2` extrapolation is taken from EXECUTOR's top-5. Marlin's "flat" top-5 doesn't tolerate native FP8's "sharp" top-1 token when it's outside marlin's top-5.
-
-**Practical implication for Gonka chain config**:
-- Hopper ↔ Blackwell are fully interchangeable for FP8 models
-- A100 can be **validator-only** for FP8 models (cheap capacity for native-FP8 inference)
-- A100 cannot be executor for FP8 models — cross-arch validation will always fail chain `PassValue=0.99`
+That asymmetry (A100 OK as validator, fails as executor) was due to marlin's flat top-5 distributions interacting poorly with `nextOriginalLogprob = 2*min1 - min2` extrapolation. Adding `--kv-cache-dtype fp8` AND the per-request `logprobs_mode` pin eliminates the asymmetry — see [`docs/findings.md`](../../docs/findings.md) for the full evolution.
 
 ## Empirical throughput (MiniMax M2.7, 1000 nonces, bs=32)
 
