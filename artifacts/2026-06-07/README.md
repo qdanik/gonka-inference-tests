@@ -48,25 +48,27 @@ Point shapes encode language (○ en, △ es, ☐ ar, ◆ zh).
 
 | direction | mode | honest mean | fraud mean | Δ | F1 | TP | FP |
 |---|---|---:|---:|---:|---:|---:|---:|
-| B200 (exec) → H200 (val) | raw       | 0.0447 | 0.0643 | 0.0196 | 0.777     | 87.7% | 38.2% |
-| **A100 (exec) → H200 (val)** | **raw** | 0.0416 | 0.0648 | 0.0232 | **0.823** | 90.4% | **29.4%** |
-| B200 (exec) → H200 (val) | processed | 0.0354 | 0.0455 | 0.0101 | 0.697     | 88.2% | 64.9% |
-| A100 (exec) → H200 (val) | processed | 0.0263 | 0.0460 | 0.0197 | 0.775     | 77.2% | **21.9%** |
+| B200 (exec) → H200 (val) ⚠ stale | raw       | 0.0447 | 0.0643 | 0.0196 | 0.777     | 87.7% | 38.2% |
+| **A100 (exec) → H200 (val)** | **raw** | 0.0364 | 0.0636 | 0.0272 | **0.841** | 86.4% | **19.3%** |
+| B200 (exec) → H200 (val) ⚠ stale | processed | 0.0354 | 0.0455 | 0.0101 | 0.697     | 88.2% | 64.9% |
+| A100 (exec) → H200 (val) | processed | 0.0264 | 0.0462 | 0.0198 | 0.739     | 75.4% | 28.9% |
 
-**Mode comparison**:
-- **`raw`** beats `processed` on F1 in both directions (0.777 vs 0.697 on B200; 0.823 vs 0.775 on A100) — the chain validator's distance separates honest from fraud more cleanly when top-K logprobs are unmasked.
-- **`processed`** compresses both means (honest 0.045 → 0.035; fraud 0.064 → 0.046) because schema-masking + temperature processing equalize the post-sampler distributions. Honest/fraud Δ shrinks accordingly.
-- B200 `processed` has the highest FP (64.9%) — Blackwell native FP8 paired with processed-mode masking pulls honest and fraud means closest together.
-- A100 `processed` has the lowest FP (21.9%) but at the cost of TP (77.2%) — marlin emulation already smears the distribution, so the additional processing helps separation by penalizing fraud's outliers harder.
+> ⚠ **B200 numbers are stale** — they come from inference data collected with an earlier (buggy) executor pipeline that did NOT pin `logprobs_mode` per-request, leading to inconsistent state that depressed similarity even on same-node validation. A100 numbers above are from re-collected data with the fixed pipeline (228/228 PASS at threshold 0.9 on every direction). B200 should be re-collected once a B200 box is available. Until then, treat B200 metrics as a soft upper bound on what bad data looks like — clean B200 data will likely match A100's pattern (raw FP ≈ 20%, F1 ≈ 0.84).
 
-For reference, the pre-fix raw numbers (same prompts, same data, before `logprobs_mode` was pinned per-request) were:
+**Mode comparison (A100 clean data)**:
+- **`raw` beats `processed` on F1**: 0.841 vs 0.739 on A100. Raw separates honest from fraud more cleanly (Δ=0.027 vs 0.020) when top-K logprobs are unmasked.
+- **A100 raw is the production-ready configuration**: F1=0.841, FP=19.3% (lowest of all directions tested), TP=86.4%.
+- `processed` compresses both means (honest 0.036 → 0.026; fraud 0.064 → 0.046) — schema-masking + temperature processing equalize the post-sampler distributions, blurring the FP8↔AWQ gap.
 
-| direction | F1 pre | TP pre | FP pre |
-|---|---:|---:|---:|
-| B200 (exec) → H200 (val) | 0.763 | 95.2% | 54.4% |
-| A100 (exec) → H200 (val) | 0.809 | 91.2% | 34.2% |
+**Evolution of the fix (A100 raw direction)**:
 
-The dominant effect of the fix is on **false positives**: raw B200 FP 54.4% → 38.2% (-16.2 pp); raw A100 FP 34.2% → 29.4% (-4.8 pp). TP nominally drops (95.2% → 87.7% on B200) because the F1-optimal threshold shifts after the schema-constrained `rf_*` / `tool_*` honest prompts return to their natural similarity range (~0.95+ instead of ~0.6).
+| stage | F1 | TP | FP | what changed |
+|---|---:|---:|---:|---|
+| Pre-fix (1) | 0.809 | 91.2% | 34.2% | `detect_logprobs_mode()` mis-classified validator → schema mask collapsed sim on `rf_*`/`tool_*` to ~0.6 |
+| Post-fix (2) | 0.823 | 90.4% | 29.4% | Per-request `logprobs_mode` pin in validator request → validator stays in raw → schema-mask false-positives gone for most prompts |
+| **Clean data (3)** | **0.841** | 86.4% | **19.3%** | Per-request pin **also** in inference request → executor data internally consistent, same-node sim ≈ 0.98, cross-arch sim ≈ 0.97 |
+
+Stage (3) brought FP down from 29.4% → 19.3% (-10 pp) on raw A100. The bug was: when inference requests didn't pin `logprobs_mode`, the saved executor data ended up in some intermediate state that fails even **same-node** replay (we measured A100→A100 sim ≈ 0.83 on OLD data vs ≈ 0.98 on fresh). With fresh data, **all 228 prompts pass** the 0.9 threshold in every direction.
 
 ## Per-prompt-class behaviour (post-fix)
 
@@ -83,10 +85,14 @@ Honest B200 → H200, samples:
 
 ## Key takeaways
 
-1. **Honest mean < Fraud mean in all four directions** — the metric separates FP8 from AWQ-4bit across architectures (B200 → H200, A100 → H200) in both raw and processed modes.
-2. **`raw` gives larger separation than `processed`** (Δ ≈ 0.020–0.023 vs 0.010–0.020). Processed mode applies temperature / mask transformations that compress logit ranges, blurring the FP8↔AWQ gap.
-3. **A100 → H200 raw is the best single configuration** (F1 = 0.823, FP = 29.4%) — A100 marlin's emulation noise on the executor side combines with H200's clean native FP8 on validator side to spread fraud farther from honest. Production recommendation for chain validators.
-4. **`--logprobs-mode` MUST be pinned per-request body** for `enforced_tokens` validation. vLLM's auto-detect heuristic mis-classifies raw inputs containing JSON / tool / structured-output prompts. See [`docs/gotchas.md`](../../docs/gotchas.md) and [`docs/commands.md`](../../docs/commands.md).
+1. **Honest mean < Fraud mean in all four directions** — the metric separates FP8 from AWQ-4bit across architectures in both raw and processed modes.
+2. **`raw` gives larger separation than `processed`** (Δ ≈ 0.027 vs 0.020 on A100). Processed mode applies temperature / mask transformations that compress logit ranges, blurring the FP8↔AWQ gap.
+3. **A100 → H200 raw is the production configuration** (F1 = 0.841, FP = 19.3%) — A100 marlin's emulation noise on the executor side combines with H200's native FP8 on validator side to spread fraud farther from honest while keeping honest tight.
+4. **`--logprobs-mode` MUST be pinned per-request body** for BOTH `e2e infer` and `e2e validate`. Two distinct symptoms if it isn't:
+   - **Validator-side mis-pin**: vLLM's `detect_logprobs_mode()` (vllm/validation.py:51) mis-classifies raw inputs containing JSON / tool / structured-output prompts → similarity collapses to ~0.6 on those prompts.
+   - **Inference-side mis-pin**: executor data ends up in an inconsistent state that fails even same-node replay (sim ~0.83). Discovered 2026-06-07 — see Evolution table above. Without the inference-side fix, all cross-arch metrics are depressed by ~10pp FP regardless of how well validator is configured.
+
+   See [`docs/gotchas.md`](../../docs/gotchas.md) and [`docs/commands.md`](../../docs/commands.md).
 5. **A100 marlin caveat** (PoC only, see PoC L2 plots below): PoC nonce vectors on A100 are not bit-identical between `raw` and `processed` (L2 ≈ 0.12–0.19 per nonce). On B200 they are bit-identical. Marlin's CUDA-graph capture depends on logprobs-mode → always compare runs in the SAME logprobs-mode.
 
 ## Test setup

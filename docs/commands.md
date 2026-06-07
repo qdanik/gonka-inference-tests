@@ -54,6 +54,7 @@ Creates `~/.e2e-venv` on the remote on first run (installs `huggingface_hub` and
 | flag | default | meaning |
 |---|---|---|
 | `--inferences` | none (= all 140) | comma-separated subset of labels to run, e.g. `math_arithmetic_en,code_review_zh`. Reads from `inferences/` (fixed) |
+| `--concurrency` | `32` | requests in flight at once. vLLM serves up to `--max-num-seqs` (default 128). Lower to 16 if you see `ConnectionError` mid-stream |
 
 Every request to vLLM gets:
 - `return_token_ids: true` — integer-ID strings in `logprobs.content[*].token`
@@ -71,6 +72,7 @@ Every request to vLLM gets:
 | `--inferences` | none (= all label dirs in run) | comma-separated subset of labels to validate |
 | `--pass-value` | `0.9` | minimum `customSimilarity` for PASS. Chain default is `0.99` (`params.go:193`); ours is looser to absorb cross-GPU drift |
 | `--repeat` | `1` | run the sweep N times in a row — each round writes a fresh `validated-by-<gpu>-M.json` (M auto-increments) |
+| `--concurrency` | `32` | requests in flight at once. Lower to 16 if you see `ConnectionError` mid-sweep |
 
 Each validator request body also pins `logprobs_mode = <--logprobs-mode>`. This overrides vLLM's `detect_logprobs_mode()` auto-detection (vllm/validation.py:51), which can silently mis-classify raw inputs as processed and collapse similarity on JSON / tool / structured-output prompts (see `docs/gotchas.md`).
 

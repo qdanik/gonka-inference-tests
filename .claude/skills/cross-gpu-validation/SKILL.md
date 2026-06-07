@@ -51,7 +51,7 @@ python3 -m e2e deploy \
   --max-num-seqs 128 --max-model-len 131072 \
   --model-extra-args="<see table> --enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think"
 
-# 2. sweep prompts (default: all 228; uses 16-way client concurrency)
+# 2. sweep prompts (default: all 228; uses 32-way client concurrency)
 python3 -m e2e infer \
   --ssh-host shadeform@<ip> --gpu-name <tag> \
   --model-name MiniMaxAI/MiniMax-M2.7 \

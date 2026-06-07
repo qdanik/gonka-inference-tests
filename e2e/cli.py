@@ -174,11 +174,12 @@ def main() -> int:
                        help="Comma-separated subset of inference labels to "
                             "run (e.g. 'sys_math_en,multi_turn_en'). "
                             "If omitted: run every JSON in vllm/inferences/.")
-    p_inf.add_argument("--concurrency", type=int, default=16,
+    p_inf.add_argument("--concurrency", type=int, default=32,
                        help="Number of inference requests in flight at once. "
                             "vLLM serves up to --max-num-seqs (default 128) "
-                            "concurrently; 16 (=4 per GPU on a TP=4 box) "
-                            "saturates the engine without stressing the SSH tunnel.")
+                            "concurrently; 32 saturates the engine on 2-4×GPU "
+                            "configs without stressing the SSH tunnel. "
+                            "Lower to 16 if you see ConnectionError mid-stream.")
 
     p_pl = sub.add_parser("plot",
                           help="render honest/fraud distance scatter (kaitakuai 1:1 style)")
@@ -217,8 +218,9 @@ def main() -> int:
                        help="Run the full validation sweep N times in a row. "
                             "Each round writes a fresh validated-by-<gpu>-M.json "
                             "(M auto-increments). Useful for variance studies.")
-    p_val.add_argument("--concurrency", type=int, default=16,
-                       help="Number of validation requests in flight at once.")
+    p_val.add_argument("--concurrency", type=int, default=32,
+                       help="Number of validation requests in flight at once. "
+                            "Lower to 16 if you see ConnectionError mid-sweep.")
 
     args = p.parse_args()
 

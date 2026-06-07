@@ -158,15 +158,15 @@ def _stream_and_reconstruct(target: ServerTarget, request_body: dict,
 def run_inference_sweep(target: ServerTarget, model: ModelSpec, paths: RunPaths,
                         inferences_dir: Path,
                         names: list[str] | None = None,
-                        *, concurrency: int = 16,
+                        *, concurrency: int = 32,
                         logprobs_mode: str | None = None,
                         ) -> list[Path]:
     """Run each selected inference spec, write `inference-N.json` per label.
 
     `concurrency` controls how many requests are in flight simultaneously
     against the vLLM server (which itself can serve up to `--max-num-seqs`
-    sequences in parallel). 16 (=4 per GPU on a TP=4 box) saturates the
-    engine without stressing the SSH tunnel.
+    sequences in parallel). 32 saturates the engine on 2-4×GPU configs
+    without stressing the SSH tunnel; bump lower if you see ConnectionError.
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed
 

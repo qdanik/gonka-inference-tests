@@ -241,7 +241,7 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
                          names: list[str] | None = None,
                          *, pass_value: float = PASS_VALUE_DEFAULT,
                          repeat: int = 1,
-                         concurrency: int = 16,
+                         concurrency: int = 32,
                          logprobs_mode: str | None = None,
                          ) -> int:
     """Validate every `inference-N.json` from each selected label directory.
