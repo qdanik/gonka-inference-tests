@@ -132,9 +132,16 @@ def _compare_logits(
 def _build_validator_request(model_name: str, executor_record: dict) -> dict:
     """Compose the validator's chat-completion body.
 
-    `enforced_tokens.tokens[]` is built from the executor's saved logprobs
-    (each entry: `{token, top_tokens}` — both are integer-ID strings).
-    Random seed ≠ executor's seed → bypass any cache layer.
+    Mirrors the Go chain validator (inference_validation.go:881-915):
+        1. Start from a COPY of the executor's full request (keeps tools,
+           response_format, top_logprobs, temperature, return_token_ids, …).
+        2. Inject enforced_tokens built from executor's saved logprobs.
+        3. Override: stream=false, skip_special_tokens=false, drop stream_options.
+        4. Override model + max_tokens + random seed (cache-bypass).
+    Dropping `tools`/`response_format` is a real bug: validator without the
+    schema sees executor's guided-decoded tokens as wildly improbable and
+    similarity collapses (rf_* / tool_* prompts saturate as false-positive
+    fraud).
     """
     executor_request = executor_record["request"]
     executor_response = executor_record["response"]
@@ -145,7 +152,8 @@ def _build_validator_request(model_name: str, executor_record: dict) -> dict:
         "tokens": [
             {
                 "token": entry.get("token"),
-                "top_tokens": [t.get("token") for t in (entry.get("top_logprobs") or [])],
+                "top_tokens": [t.get("token")
+                               for t in (entry.get("top_logprobs") or [])],
             }
             for entry in logprobs_content
         ]
@@ -153,18 +161,20 @@ def _build_validator_request(model_name: str, executor_record: dict) -> dict:
     enforced_len = len(enforced_tokens["tokens"])
     headroom = max(enforced_len * 2, executor_request.get("max_tokens", 0))
 
-    return {
-        "messages": executor_request["messages"],
-        "model": model_name,
-        "stream": False,
-        "logprobs": True,
-        "top_logprobs": 5,
-        "max_tokens": headroom,
-        "max_completion_tokens": headroom,
-        "temperature": 0.5,
-        "seed": random.randint(1, 2**31 - 1),
-        "enforced_tokens": enforced_tokens,
-    }
+    request_body = dict(executor_request)         # shallow copy preserves all fields
+    request_body["model"] = model_name
+    request_body["enforced_tokens"] = enforced_tokens
+    request_body["stream"] = False
+    request_body["skip_special_tokens"] = False
+    request_body.pop("stream_options", None)
+    request_body["logprobs"] = True
+    request_body.setdefault("top_logprobs", 5)
+    request_body["max_tokens"] = headroom
+    request_body["max_completion_tokens"] = headroom
+    # Random seed ≠ executor's seed → bypass any cache layer (enforced_tokens
+    # makes seed irrelevant for the forward pass anyway).
+    request_body["seed"] = random.randint(1, 2**31 - 1)
+    return request_body
 
 
 def _logprobs_from_response(response: dict) -> list[dict]:
