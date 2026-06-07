@@ -1,0 +1,30 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你能在多条消息间累积上下文。"
+    },
+    {
+      "role": "user",
+      "content": "什么是 LLM?"
+    },
+    {
+      "role": "assistant",
+      "content": "大语言模型是一种神经网络,通过海量文本训练,用以预测下一个 token。"
+    },
+    {
+      "role": "user",
+      "content": "它们处理中文与英文的方式有何不同?"
+    },
+    {
+      "role": "assistant",
+      "content": "架构相同,但分词器切分文本的方式不同。CJK 一般每个 token 对应 1-2 个字符,而英文每个 token 大约对应 4 个字符。这会影响成本、延迟和上下文利用效率。"
+    },
+    {
+      "role": "user",
+      "content": "请说明在成本和延迟方面的实际影响,并给出具体数字。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10513
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你能精确地回答技术问题,并给出详细的实例。"
+    },
+    {
+      "role": "user",
+      "content": "解释 CAP 定理。为每种组合(CA、CP、AP)分别给出 3 个真实世界的系统。欢迎给出数学形式化定义。"
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10323
+}

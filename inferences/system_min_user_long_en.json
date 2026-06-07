@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Be helpful."
+    },
+    {
+      "role": "user",
+      "content": "Here is a long block of text: a slow drift of mornings stacked on top of one another like folded sheets in a drawer that no one opens, each one carrying the faint scent of a different sky, soft as paper but indelible as a stain. The clock on the wall ticks not in seconds but in small confessions — half-remembered names, the angle of a window seen in childhood, a tune you cannot place. There is a bridge somewhere, and a river that flows underneath but you have never seen the bridge in any season. Please analyze this passage: identify the central metaphor, name the technique, propose three contemporary writers it might echo, then rewrite the first sentence in three distinct registers (academic, journalistic, intimate)."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10280
+}

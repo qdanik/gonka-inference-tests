@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Escribe un cuento corto en estilo de prosa de flujo de conciencia sobre una persona que encuentra una carta antigua en el ático de su abuela. La carta cambia todo lo que creía saber sobre su familia. Usa detalles sensoriales, pensamientos fragmentados, saltos temporales y un narrador poco fiable."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10391
+}

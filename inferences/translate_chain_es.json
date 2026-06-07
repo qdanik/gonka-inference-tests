@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres un traductor cuidadoso que preserva el sentido y el ritmo."
+    },
+    {
+      "role": "user",
+      "content": "Traduce este poema chino al español y luego al inglés, manteniendo las imágenes: 床前明月光,疑是地上霜。举头望明月,低头思故乡。 Explica las decisiones en cada paso."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10361
+}

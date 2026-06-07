@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Proporcionas comparaciones estructuradas de modelos de IA."
+    },
+    {
+      "role": "user",
+      "content": "Compara GPT-4, Claude 3 Opus, Gemini Ultra y Kimi K2 según: longitud de contexto, calidad de razonamiento, calidad de código, capacidad multilingüe y costo. Usa una tabla."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10291
+}

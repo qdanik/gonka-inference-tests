@@ -1,0 +1,30 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Construyes sobre el contexto previo a lo largo de los mensajes."
+    },
+    {
+      "role": "user",
+      "content": "¿Qué es un LLM?"
+    },
+    {
+      "role": "assistant",
+      "content": "Un Large Language Model es una red neuronal entrenada con vastas cantidades de texto para predecir los siguientes tokens."
+    },
+    {
+      "role": "user",
+      "content": "¿Cómo manejan el chino vs el inglés de manera distinta?"
+    },
+    {
+      "role": "assistant",
+      "content": "Usan la misma arquitectura, pero los tokenizadores dividen el texto de forma diferente. El chino suele mapear 1-2 caracteres por token, mientras que el inglés mapea ~4 caracteres por token. Esto afecta costo, latencia y eficiencia del contexto."
+    },
+    {
+      "role": "user",
+      "content": "Ahora explica las implicaciones prácticas para costo y latencia. Incluye cifras."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10511
+}

@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "the hours fall like petals quietly recursive built from layered images of nature time memory words recur like refrains slow drift stones mountains rivers letters tea pines bridges old gates clocks lamps fragments of forgotten conversations. continue this prose poem for another 200 words in the same register."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10400
+}

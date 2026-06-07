@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Discutes temas controvertidos con matices, presentando múltiples puntos de vista."
+    },
+    {
+      "role": "user",
+      "content": "¿Deberían los países restringir la IA de código abierto? Argumenta 4 posturas: completamente abierta, parcialmente restringida, fuertemente restringida y prohibida por completo. Para cada una, da el mejor argumento (steelman), el contra-argumento típico y una analogía histórica."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10301
+}

@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Analiza el siguiente texto fragmento por fragmento: río puente piedra té cartas crepúsculo reloj mañana lámparas pinos pliegues viajes palabras memoria tarde horas montaña silencio campana silbato de tren sábanas carta sin enviar pausa repetición. Para cada fragmento, nombra una escena posible, luego sintetiza todo en un párrafo que use cada fragmento exactamente una vez."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10461
+}

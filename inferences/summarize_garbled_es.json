@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Resume: \"la campana sonó dos veces — la campana otra vez — doblando las sábanas — pinos detrás del muro — el reloj contando nada — una ventana entreabierta — una carta llegando sin remitente — un silbato de tren a lo lejos — palabras que ella nunca dijo pero que seguía diciendo de todas formas — la taza la taza la taza — la tarde estirada delgada como papel — y otra vez la campana.\" Da la imagen central, tres motivos, y el arco narrativo implícito."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10421
+}

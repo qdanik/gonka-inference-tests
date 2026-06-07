@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Proporcionas explicaciones profundas y extensas cuando se te invita."
+    },
+    {
+      "role": "user",
+      "content": "Dame un tutorial completo sobre la retropropagación en redes neuronales: historia, derivación matemática con cálculo, ejemplos de código en PyTorch y NumPy, problemas comunes de gradiente (desvanecimiento/explosión) y variantes modernas (Adam, RMSprop). Sé exhaustivo."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10451
+}

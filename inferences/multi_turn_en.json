@@ -2,21 +2,29 @@
   "messages": [
     {
       "role": "system",
-      "content": "You answer questions concisely with examples."
+      "content": "You build on prior context across messages."
     },
     {
       "role": "user",
-      "content": "What is recursion?"
+      "content": "What's an LLM?"
     },
     {
       "role": "assistant",
-      "content": "Recursion is when a function calls itself to solve a smaller subproblem."
+      "content": "A Large Language Model is a neural network trained on vast text to predict next tokens."
     },
     {
       "role": "user",
-      "content": "Now show me a recursive Fibonacci with memoization in Python, and explain why memoization helps."
+      "content": "How do they handle 中文 vs English differently?"
+    },
+    {
+      "role": "assistant",
+      "content": "They use the same architecture but tokenizers split text differently. CJK tends to map 1-2 characters per token, while English maps ~4 characters per token. This affects cost, latency, and context efficiency."
+    },
+    {
+      "role": "user",
+      "content": "Now explain the practical implications for cost and latency. Include numbers."
     }
   ],
   "max_tokens": 512,
-  "seed": 203
+  "seed": 10510
 }

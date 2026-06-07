@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You answer technical questions with precision and worked examples."
+    },
+    {
+      "role": "user",
+      "content": "Explain the CAP theorem. Give 3 real-world systems for each combination (CA, CP, AP). Mathematical formalization is welcome."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10320
+}

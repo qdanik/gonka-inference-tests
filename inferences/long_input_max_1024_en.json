@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Analyze the following text fragment by fragment: river bridge stone tea letters dusk clock morning lamps pines folds journeys words memory afternoon hours mountain quiet bell train whistle linens unsent letter pause repetition. For each fragment, name a possible scene, then synthesize all into one paragraph that uses every fragment exactly once."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10460
+}

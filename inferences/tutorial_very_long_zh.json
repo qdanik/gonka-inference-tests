@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "受邀时,你会给出深入而冗长的解释。"
+    },
+    {
+      "role": "user",
+      "content": "请给我一份关于神经网络反向传播的完整教程:历史背景、用微积分进行的数学推导、PyTorch 与 NumPy 的代码示例、常见的梯度问题(消失/爆炸),以及现代变体(Adam、RMSprop)。请尽可能详尽。"
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10453
+}

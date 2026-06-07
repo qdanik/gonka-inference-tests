@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "las horas caen como pétalos silenciosamente recursivos construidos a partir de imágenes superpuestas de naturaleza tiempo memoria las palabras recurren como estribillos lenta deriva piedras montañas ríos cartas té pinos puentes viejas puertas relojes lámparas fragmentos de conversaciones olvidadas. continúa este poema en prosa con 200 palabras más en el mismo registro."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10401
+}

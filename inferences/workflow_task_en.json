@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You design step-by-step workflows for software tasks."
+    },
+    {
+      "role": "user",
+      "content": "Design a 10-step workflow to migrate a legacy PHP application to Go, preserving database, handling sessions, ensuring zero downtime. Specify tooling for each step."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10330
+}

@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Por favor lee y analiza con cuidado: Las palabras se desplazan por la página como hojas atrapadas en una corriente de otoño — incontables, suaves, tomando la forma de cualquier superficie que encuentran. Algunas son pesadas con un solo nombre; otras no pesan nada y se inclinan hacia el viento que las lleva. Caen apiladas y alguien, invisible, las clasifica — primero por estación, luego por silencio, luego por cuáles aún pueden oírse si se presiona un pequeño oído contra ellas. Afuera, la misma jardinera paciente poda el mismo seto de la misma manera, habiendo olvidado ya si está dando forma al arbusto o el arbusto está dando forma a la tarde. Identifica cinco recursos literarios distintos. Cita la línea donde aparece cada uno. Luego propón una tesis en una sola oración sobre lo que hace el pasaje."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10441
+}

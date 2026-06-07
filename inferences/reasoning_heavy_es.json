@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Tengo un rompecabezas numérico extraño. Si tomo 17, lo multiplico por sí mismo, luego resto la suma de sus dígitos, luego sumo el número de factores primos distintos del resultado, luego divido entre 2, ¿qué número obtengo? Muestra TODOS los pasos intermedios. Luego demuestra si el mismo proceso aplicado a CUALQUIER primo de dos dígitos siempre da un entero."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10411
+}

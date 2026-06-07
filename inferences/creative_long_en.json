@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a short story in the style of stream-of-consciousness prose about a person finding an old letter in their grandmother's attic. The letter changes everything they thought they knew about their family. Use sensory detail, fragmented thought, time slips, and an unreliable narrator."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10390
+}

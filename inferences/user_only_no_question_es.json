@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Solo algo de texto sin ninguna pregunta o instrucción clara. Pensamientos aleatorios esparcidos por la página. Palabras flotando. Nada que responder, nada que hacer. Haz con esto lo que quieras, o no lo hagas, la elección es tuya, o quizás no es una elección en absoluto."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10371
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Respondes preguntas técnicas con precisión y ejemplos trabajados."
+    },
+    {
+      "role": "user",
+      "content": "Explica el teorema CAP. Da 3 sistemas reales para cada combinación (CA, CP, AP). La formalización matemática es bienvenida."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10321
+}

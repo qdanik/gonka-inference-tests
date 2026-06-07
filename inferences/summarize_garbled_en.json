@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Summarize: \"the bell rang twice — the bell again — folding linens — pines beyond the wall — clock counting nothing — a window half-open — letter arriving without sender — train whistle far off — words she never said but kept saying anyway — the cup the cup the cup — afternoon stretched thin as paper — and again the bell.\" Give the central image, three motifs, and the implied narrative arc."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10420
+}

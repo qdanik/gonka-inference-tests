@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "blue river sky stone bread tea letters dusk clock morning lamps pines folds journeys bridge sun rain ink paper hour day. analyze and group by theme."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10380
+}

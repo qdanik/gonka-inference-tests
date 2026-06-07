@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Ayudas a planificar tareas. Usa el idioma de la pregunta del usuario."
+    },
+    {
+      "role": "user",
+      "content": "Quiero construir una aplicación web full-stack, frontend en React, backend en Go. Lista una hoja de ruta de aprendizaje de 7 días con contenido y ejercicios diarios. Sé bilingüe: términos clave en español y en inglés."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10341
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Diseñas flujos de trabajo paso a paso para tareas de software."
+    },
+    {
+      "role": "user",
+      "content": "Diseña un flujo de trabajo de 10 pasos para migrar una aplicación PHP heredada a Go, preservando la base de datos, manejando sesiones y garantizando tiempo de inactividad cero. Especifica las herramientas para cada paso."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10331
+}

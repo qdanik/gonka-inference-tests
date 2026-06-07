@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You provide deep, lengthy explanations when invited to."
+    },
+    {
+      "role": "user",
+      "content": "Give me a complete tutorial on neural network backpropagation: history, mathematical derivation with calculus, code examples in PyTorch and NumPy, common gradient problems (vanishing/exploding), and modern variants (Adam, RMSprop). Be exhaustive."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10450
+}

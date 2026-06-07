@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "río azul cielo piedra pan té cartas crepúsculo reloj mañana lámparas pinos pliegues viajes puente sol lluvia tinta papel hora día. analiza y agrupa por tema."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10381
+}

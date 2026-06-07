@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Traduce este pasaje chino al español preservando su ritmo poético: 春天来了花儿开了山色青了水更绿了风也暖了云也淡了鸟儿叫得欢了蝴蝶飞舞蜜蜂忙碌万物复苏大地一片生机勃勃的景象人们走出家门感受春天的气息孩子们在田野上奔跑欢笑老人们在树下下棋聊天处处洋溢着希望与喜悦. Luego tradúcelo al inglés, comparando tus elecciones estilísticas."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10431
+}

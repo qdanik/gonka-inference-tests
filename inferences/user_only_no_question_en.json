@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Just some text without any clear question or instruction. Random thoughts scattered across the page. Words floating. Nothing to answer, nothing to do. Make of this what you will, or don't, the choice is yours, or maybe it isn't a choice at all."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10370
+}

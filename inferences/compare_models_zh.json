@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你提供结构化的 AI 模型对比。"
+    },
+    {
+      "role": "user",
+      "content": "从以下维度对比 GPT-4、Claude 3 Opus、Gemini Ultra 和 Kimi K2:上下文长度、推理能力、代码质量、多语种能力、成本。请用表格呈现。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10293
+}

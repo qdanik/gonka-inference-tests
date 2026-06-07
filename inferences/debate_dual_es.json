@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Presenta argumentos equilibrados a ambos lados de cuestiones discutidas."
+    },
+    {
+      "role": "user",
+      "content": "¿Debería la IA reemplazar a los maestros en la educación primaria? Argumenta ambos lados con 5 puntos cada uno, luego ofrece tu propio veredicto matizado."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10311
+}

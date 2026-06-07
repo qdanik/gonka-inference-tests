@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Sé útil."
+    },
+    {
+      "role": "user",
+      "content": "Aquí hay un bloque largo de texto: una lenta deriva de mañanas apiladas una sobre otra como sábanas plegadas en un cajón que nadie abre, cada una cargando el aroma tenue de un cielo distinto, suave como papel pero indeleble como una mancha. El reloj de la pared no marca segundos sino pequeñas confesiones — nombres a medio recordar, el ángulo de una ventana vista en la infancia, una melodía que no puedes ubicar. Hay un puente en algún lugar, y un río que fluye debajo, pero nunca has visto el puente en ninguna estación. Por favor analiza este pasaje: identifica la metáfora central, nombra la técnica, propón tres escritores contemporáneos a los que pueda hacer eco, luego reescribe la primera oración en tres registros distintos (académico, periodístico, íntimo)."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10281
+}

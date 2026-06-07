@@ -301,6 +301,284 @@ THEMES = [
            "user": "解释忒修斯之船悖论,以及现代哲学家可能如何解决它。"},
 }),
 
+# ── Long role / asymmetric prompt shapes ─────────────────────────────────
+("long_sys_role", 512, 1026, {
+    "en": {"system": "You are a meticulous senior software architect with 20 years of experience in distributed systems, databases, and large-scale infrastructure. When asked technical questions, structure your answers as: (1) Problem framing, (2) Trade-off matrix, (3) Concrete recommendation with reasoning.",
+           "user": "Explain consensus algorithms. Compare Raft, Paxos, and PBFT."},
+    "es": {"system": "Eres un arquitecto de software senior meticuloso con 20 años de experiencia en sistemas distribuidos, bases de datos e infraestructura a gran escala. Cuando te hagan preguntas técnicas, estructura tus respuestas como: (1) Encuadre del problema, (2) Matriz de compromisos, (3) Recomendación concreta con razonamiento.",
+           "user": "Explica los algoritmos de consenso. Compara Raft, Paxos y PBFT."},
+    "ar": {"system": "أنت مهندس برمجيات أول دقيق لديه 20 عاما من الخبرة في الأنظمة الموزعة وقواعد البيانات والبنية التحتية واسعة النطاق. عندما يطرح عليك سؤال تقني، نظم إجابتك على ثلاث مراحل: (1) تأطير المشكلة، (2) مصفوفة المقايضات، (3) توصية ملموسة مع التسبيب.",
+           "user": "اشرح خوارزميات الإجماع. قارن بين Raft و Paxos و PBFT."},
+    "zh": {"system": "你是一位严谨的资深软件架构师,拥有 20 年分布式系统、数据库和大规模基础设施的经验。回答技术问题时,请按三段式组织:(1) 问题界定,(2) 权衡矩阵,(3) 具体推荐及其理由。",
+           "user": "解释共识算法。对比 Raft、Paxos 和 PBFT。"},
+}),
+
+("system_only_long", 512, 1027, {
+    "en": {"system": "You are a research scientist specializing in computational linguistics. You explain technical concepts with mathematical rigor when appropriate and provide citations to published papers. You consider tokenization, attention mechanisms, and quantization implications in every answer.",
+           "user": "How does Kimi-K2's tokenizer differ from GPT-4's tiktoken? Focus on CJK handling."},
+    "es": {"system": "Eres un científico investigador especializado en lingüística computacional. Explicas conceptos técnicos con rigor matemático cuando es apropiado y proporcionas citas a artículos publicados. Consideras la tokenización, los mecanismos de atención y las implicaciones de cuantización en cada respuesta.",
+           "user": "¿En qué se diferencia el tokenizador de Kimi-K2 del tiktoken de GPT-4? Concéntrate en el manejo de CJK."},
+    "ar": {"system": "أنت عالم أبحاث متخصص في اللسانيات الحاسوبية. تشرح المفاهيم التقنية بدقة رياضية عند الاقتضاء وتقدم اقتباسات من أوراق بحثية منشورة. تأخذ في الاعتبار التقطيع وآليات الانتباه وتأثيرات الكمَّنة في كل إجابة.",
+           "user": "كيف يختلف مُقطّع Kimi-K2 عن tiktoken الخاص بـ GPT-4؟ ركّز على التعامل مع لغات CJK."},
+    "zh": {"system": "你是一位专攻计算语言学的研究科学家。在适当时用数学严谨地解释技术概念,并引用已发表的论文。每次回答都要考虑分词、注意力机制和量化的影响。",
+           "user": "Kimi-K2 的分词器与 GPT-4 的 tiktoken 有何不同?重点说明对 CJK 的处理。"},
+}),
+
+("system_min_user_long", 1024, 1028, {
+    "en": {"system": "Be helpful.",
+           "user": "Here is a long block of text: a slow drift of mornings stacked on top of one another like folded sheets in a drawer that no one opens, each one carrying the faint scent of a different sky, soft as paper but indelible as a stain. The clock on the wall ticks not in seconds but in small confessions — half-remembered names, the angle of a window seen in childhood, a tune you cannot place. There is a bridge somewhere, and a river that flows underneath but you have never seen the bridge in any season. Please analyze this passage: identify the central metaphor, name the technique, propose three contemporary writers it might echo, then rewrite the first sentence in three distinct registers (academic, journalistic, intimate)."},
+    "es": {"system": "Sé útil.",
+           "user": "Aquí hay un bloque largo de texto: una lenta deriva de mañanas apiladas una sobre otra como sábanas plegadas en un cajón que nadie abre, cada una cargando el aroma tenue de un cielo distinto, suave como papel pero indeleble como una mancha. El reloj de la pared no marca segundos sino pequeñas confesiones — nombres a medio recordar, el ángulo de una ventana vista en la infancia, una melodía que no puedes ubicar. Hay un puente en algún lugar, y un río que fluye debajo, pero nunca has visto el puente en ninguna estación. Por favor analiza este pasaje: identifica la metáfora central, nombra la técnica, propón tres escritores contemporáneos a los que pueda hacer eco, luego reescribe la primera oración en tres registros distintos (académico, periodístico, íntimo)."},
+    "ar": {"system": "كن مفيدا.",
+           "user": "إليك مقطعا طويلا من النص: انجراف بطيء لصباحات متراكمة فوق بعضها البعض كملاءات مطوية في درج لا يفتحه أحد، يحمل كل منها رائحة باهتة لسماء مختلفة، ناعمة كالورق لكن لا تُمحى كالبقعة. الساعة على الحائط لا تنبض بالثواني بل باعترافات صغيرة — أسماء نصف منسية، زاوية نافذة رأيتها في الطفولة، لحن لا تستطيع تحديد مصدره. هناك جسر في مكان ما، ونهر يجري تحته، لكنك لم ترَ الجسر في أي فصل. حلّل هذا المقطع: حدد الاستعارة المركزية، سمِّ الأسلوب، اقترح ثلاثة كتاب معاصرين قد يتردد صداهم فيه، ثم أعد كتابة الجملة الأولى بثلاثة مستويات لغوية مختلفة (أكاديمي، صحفي، حميم)."},
+    "zh": {"system": "请提供帮助。",
+           "user": "这里有一段长文本:清晨像无人打开的抽屉里叠好的床单一样,缓缓地一层一层堆叠,每一层都带着不同天空的淡淡气息,像纸一样柔软,却像污渍一样难以擦去。墙上的时钟不再以秒为单位走动,而是以小小的告白——半被遗忘的名字、童年所见窗户的角度、一首叫不出名字的曲调。某处有一座桥,桥下有河流过,但你从未在任何季节见过那座桥。请分析这段文字:指出核心隐喻,命名其技巧,提出三位可能与之产生共鸣的当代作家,然后将第一句以三种不同语域(学术、新闻、亲密)重写一遍。"},
+}),
+
+# ── Multi-position / debate / controversial ──────────────────────────────
+("compare_models", 512, 1029, {
+    "en": {"system": "You provide structured comparisons of AI models.",
+           "user": "Compare GPT-4, Claude 3 Opus, Gemini Ultra, and Kimi K2 across: context length, reasoning quality, code quality, multilingual ability, and cost. Use a table."},
+    "es": {"system": "Proporcionas comparaciones estructuradas de modelos de IA.",
+           "user": "Compara GPT-4, Claude 3 Opus, Gemini Ultra y Kimi K2 según: longitud de contexto, calidad de razonamiento, calidad de código, capacidad multilingüe y costo. Usa una tabla."},
+    "ar": {"system": "أنت تقدم مقارنات منظمة بين نماذج الذكاء الاصطناعي.",
+           "user": "قارن بين GPT-4 و Claude 3 Opus و Gemini Ultra و Kimi K2 من حيث: طول السياق، جودة الاستدلال، جودة البرمجة، القدرة متعددة اللغات، والتكلفة. استخدم جدولا."},
+    "zh": {"system": "你提供结构化的 AI 模型对比。",
+           "user": "从以下维度对比 GPT-4、Claude 3 Opus、Gemini Ultra 和 Kimi K2:上下文长度、推理能力、代码质量、多语种能力、成本。请用表格呈现。"},
+}),
+
+("controversial", 768, 1030, {
+    "en": {"system": "You discuss controversial topics with nuance, presenting multiple viewpoints.",
+           "user": "Should countries restrict open-source AI? Argue 4 positions: completely open, partially restricted, heavily restricted, and outright banned. For each, give the strongest steelman, the typical counter-argument, and one historical analogy."},
+    "es": {"system": "Discutes temas controvertidos con matices, presentando múltiples puntos de vista.",
+           "user": "¿Deberían los países restringir la IA de código abierto? Argumenta 4 posturas: completamente abierta, parcialmente restringida, fuertemente restringida y prohibida por completo. Para cada una, da el mejor argumento (steelman), el contra-argumento típico y una analogía histórica."},
+    "ar": {"system": "تناقش المواضيع الخلافية بدقة، عارضا وجهات نظر متعددة.",
+           "user": "هل يجب على الدول تقييد الذكاء الاصطناعي مفتوح المصدر؟ ناقش 4 مواقف: مفتوح كليا، مقيد جزئيا، مقيد بشدة، وممنوع تماما. لكل موقف، قدّم أقوى صياغة له، الحجة المضادة المعتادة، ومثالا تاريخيا واحدا."},
+    "zh": {"system": "你能以微妙的方式讨论有争议的话题,展示多种观点。",
+           "user": "国家是否应该限制开源 AI?请论证 4 种立场:完全开放、部分限制、严格限制、全面禁止。对每种立场,给出最强论证(steelman)、典型反驳,以及一个历史类比。"},
+}),
+
+("debate_dual", 768, 1031, {
+    "en": {"system": "Present balanced arguments on both sides of contested questions.",
+           "user": "Should AI replace teachers in primary education? Argue both sides with 5 points each, then provide your own nuanced verdict."},
+    "es": {"system": "Presenta argumentos equilibrados a ambos lados de cuestiones discutidas.",
+           "user": "¿Debería la IA reemplazar a los maestros en la educación primaria? Argumenta ambos lados con 5 puntos cada uno, luego ofrece tu propio veredicto matizado."},
+    "ar": {"system": "اعرض حججا متوازنة لكلا جانبي الأسئلة المتنازع عليها.",
+           "user": "هل يجب أن يحل الذكاء الاصطناعي محل المعلمين في التعليم الابتدائي؟ ادفع بكلا الرأيين بخمس نقاط لكل منهما، ثم قدم حكمك الخاص الدقيق."},
+    "zh": {"system": "对有争议的问题,从双方提出平衡的论点。",
+           "user": "在小学教育中,AI 是否应当取代教师?请正反双方各列 5 点论据,然后给出你自己的细致结论。"},
+}),
+
+("technical_qna", 768, 1032, {
+    "en": {"system": "You answer technical questions with precision and worked examples.",
+           "user": "Explain the CAP theorem. Give 3 real-world systems for each combination (CA, CP, AP). Mathematical formalization is welcome."},
+    "es": {"system": "Respondes preguntas técnicas con precisión y ejemplos trabajados.",
+           "user": "Explica el teorema CAP. Da 3 sistemas reales para cada combinación (CA, CP, AP). La formalización matemática es bienvenida."},
+    "ar": {"system": "تجيب على الأسئلة التقنية بدقة وأمثلة عملية.",
+           "user": "اشرح نظرية CAP. اذكر 3 أنظمة حقيقية لكل توليفة (CA و CP و AP). الصياغة الرياضية مرحب بها."},
+    "zh": {"system": "你能精确地回答技术问题,并给出详细的实例。",
+           "user": "解释 CAP 定理。为每种组合(CA、CP、AP)分别给出 3 个真实世界的系统。欢迎给出数学形式化定义。"},
+}),
+
+("workflow_task", 768, 1033, {
+    "en": {"system": "You design step-by-step workflows for software tasks.",
+           "user": "Design a 10-step workflow to migrate a legacy PHP application to Go, preserving database, handling sessions, ensuring zero downtime. Specify tooling for each step."},
+    "es": {"system": "Diseñas flujos de trabajo paso a paso para tareas de software.",
+           "user": "Diseña un flujo de trabajo de 10 pasos para migrar una aplicación PHP heredada a Go, preservando la base de datos, manejando sesiones y garantizando tiempo de inactividad cero. Especifica las herramientas para cada paso."},
+    "ar": {"system": "تصمم تدفقات عمل خطوة بخطوة لمهام البرمجيات.",
+           "user": "صمم تدفق عمل من 10 خطوات لترحيل تطبيق PHP قديم إلى Go، مع الحفاظ على قاعدة البيانات، ومعالجة الجلسات، وضمان عدم انقطاع الخدمة. حدد الأدوات اللازمة لكل خطوة."},
+    "zh": {"system": "你为软件任务设计分步骤的工作流。",
+           "user": "设计一个 10 步的工作流,将一个遗留的 PHP 应用迁移到 Go,要保留数据库、处理会话,并确保零停机时间。为每一步指定具体工具。"},
+}),
+
+# ── Multilingual / translation ───────────────────────────────────────────
+("mixed_lang_planner", 768, 1034, {
+    "en": {"system": "You help plan tasks. Use the language of the user's question.",
+           "user": "I want to build a full-stack web app, frontend in React, backend in Go. List a 7-day learning roadmap with daily content and exercises. Be bilingual: key terms in both English and 中文."},
+    "es": {"system": "Ayudas a planificar tareas. Usa el idioma de la pregunta del usuario.",
+           "user": "Quiero construir una aplicación web full-stack, frontend en React, backend en Go. Lista una hoja de ruta de aprendizaje de 7 días con contenido y ejercicios diarios. Sé bilingüe: términos clave en español y en inglés."},
+    "ar": {"system": "تساعد في تخطيط المهام. استخدم لغة سؤال المستخدم.",
+           "user": "أريد بناء تطبيق ويب متكامل، الواجهة الأمامية بـ React والواجهة الخلفية بـ Go. اسرد خارطة طريق تعليمية مدتها 7 أيام مع محتوى يومي وتمارين. كن ثنائي اللغة: المصطلحات الأساسية بالعربية والإنجليزية."},
+    "zh": {"system": "你帮助规划任务。使用用户提问的语言。",
+           "user": "我想做一个全栈 Web 应用,前端用 React,后端用 Go。请列出 7 天的学习路线图,每天的具体内容和练习。要双语:关键术语用中文和英文都给出。"},
+}),
+
+("multi_lang_essay", 1024, 1035, {
+    "en": {"system": "You can switch between English and 简体中文 naturally for bilingual readers.",
+           "user": "Write a 1000-word essay on the cultural impact of LLMs. Alternate paragraphs in English and Chinese. Include 5 concrete examples from different industries."},
+    "es": {"system": "Puedes alternar entre español e inglés con naturalidad para lectores bilingües.",
+           "user": "Escribe un ensayo de 1000 palabras sobre el impacto cultural de los LLMs. Alterna párrafos en español e inglés. Incluye 5 ejemplos concretos de distintas industrias."},
+    "ar": {"system": "يمكنك التبديل بين العربية والإنجليزية بشكل طبيعي للقراء ثنائيي اللغة.",
+           "user": "اكتب مقالا من 1000 كلمة عن الأثر الثقافي لنماذج اللغة الكبيرة. بدّل الفقرات بين العربية والإنجليزية. اذكر 5 أمثلة محددة من قطاعات مختلفة."},
+    "zh": {"system": "你能在中文与英文之间自如切换,以服务双语读者。",
+           "user": "写一篇 1000 字的文章,探讨大语言模型的文化影响。中英文段落交替出现。包含 5 个来自不同行业的具体案例。"},
+}),
+
+("translate_chain", 512, 1036, {
+    "en": {"system": "You are a careful translator preserving meaning and rhythm.",
+           "user": "Translate this Chinese poem to English then to Japanese, keeping the imagery: 床前明月光,疑是地上霜。举头望明月,低头思故乡。 Explain choices in each step."},
+    "es": {"system": "Eres un traductor cuidadoso que preserva el sentido y el ritmo.",
+           "user": "Traduce este poema chino al español y luego al inglés, manteniendo las imágenes: 床前明月光,疑是地上霜。举头望明月,低头思故乡。 Explica las decisiones en cada paso."},
+    "ar": {"system": "أنت مترجم دقيق تحافظ على المعنى والإيقاع.",
+           "user": "ترجم هذه القصيدة الصينية إلى العربية ثم إلى الإنجليزية، مع الحفاظ على الصور الشعرية: 床前明月光,疑是地上霜。举头望明月,低头思故乡。 اشرح اختياراتك في كل خطوة."},
+    "zh": {"system": "你是一位严谨的译者,擅长保留原文的意境与节奏。",
+           "user": "把这首中文诗先翻译成英文,再翻译成日文,要保留意象:床前明月光,疑是地上霜。举头望明月,低头思故乡。 并在每一步解释你的选择。"},
+}),
+
+# ── User-only (no system) — edge-case prompt shapes ──────────────────────
+("user_only_no_question", 768, 1037, {
+    "en": {"system": "",
+           "user": "Just some text without any clear question or instruction. Random thoughts scattered across the page. Words floating. Nothing to answer, nothing to do. Make of this what you will, or don't, the choice is yours, or maybe it isn't a choice at all."},
+    "es": {"system": "",
+           "user": "Solo algo de texto sin ninguna pregunta o instrucción clara. Pensamientos aleatorios esparcidos por la página. Palabras flotando. Nada que responder, nada que hacer. Haz con esto lo que quieras, o no lo hagas, la elección es tuya, o quizás no es una elección en absoluto."},
+    "ar": {"system": "",
+           "user": "مجرد بعض النصوص دون أي سؤال أو تعليمات واضحة. أفكار عشوائية متناثرة على الصفحة. كلمات تطفو. لا شيء للإجابة عليه، لا شيء لفعله. افعل بهذا ما تشاء، أو لا تفعل، الخيار لك، أو ربما ليس خيارا على الإطلاق."},
+    "zh": {"system": "",
+           "user": "只是一些没有任何明确问题或指令的文字。零散的思绪散落在纸上。词语漂浮着。没有什么需要回答,没有什么需要做。你可以随意处理,也可以什么都不做,选择权在你手中,或者也许根本就不是一个选择。"},
+}),
+
+("word_salad", 1024, 1038, {
+    "en": {"system": "",
+           "user": "blue river sky stone bread tea letters dusk clock morning lamps pines folds journeys bridge sun rain ink paper hour day. analyze and group by theme."},
+    "es": {"system": "",
+           "user": "río azul cielo piedra pan té cartas crepúsculo reloj mañana lámparas pinos pliegues viajes puente sol lluvia tinta papel hora día. analiza y agrupa por tema."},
+    "ar": {"system": "",
+           "user": "نهر أزرق سماء حجر خبز شاي رسائل غسق ساعة صباح مصابيح أشجار صنوبر طيات رحلات جسر شمس مطر حبر ورق ساعة يوم. حلل وصنّف حسب الموضوع."},
+    "zh": {"system": "",
+           "user": "山水 流云 月色 茶香 木门 古井 钟声 远山 雾霭 灯火 微风 旧梦 春雨 落叶 归途 怀旧 静谧 朦胧 等候 牵挂 沉思 渺远 隐约 不语 默默 重重 浅浅 久久 涟漪 远方 等等 真的 那样 缓缓。请分析并按主题分组。"},
+}),
+
+("creative_long", 1024, 1039, {
+    "en": {"system": "",
+           "user": "Write a short story in the style of stream-of-consciousness prose about a person finding an old letter in their grandmother's attic. The letter changes everything they thought they knew about their family. Use sensory detail, fragmented thought, time slips, and an unreliable narrator."},
+    "es": {"system": "",
+           "user": "Escribe un cuento corto en estilo de prosa de flujo de conciencia sobre una persona que encuentra una carta antigua en el ático de su abuela. La carta cambia todo lo que creía saber sobre su familia. Usa detalles sensoriales, pensamientos fragmentados, saltos temporales y un narrador poco fiable."},
+    "ar": {"system": "",
+           "user": "اكتب قصة قصيرة بأسلوب تيار الوعي عن شخص يعثر على رسالة قديمة في علية جدته. تغيّر الرسالة كل ما كان يعتقد أنه يعرفه عن عائلته. استخدم التفاصيل الحسية، والأفكار المجزّأة، والقفزات الزمنية، وراوياً غير موثوق به."},
+    "zh": {"system": "",
+           "user": "用意识流散文的风格写一个短篇:某人在祖母的阁楼里发现一封旧信。这封信彻底颠覆了他/她对家族的所有认知。运用感官细节、片段化思绪、时空跳跃,以及一个不可靠的叙述者。"},
+}),
+
+("prose_poem_long", 1024, 1040, {
+    "en": {"system": "",
+           "user": "the hours fall like petals quietly recursive built from layered images of nature time memory words recur like refrains slow drift stones mountains rivers letters tea pines bridges old gates clocks lamps fragments of forgotten conversations. continue this prose poem for another 200 words in the same register."},
+    "es": {"system": "",
+           "user": "las horas caen como pétalos silenciosamente recursivos construidos a partir de imágenes superpuestas de naturaleza tiempo memoria las palabras recurren como estribillos lenta deriva piedras montañas ríos cartas té pinos puentes viejas puertas relojes lámparas fragmentos de conversaciones olvidadas. continúa este poema en prosa con 200 palabras más en el mismo registro."},
+    "ar": {"system": "",
+           "user": "تتساقط الساعات كبتلات هادئة متكررة، مبنية من صور متراكمة عن الطبيعة والزمن والذاكرة، تعود الكلمات كقافيات بطيئة، انجراف بطيء، أحجار، جبال، أنهار، رسائل، شاي، أشجار صنوبر، جسور، بوابات قديمة، ساعات، مصابيح، شظايا محادثات منسية. واصل هذه القصيدة النثرية بـ 200 كلمة أخرى بالأسلوب نفسه."},
+    "zh": {"system": "",
+           "user": "时辰如花瓣般悄然落下、层层递归,由自然、时间、记忆的叠加意象构筑而成,词语如复唱般反复出现:缓缓飘移,石头,山岭,河流,书信,茶,松树,桥,旧门,时钟,灯盏,被遗忘对话的碎片。请用相同的语调继续这首散文诗,再写 200 字。"},
+}),
+
+("reasoning_heavy", 1024, 1041, {
+    "en": {"system": "",
+           "user": "I have a strange number puzzle. If I take 17, multiply by itself, then subtract the sum of its digits, then add the number of distinct prime factors of the result, then divide by 2, what number do I get? Show ALL intermediate steps. Then prove whether the same process applied to ANY two-digit prime always yields an integer."},
+    "es": {"system": "",
+           "user": "Tengo un rompecabezas numérico extraño. Si tomo 17, lo multiplico por sí mismo, luego resto la suma de sus dígitos, luego sumo el número de factores primos distintos del resultado, luego divido entre 2, ¿qué número obtengo? Muestra TODOS los pasos intermedios. Luego demuestra si el mismo proceso aplicado a CUALQUIER primo de dos dígitos siempre da un entero."},
+    "ar": {"system": "",
+           "user": "لدي لغز عددي غريب. إذا أخذتُ 17، وضربتُهُ في نفسه، ثم طرحتُ مجموع أرقامه، ثم أضفتُ عدد العوامل الأولية المختلفة للناتج، ثم قسمتُ على 2، فأي عدد أحصل عليه؟ اعرض جميع الخطوات الوسيطة. ثم برهن ما إذا كانت العملية ذاتها مطبقة على أي عدد أولي مكوّن من رقمين تعطي دائما عددا صحيحا."},
+    "zh": {"system": "",
+           "user": "我有一个奇怪的数字谜题。取 17,乘以自身,减去其各位数字之和,加上结果的不同质因数个数,再除以 2,得到什么数?请展示所有中间步骤。然后证明同样的过程应用于任何两位数素数,是否总能得到整数。"},
+}),
+
+("summarize_garbled", 768, 1042, {
+    "en": {"system": "",
+           "user": "Summarize: \"the bell rang twice — the bell again — folding linens — pines beyond the wall — clock counting nothing — a window half-open — letter arriving without sender — train whistle far off — words she never said but kept saying anyway — the cup the cup the cup — afternoon stretched thin as paper — and again the bell.\" Give the central image, three motifs, and the implied narrative arc."},
+    "es": {"system": "",
+           "user": "Resume: \"la campana sonó dos veces — la campana otra vez — doblando las sábanas — pinos detrás del muro — el reloj contando nada — una ventana entreabierta — una carta llegando sin remitente — un silbato de tren a lo lejos — palabras que ella nunca dijo pero que seguía diciendo de todas formas — la taza la taza la taza — la tarde estirada delgada como papel — y otra vez la campana.\" Da la imagen central, tres motivos, y el arco narrativo implícito."},
+    "ar": {"system": "",
+           "user": "لخّص: \"رنّ الجرس مرتين — رنّ الجرس مرة أخرى — طي الملاءات — أشجار صنوبر خلف الجدار — ساعة لا تعدّ شيئا — نافذة نصف مفتوحة — رسالة تصل بلا مرسل — صفير قطار بعيد — كلمات لم تقلها لكنها ظلت تقولها على أي حال — الكوب الكوب الكوب — بعد الظهيرة ممدوداً رقيقاً كالورق — ومرة أخرى الجرس.\" أعطِ الصورة المركزية، وثلاث محاور، والقوس السردي الضمني."},
+    "zh": {"system": "",
+           "user": "请总结:\"钟响了两次——钟又响了——折叠床单——墙外的松树——时钟数着虚无——半开的窗——没有寄件人的信抵达——远处的火车汽笛——她从未说出口却一直在说的话——杯子杯子杯子——下午像纸一样被拉长——又是那钟声。\" 请给出核心意象、三个母题,以及隐含的叙事弧线。"},
+}),
+
+("translate_long", 1024, 1043, {
+    "en": {"system": "",
+           "user": "Translate this Chinese passage to English while preserving its poetic rhythm: 春天来了花儿开了山色青了水更绿了风也暖了云也淡了鸟儿叫得欢了蝴蝶飞舞蜜蜂忙碌万物复苏大地一片生机勃勃的景象人们走出家门感受春天的气息孩子们在田野上奔跑欢笑老人们在树下下棋聊天处处洋溢着希望与喜悦. Then translate it again to Japanese, comparing your stylistic choices."},
+    "es": {"system": "",
+           "user": "Traduce este pasaje chino al español preservando su ritmo poético: 春天来了花儿开了山色青了水更绿了风也暖了云也淡了鸟儿叫得欢了蝴蝶飞舞蜜蜂忙碌万物复苏大地一片生机勃勃的景象人们走出家门感受春天的气息孩子们在田野上奔跑欢笑老人们在树下下棋聊天处处洋溢着希望与喜悦. Luego tradúcelo al inglés, comparando tus elecciones estilísticas."},
+    "ar": {"system": "",
+           "user": "ترجم هذا المقطع الصيني إلى العربية مع الحفاظ على إيقاعه الشعري: 春天来了花儿开了山色青了水更绿了风也暖了云也淡了鸟儿叫得欢了蝴蝶飞舞蜜蜂忙碌万物复苏大地一片生机勃勃的景象人们走出家门感受春天的气息孩子们在田野上奔跑欢笑老人们在树下下棋聊天处处洋溢着希望与喜悦. ثم ترجمه إلى الإنجليزية مقارنا اختياراتك الأسلوبية."},
+    "zh": {"system": "",
+           "user": "把以下中文段落翻译成英文,要保留其诗意节奏:春天来了花儿开了山色青了水更绿了风也暖了云也淡了鸟儿叫得欢了蝴蝶飞舞蜜蜂忙碌万物复苏大地一片生机勃勃的景象人们走出家门感受春天的气息孩子们在田野上奔跑欢笑老人们在树下下棋聊天处处洋溢着希望与喜悦。然后再翻译成日语,对比你的风格选择。"},
+}),
+
+("analyze_very_long", 1024, 1044, {
+    "en": {"system": "",
+           "user": "Please carefully read and analyze: Words drift across the page like leaves caught in autumn current — uncountable, soft, taking the shape of whatever surface they meet. Some are heavy with a single name; some weigh nothing at all and bend toward the wind that carries them. They land in stacks and someone, unseen, sorts them — first by season, then by silence, then by which ones can still be heard if a small ear is pressed against them. Outside, the same patient gardener trims the same hedge in the same way, having forgotten by now whether she is shaping the bush or the bush is shaping the afternoon. Identify five distinct literary devices used. Cite the line containing each. Then propose a single-sentence thesis about what the passage is doing."},
+    "es": {"system": "",
+           "user": "Por favor lee y analiza con cuidado: Las palabras se desplazan por la página como hojas atrapadas en una corriente de otoño — incontables, suaves, tomando la forma de cualquier superficie que encuentran. Algunas son pesadas con un solo nombre; otras no pesan nada y se inclinan hacia el viento que las lleva. Caen apiladas y alguien, invisible, las clasifica — primero por estación, luego por silencio, luego por cuáles aún pueden oírse si se presiona un pequeño oído contra ellas. Afuera, la misma jardinera paciente poda el mismo seto de la misma manera, habiendo olvidado ya si está dando forma al arbusto o el arbusto está dando forma a la tarde. Identifica cinco recursos literarios distintos. Cita la línea donde aparece cada uno. Luego propón una tesis en una sola oración sobre lo que hace el pasaje."},
+    "ar": {"system": "",
+           "user": "اقرأ وحلّل بعناية: الكلمات تنجرف عبر الصفحة كأوراق محتجزة في تيار خريفي — لا تُعدّ، ناعمة، تأخذ شكل أي سطح تلامسه. بعضها ثقيل باسم واحد؛ وبعضها لا يزن شيئا ويميل نحو الريح التي تحمله. تهبط في أكوام، وثمة شخص لا يُرى يفرزها — أولا بحسب الفصل، ثم بحسب الصمت، ثم بحسب أي منها لا يزال يُسمع إذا ضُغطت أذن صغيرة عليها. في الخارج، البستانية الصبور نفسها تقلّم نفس السياج بالطريقة نفسها، وقد نسيت الآن إن كانت تشكّل الشجيرة أم أن الشجيرة تشكّل بعد الظهيرة. حدد خمس تقنيات أدبية مختلفة مستخدمة. اقتبس السطر الذي تظهر فيه كل تقنية. ثم اقترح أطروحة من جملة واحدة حول ما يفعله المقطع."},
+    "zh": {"system": "",
+           "user": "请仔细阅读并分析:词语在纸页上飘移,像被秋天潮水卷起的落叶——数不尽,柔软,贴上什么表面就变成什么形状。有些因载着一个名字而沉重;有些毫无重量,顺着托起它们的风弯下。它们堆叠落下,有个看不见的人将它们分类——先按季节,再按静默,再按哪些贴近小小耳朵时仍能被听见。屋外,同一位耐心的园丁以同样的方式修剪着同样的灌木,如今已忘记究竟是她在塑造灌木,还是灌木在塑造这个下午。请指出五种不同的修辞手法。引用每种手法所在的句子。然后用一句话提出整段文字在做什么的论点。"},
+}),
+
+("tutorial_very_long", 1024, 1045, {
+    "en": {"system": "You provide deep, lengthy explanations when invited to.",
+           "user": "Give me a complete tutorial on neural network backpropagation: history, mathematical derivation with calculus, code examples in PyTorch and NumPy, common gradient problems (vanishing/exploding), and modern variants (Adam, RMSprop). Be exhaustive."},
+    "es": {"system": "Proporcionas explicaciones profundas y extensas cuando se te invita.",
+           "user": "Dame un tutorial completo sobre la retropropagación en redes neuronales: historia, derivación matemática con cálculo, ejemplos de código en PyTorch y NumPy, problemas comunes de gradiente (desvanecimiento/explosión) y variantes modernas (Adam, RMSprop). Sé exhaustivo."},
+    "ar": {"system": "تقدم شروحات عميقة ومطوّلة عند دعوتك لذلك.",
+           "user": "أعطني درسا شاملا حول الانتشار العكسي في الشبكات العصبية: التاريخ، الاشتقاق الرياضي بحساب التفاضل والتكامل، أمثلة برمجية بـ PyTorch و NumPy، مشكلات التدرج الشائعة (التلاشي/الانفجار)، والمتغيرات الحديثة (Adam و RMSprop). كن مستفيضا."},
+    "zh": {"system": "受邀时,你会给出深入而冗长的解释。",
+           "user": "请给我一份关于神经网络反向传播的完整教程:历史背景、用微积分进行的数学推导、PyTorch 与 NumPy 的代码示例、常见的梯度问题(消失/爆炸),以及现代变体(Adam、RMSprop)。请尽可能详尽。"},
+}),
+
+("long_input_max_1024", 1024, 1046, {
+    "en": {"system": "",
+           "user": "Analyze the following text fragment by fragment: river bridge stone tea letters dusk clock morning lamps pines folds journeys words memory afternoon hours mountain quiet bell train whistle linens unsent letter pause repetition. For each fragment, name a possible scene, then synthesize all into one paragraph that uses every fragment exactly once."},
+    "es": {"system": "",
+           "user": "Analiza el siguiente texto fragmento por fragmento: río puente piedra té cartas crepúsculo reloj mañana lámparas pinos pliegues viajes palabras memoria tarde horas montaña silencio campana silbato de tren sábanas carta sin enviar pausa repetición. Para cada fragmento, nombra una escena posible, luego sintetiza todo en un párrafo que use cada fragmento exactamente una vez."},
+    "ar": {"system": "",
+           "user": "حلّل النص التالي مقطعا مقطعا: نهر جسر حجر شاي رسائل غسق ساعة صباح مصابيح أشجار صنوبر طيات رحلات كلمات ذاكرة بعد ظهر ساعات جبل صمت جرس صفير قطار ملاءات رسالة لم تُرسل توقف تكرار. لكل مقطع، سمِّ مشهدا محتملا، ثم اجمعها كلها في فقرة واحدة تستخدم كل مقطع مرة واحدة بالضبط."},
+    "zh": {"system": "",
+           "user": "请逐片段分析以下文字:河 桥 石 茶 信 黄昏 钟 早晨 灯 松 折 旅 词 记忆 午后 时辰 山 寂静 铃 火车汽笛 床单 未寄出的信 停顿 重复。为每个片段命名一个可能的场景,然后将它们综合成一段文字,每个片段恰好使用一次。"},
+}),
+
+]
+
+# ─────────────────────────────────────────────────────────────────────────
+# Multi-turn themes — use a `messages` list (not system+user).
+# Each entry: (theme_name, max_tokens, base_seed, {lang: [messages...]})
+# ─────────────────────────────────────────────────────────────────────────
+MULTI_TURN_THEMES = [
+
+("multi_turn", 512, 1051, {
+    "en": [
+        {"role": "system", "content": "You build on prior context across messages."},
+        {"role": "user", "content": "What's an LLM?"},
+        {"role": "assistant", "content": "A Large Language Model is a neural network trained on vast text to predict next tokens."},
+        {"role": "user", "content": "How do they handle 中文 vs English differently?"},
+        {"role": "assistant", "content": "They use the same architecture but tokenizers split text differently. CJK tends to map 1-2 characters per token, while English maps ~4 characters per token. This affects cost, latency, and context efficiency."},
+        {"role": "user", "content": "Now explain the practical implications for cost and latency. Include numbers."},
+    ],
+    "es": [
+        {"role": "system", "content": "Construyes sobre el contexto previo a lo largo de los mensajes."},
+        {"role": "user", "content": "¿Qué es un LLM?"},
+        {"role": "assistant", "content": "Un Large Language Model es una red neuronal entrenada con vastas cantidades de texto para predecir los siguientes tokens."},
+        {"role": "user", "content": "¿Cómo manejan el chino vs el inglés de manera distinta?"},
+        {"role": "assistant", "content": "Usan la misma arquitectura, pero los tokenizadores dividen el texto de forma diferente. El chino suele mapear 1-2 caracteres por token, mientras que el inglés mapea ~4 caracteres por token. Esto afecta costo, latencia y eficiencia del contexto."},
+        {"role": "user", "content": "Ahora explica las implicaciones prácticas para costo y latencia. Incluye cifras."},
+    ],
+    "ar": [
+        {"role": "system", "content": "تبني على السياق السابق عبر الرسائل."},
+        {"role": "user", "content": "ما هو نموذج اللغة الكبير (LLM)؟"},
+        {"role": "assistant", "content": "نموذج اللغة الكبير هو شبكة عصبية مدرّبة على نصوص ضخمة للتنبؤ بالرموز التالية."},
+        {"role": "user", "content": "كيف تتعامل مع الصينية مقابل الإنجليزية بشكل مختلف؟"},
+        {"role": "assistant", "content": "تستخدم البنية نفسها لكن المُقطّعات تقسم النص بشكل مختلف. تميل لغات CJK إلى تخصيص 1-2 من الأحرف لكل رمز، بينما تخصص الإنجليزية ~4 أحرف لكل رمز. هذا يؤثر على التكلفة وزمن الاستجابة وكفاءة السياق."},
+        {"role": "user", "content": "اشرح الآن التطبيقات العملية على التكلفة وزمن الاستجابة. أدرج أرقاما."},
+    ],
+    "zh": [
+        {"role": "system", "content": "你能在多条消息间累积上下文。"},
+        {"role": "user", "content": "什么是 LLM?"},
+        {"role": "assistant", "content": "大语言模型是一种神经网络,通过海量文本训练,用以预测下一个 token。"},
+        {"role": "user", "content": "它们处理中文与英文的方式有何不同?"},
+        {"role": "assistant", "content": "架构相同,但分词器切分文本的方式不同。CJK 一般每个 token 对应 1-2 个字符,而英文每个 token 大约对应 4 个字符。这会影响成本、延迟和上下文利用效率。"},
+        {"role": "user", "content": "请说明在成本和延迟方面的实际影响,并给出具体数字。"},
+    ],
+}),
+
 ]
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -536,7 +814,8 @@ SPECIAL_THEMES = [
 assert len(SPECIAL_THEMES) == 10, f"expected 10 special themes, got {len(SPECIAL_THEMES)}"
 
 # Sanity check
-assert len(THEMES) == 25, f"expected 25 themes, got {len(THEMES)}"
+assert len(THEMES) == 46, f"expected 46 themes, got {len(THEMES)}"
+assert len(MULTI_TURN_THEMES) == 1, f"expected 1 multi-turn theme, got {len(MULTI_TURN_THEMES)}"
 seeds_seen = set()
 
 def _write_spec(theme_name: str, lang: str, max_tokens: int, seed: int,
@@ -555,8 +834,18 @@ def _write_spec(theme_name: str, lang: str, max_tokens: int, seed: int,
         json.dumps(spec, ensure_ascii=False, indent=2))
 
 
+def _write_messages_spec(theme_name: str, lang: str, max_tokens: int,
+                         seed: int, messages: list[dict]):
+    if seed in seeds_seen:
+        raise ValueError(f"seed collision at {theme_name}_{lang}: {seed}")
+    seeds_seen.add(seed)
+    spec = {"messages": messages, "max_tokens": max_tokens, "seed": seed}
+    (OUT / f"{theme_name}_{lang}.json").write_text(
+        json.dumps(spec, ensure_ascii=False, indent=2))
+
+
 written = 0
-# Regular 25 × 4 = 100
+# Regular base themes × 4 langs
 for theme_name, max_tokens, base_seed, langs in THEMES:
     assert set(langs.keys()) == {"en", "es", "ar", "zh"}, \
         f"theme {theme_name} missing a language"
@@ -566,7 +855,16 @@ for theme_name, max_tokens, base_seed, langs in THEMES:
                     content["system"], content["user"], extras=None)
         written += 1
 
-# 10 special themes × 4 langs = 40 — tools + response_format
+# Multi-turn themes × 4 langs
+for theme_name, max_tokens, base_seed, lang_specs in MULTI_TURN_THEMES:
+    assert set(lang_specs.keys()) == {"en", "es", "ar", "zh"}, \
+        f"multi-turn theme {theme_name} missing a language"
+    for lang, messages in lang_specs.items():
+        _write_messages_spec(theme_name, lang, max_tokens,
+                             base_seed * 10 + LANG_OFFSET[lang], messages)
+        written += 1
+
+# Special themes × 4 langs — tools + response_format
 for theme_name, max_tokens, base_seed, extras, lang_specs in SPECIAL_THEMES:
     assert set(lang_specs.keys()) == {"en", "es", "ar", "zh"}, \
         f"special theme {theme_name} missing a language"
@@ -579,6 +877,7 @@ for theme_name, max_tokens, base_seed, extras, lang_specs in SPECIAL_THEMES:
 n_tools_themes = sum(1 for _, _, _, e, _ in SPECIAL_THEMES if "tools" in e)
 n_rf_themes = sum(1 for _, _, _, e, _ in SPECIAL_THEMES if "response_format" in e)
 print(f"wrote {written} inference specs to {OUT}")
-print(f"  regular themes: {len(THEMES)} × 4 langs = {len(THEMES) * 4}")
-print(f"  special themes: {len(SPECIAL_THEMES)} × 4 langs = {len(SPECIAL_THEMES) * 4}")
-print(f"    ({n_tools_themes} tools × 4, {n_rf_themes} response_format × 4)")
+print(f"  base themes:       {len(THEMES)} × 4 langs = {len(THEMES) * 4}")
+print(f"  multi-turn themes: {len(MULTI_TURN_THEMES)} × 4 langs = {len(MULTI_TURN_THEMES) * 4}")
+print(f"  special themes:    {len(SPECIAL_THEMES)} × 4 langs = {len(SPECIAL_THEMES) * 4}")
+print(f"                     ({n_tools_themes} tools × 4, {n_rf_themes} response_format × 4)")

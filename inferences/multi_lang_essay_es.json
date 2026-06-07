@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Puedes alternar entre español e inglés con naturalidad para lectores bilingües."
+    },
+    {
+      "role": "user",
+      "content": "Escribe un ensayo de 1000 palabras sobre el impacto cultural de los LLMs. Alterna párrafos en español e inglés. Incluye 5 ejemplos concretos de distintas industrias."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10351
+}

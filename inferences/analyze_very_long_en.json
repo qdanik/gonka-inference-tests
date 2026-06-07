@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Please carefully read and analyze: Words drift across the page like leaves caught in autumn current — uncountable, soft, taking the shape of whatever surface they meet. Some are heavy with a single name; some weigh nothing at all and bend toward the wind that carries them. They land in stacks and someone, unseen, sorts them — first by season, then by silence, then by which ones can still be heard if a small ear is pressed against them. Outside, the same patient gardener trims the same hedge in the same way, having forgotten by now whether she is shaping the bush or the bush is shaping the afternoon. Identify five distinct literary devices used. Cite the line containing each. Then propose a single-sentence thesis about what the passage is doing."
+    }
+  ],
+  "max_tokens": 1024,
+  "seed": 10440
+}

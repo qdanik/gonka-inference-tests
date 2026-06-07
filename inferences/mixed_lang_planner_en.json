@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You help plan tasks. Use the language of the user's question."
+    },
+    {
+      "role": "user",
+      "content": "I want to build a full-stack web app, frontend in React, backend in Go. List a 7-day learning roadmap with daily content and exercises. Be bilingual: key terms in both English and 中文."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10340
+}
