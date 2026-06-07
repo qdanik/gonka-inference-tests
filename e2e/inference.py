@@ -47,12 +47,16 @@ def load_inference_specs(inferences_dir: Path,
     return [(label, json.loads(path.read_text())) for label, path in chosen]
 
 
-def _build_request(model_name: str, spec: dict) -> dict:
+def _build_request(model_name: str, spec: dict,
+                   logprobs_mode: str | None = None) -> dict:
     """Compose the streaming chat-completions body we send to vLLM.
 
     `return_token_ids:true` ensures `logprobs.content[*].token` is the integer
     token-ID string (not detokenized text) — the only shape the chain
     validator accepts as `enforced_tokens.tokens[*].token`.
+    `logprobs_mode`, when provided, is pinned per-request so the response is
+    independent of the server's `--logprobs-mode` default and stays consistent
+    with how the validator will later replay (see validate.py).
     """
     body = {
         "messages": spec["messages"],
@@ -73,6 +77,8 @@ def _build_request(model_name: str, spec: dict) -> dict:
         # covers the FULL generation, not just the user-facing text.
         "skip_special_tokens": False,
     }
+    if logprobs_mode is not None:
+        body["logprobs_mode"] = logprobs_mode
     # Optional spec passthroughs for richer tests (function calling, JSON mode)
     for opt in ("tools", "response_format"):
         if opt in spec:
@@ -153,6 +159,7 @@ def run_inference_sweep(target: ServerTarget, model: ModelSpec, paths: RunPaths,
                         inferences_dir: Path,
                         names: list[str] | None = None,
                         *, concurrency: int = 16,
+                        logprobs_mode: str | None = None,
                         ) -> list[Path]:
     """Run each selected inference spec, write `inference-N.json` per label.
 
@@ -171,7 +178,7 @@ def run_inference_sweep(target: ServerTarget, model: ModelSpec, paths: RunPaths,
     for position, (label, spec) in enumerate(specs):
         idx = paths.next_index(label, "inference")
         out_path = paths.label_dir(label) / f"inference-{idx}.json"
-        request_body = _build_request(model.name, spec)
+        request_body = _build_request(model.name, spec, logprobs_mode=logprobs_mode)
         plans.append((position, label, spec, out_path, request_body))
 
     written: list[Path] = []

@@ -17,7 +17,7 @@
 | `--gpu-memory-utilization` | `0.95` | vLLM `--gpu-memory-utilization` |
 | `--tensor-parallel-size` / `--tp` | `1` | vLLM TP |
 | `--pipeline-parallel-size` / `--pp` | `1` | vLLM PP |
-| `--logprobs-mode` | `processed_logprobs` | one of `processed_logprobs`, `raw_logprobs`, `processed_logits`, `raw_logits` |
+| `--logprobs-mode` | `processed_logprobs` | one of `processed_logprobs`, `raw_logprobs`, `processed_logits`, `raw_logits`. For `infer` and `validate` the value is **also pinned per-request body** (in addition to vLLM server startup) — bypasses `detect_logprobs_mode()` heuristic that can mis-switch the validator on JSON/tool prompts (see `docs/gotchas.md`) |
 | `--enforce-eager` | OFF | opt-in: disables `torch.compile` + CUDA graphs |
 | `--gpu-name` (required) | — | Short GPU tag, e.g. `2xb200-fp8`, `4xa100-awq`. Used in run-id + validator-file prefix |
 | `--date` | today (`YYYY-MM-DD`) | override the date segment of `artifacts/<date>/<run-name>/` |
@@ -61,6 +61,7 @@ Every request to vLLM gets:
 - `max_tokens` + `max_completion_tokens` (mirrored)
 - `seed`: **random per request** (overrides spec's seed) — bypasses vLLM-side cache
 - `tools` / `response_format` passed through verbatim if present in spec
+- `logprobs_mode`: value of `--logprobs-mode` pinned per-request (so the response shape doesn't drift if the server default changes between deploys)
 
 ### `validate`
 
@@ -70,6 +71,8 @@ Every request to vLLM gets:
 | `--inferences` | none (= all label dirs in run) | comma-separated subset of labels to validate |
 | `--pass-value` | `0.9` | minimum `customSimilarity` for PASS. Chain default is `0.99` (`params.go:193`); ours is looser to absorb cross-GPU drift |
 | `--repeat` | `1` | run the sweep N times in a row — each round writes a fresh `validated-by-<gpu>-M.json` (M auto-increments) |
+
+Each validator request body also pins `logprobs_mode = <--logprobs-mode>`. This overrides vLLM's `detect_logprobs_mode()` auto-detection (vllm/validation.py:51), which can silently mis-classify raw inputs as processed and collapse similarity on JSON / tool / structured-output prompts (see `docs/gotchas.md`).
 
 ### `plot`
 

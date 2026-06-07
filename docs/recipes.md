@@ -24,7 +24,7 @@ Compose with per-GPU tuning below by appending to `--model-extra-args`.
 | 1×B300 (275 GB)      | `1` | `0.92` | (kaitakuai parity: add MoE env vars + `STOCK_TORCH_COMPILE`) |
 | 4×H100 (80 GB each)  | `4` | `0.92` | `--disable-custom-all-reduce` |
 
-`raw_logprobs` is required everywhere when comparing inferences across GPUs — every node (executor + validator) must use the same `--logprobs-mode`.
+`raw_logprobs` is required everywhere when comparing inferences across GPUs — every node (executor + validator) must use the same `--logprobs-mode`. The flag is **also pinned into every per-request body** by `e2e infer` and `e2e validate`, so vLLM's `detect_logprobs_mode()` heuristic can't silently switch the validator into the wrong mode on JSON/tool prompts (see `docs/gotchas.md`). Always pass `--logprobs-mode raw_logprobs` explicitly — the CLI default (`processed_logprobs`) is preserved for backwards compatibility but is rarely what you want.
 
 ## MiniMax M2.7 AWQ-4bit
 

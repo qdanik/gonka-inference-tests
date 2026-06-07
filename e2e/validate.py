@@ -129,7 +129,8 @@ def _compare_logits(
 # Request orchestration
 # -------------------------------------------------------------------------
 
-def _build_validator_request(model_name: str, executor_record: dict) -> dict:
+def _build_validator_request(model_name: str, executor_record: dict,
+                             logprobs_mode: str | None = None) -> dict:
     """Compose the validator's chat-completion body.
 
     Mirrors the Go chain validator (inference_validation.go:881-915):
@@ -142,6 +143,12 @@ def _build_validator_request(model_name: str, executor_record: dict) -> dict:
     schema sees executor's guided-decoded tokens as wildly improbable and
     similarity collapses (rf_* / tool_* prompts saturate as false-positive
     fraud).
+    `logprobs_mode`, when provided, bypasses vLLM's `detect_logprobs_mode()`
+    heuristic (vllm/validation.py:51) which mis-classifies raw inputs whose
+    top-K naturally contains many low-ID tokens (id<4 hits ~10-15% on JSON
+    `{`/`"` boundaries) as processed → validator switches to processed mode
+    → schema mask gets applied to top_logprobs → -9999 sentinels everywhere
+    the forced token isn't in the schema-allowed set → similarity collapses.
     """
     executor_request = executor_record["request"]
     executor_response = executor_record["response"]
@@ -171,6 +178,8 @@ def _build_validator_request(model_name: str, executor_record: dict) -> dict:
     request_body.setdefault("top_logprobs", 5)
     request_body["max_tokens"] = headroom
     request_body["max_completion_tokens"] = headroom
+    if logprobs_mode is not None:
+        request_body["logprobs_mode"] = logprobs_mode
     # Random seed ≠ executor's seed → bypass any cache layer (enforced_tokens
     # makes seed irrelevant for the forward pass anyway).
     request_body["seed"] = random.randint(1, 2**31 - 1)
@@ -198,13 +207,15 @@ def _logprobs_from_response(response: dict) -> list[dict]:
 
 def _validate_one(target_b: ServerTarget, validator_model: ModelSpec,
                   executor_record: dict, *,
+                  logprobs_mode: str | None = None,
                   timeout_s: int = 300) -> tuple[dict, dict, float, str | None]:
     """Run one validator request + score via CompareLogits.
 
     Returns (request, response, similarity, error). On HTTP error similarity
     is 0.0 and `error` is non-None.
     """
-    request_body = _build_validator_request(validator_model.name, executor_record)
+    request_body = _build_validator_request(validator_model.name, executor_record,
+                                            logprobs_mode=logprobs_mode)
     response_body: dict = {}
     err: str | None = None
 
@@ -231,6 +242,7 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
                          *, pass_value: float = PASS_VALUE_DEFAULT,
                          repeat: int = 1,
                          concurrency: int = 16,
+                         logprobs_mode: str | None = None,
                          ) -> int:
     """Validate every `inference-N.json` from each selected label directory.
 
@@ -295,6 +307,7 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
         t0 = time.time()
         req, resp, similarity, err = _validate_one(
             target_b, validator_model, executor_record,
+            logprobs_mode=logprobs_mode,
         )
         payload = {"similarity": similarity, "request": req, "response": resp}
         if err is not None:

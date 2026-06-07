@@ -257,9 +257,13 @@ def main() -> int:
         if args.cmd == "infer":
             paths = _paths_from_args(args); paths.ensure()
             names = _parse_csv(args.inferences)
+            # Pin per-request logprobs_mode so the response shape is
+            # independent of the vLLM server default (and matches what
+            # validate will pass on replay).
             written = run_inference_sweep(
                 t, model, paths, DEFAULT_INFERENCES, names,
                 concurrency=args.concurrency,
+                logprobs_mode=args.logprobs_mode,
             )
             errors = sum(
                 1 for p in written
@@ -274,11 +278,16 @@ def main() -> int:
             executor_paths = RunPaths(base_dir=DEFAULT_ARTIFACTS,
                                       date_str=exec_date, run_name=exec_name)
             names = _parse_csv(args.inferences)
+            # `--logprobs-mode` also goes into each per-request body so
+            # vLLM's `detect_logprobs_mode()` heuristic (validation.py:51)
+            # can't silently switch the validator into the wrong mode —
+            # see _build_validator_request docstring.
             failed = run_cross_validation(
                 t, model, executor_paths, names,
                 pass_value=args.pass_value,
                 repeat=args.repeat,
                 concurrency=args.concurrency,
+                logprobs_mode=args.logprobs_mode,
             )
             return 0 if failed == 0 else 1
 
