@@ -1,6 +1,6 @@
 ---
 name: cross-gpu-validation
-description: Use when the user wants to run end-to-end PoC/inference/cross-validation tests for a Gonka vLLM model across rented GPU boxes (B200/H200/A100/B300/H100). Covers the four-step `e2e` CLI workflow, every gotcha we've hit, per-GPU tuning, and how to interpret Gonka `customSimilarity` results.
+description: Use when the user wants to run end-to-end PoC/inference/cross-validation tests for a Gonka vLLM model across rented GPU boxes (B200/H200/A100/B300/H100). Covers the four-step `e2e` CLI workflow, required flags, operational gotchas, per-GPU tuning, and how to interpret Gonka `customSimilarity` results.
 ---
 
 # Cross-GPU validation workflow for Gonka vLLM models
@@ -114,29 +114,30 @@ Do NOT suffix `-awq` when running AWQ models — the model basename already says
 | 2×H200 (140GB each) | `2` | `0.95` (tighter — 0.92 too little for 131k KV) | `--disable-custom-all-reduce` |
 | 4×A100 (80GB each)  | `4` | `0.92` | `--moe-backend marlin --disable-custom-all-reduce` |
 
-(B300 / H100 multi-GPU configs for MiniMax M2.7 not verified in this session — treat as TODO before relying on them.)
+B300 and H100 multi-GPU configs for MiniMax M2.7 are not in the verified set.
 
-## Gotchas (in priority order)
+## Required flags
 
-1. **MiniMax-M2.7 mandatory flags** — append `--enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think` to `--model-extra-args` on every deploy. Without them, any request with `tools` returns HTTP 400 from `/v1/chat/completions`, and `<think>` blocks are not extracted into the reasoning field.
-2. **`--disable-custom-all-reduce` is MANDATORY for TP>1** on Blackwell/Hopper/Ampere with this image. Without it you get `Cuda error /workspace/csrc/custom_all_reduce.cuh:455 'invalid argument'` and engine init fails. We've reproduced this on B200, H200, A100 TP≥2 — every multi-GPU run needs it.
-3. **`--moe-backend marlin` is MANDATORY for A100** (Ampere has no native FP8 hardware). Default backend either crashes or silently degrades. Marlin emulates FP8 MoE via INT4/8 kernels.
-3. **H200 needs `gpu-memory-utilization 0.95`** for 131k context — 140GB HBM each is tight after CUDA graph profiling (v0.20.0 default behavior eats more than expected). On B200's 183GB, 0.92 is fine.
-4. **MiniMax M2.7 requires `--logprobs-mode raw_logprobs`** — chain validator on this model expects raw, not processed. The SAME flag must be used on every node (executor + every validator), otherwise `CompareLogits` will return token-mismatch verdict. The flag is **also pinned per-request body** by `e2e infer` and `e2e validate` (so vLLM's `detect_logprobs_mode()` heuristic — vllm/validation.py:51 — cannot silently switch the validator into processed on JSON/`tool_*`/`rf_*` prompts where low-id tokens cluster). Symptom of mis-pinning: validator's `validated-by-*.json` shows ~10-15% positions with `logprob: -9999.0` even though executor has finite values there → similarity collapses to ~0.6 → false-positive fraud on the schema-constrained prompts. Always pass `--logprobs-mode raw_logprobs` explicitly to every subcommand.
-5. **`return_token_ids: true`** is required in the inference request so `enforced_tokens` works — already set in `inference.py`. If you bypass the framework and curl manually, remember this.
-6. **`--model-extra-args="..."`** needs `=` syntax when the value starts with `--` — argparse otherwise treats the value as a new flag. Wrong: `--model-extra-args --disable-custom-all-reduce`. Right: `--model-extra-args="--disable-custom-all-reduce"`.
-7. **A100 boxes with Ubuntu 24 / pip 23+** have PEP 668 enforced — `--break-system-packages` does NOT help. The framework uses `~/.e2e-venv` automatically; if you ever bypass it, install via venv too.
-8. **Container died fast** — `deploy` polls `docker inspect .State.Running` between health checks and bails out within ~10s instead of waiting 15 min. If you see `[wait_for_health] container 'vllm-e2e' exited`, immediately `ssh ... 'docker logs vllm-e2e 2>&1 | grep -E "Error|CUDA|Failed" | head -30'` for the real cause.
-9. **Reverse SSH tunnel = laptop must stay open** — `poc` runs the callback HTTPServer locally. Closing your laptop mid-collection kills the tunnel and stops nonce accumulation. For long runs (10k+ nonces), use a bastion in `screen`/`tmux`.
-10. **`deploy` returning HEALTH_OK does NOT mean vLLM is ready for `/v1/chat/completions`** — `/health` flips to 200 once the API server boots, but CUDA graph capture continues for 1-3 min after. Launching `infer` immediately after `deploy` can hit `ChunkedEncodingError`/`ConnectionError` on the FIRST few prompts. Wait ~60s OR `ssh ... 'docker logs vllm-e2e 2>&1 | tail -3'` until you see no `Capturing CUDA graphs` progress line.
-11. **`--kv-cache-dtype fp8` + PoC on A100 marlin requires `processed_logprobs`, NOT `raw_logprobs`** — `raw_logprobs` triggers a sampler dispatch that hits marlin's `unsupported 'a' scalar_type` GEMM error. Native FP8 (B200/H200) tolerates either mode; A100 marlin only `processed_logprobs`. Trade-off: chain validator on MiniMax M2.7 expects `raw_logprobs`, so A100 with `processed_logprobs` cannot serve as executor for cross-validated production traffic — PoC-only role.
-12. **`--kv-cache-dtype fp8` requires overlay of patched `poc_model_runner.py`** that has the `kv.dtype != model.dtype` check (skips uint8/FP8 KV cache reuse in `execute_poc_forward`). Without it: `per_token_group_quant_8bit_packed not implemented for 'Byte'` in PoC forward. The kaitakuai image v0.20.0-pocv2 ships WITHOUT this patch — you must `docker cp` our `poc_model_runner.py` overlay then `docker restart` after deploy.
+1. **MiniMax-M2.7**: append `--enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think` to `--model-extra-args` on every deploy. Without these, any request with `tools` returns HTTP 400 from `/v1/chat/completions` and `<think>` blocks are not extracted into the reasoning field.
+2. **`--disable-custom-all-reduce`** is required for TP > 1 on Blackwell / Hopper / Ampere with this image. Without it engine init fails with `Cuda error /workspace/csrc/custom_all_reduce.cuh:455 'invalid argument'`.
+3. **`--moe-backend marlin`** is required for A100 (Ampere has no native FP8 hardware). Default backend crashes or silently degrades. Marlin emulates FP8 MoE via INT4/8 kernels.
+4. **H200** needs `--gpu-memory-utilization 0.95` for 131k context — 140 GB HBM is tight after vLLM v0.20+ CUDA graph profiling. B200's 183 GB tolerates 0.92.
+5. **`--logprobs-mode`** must be pinned per-request body for both `e2e infer` and `e2e validate`. vLLM's `detect_logprobs_mode()` heuristic ([`vllm/validation.py:51`](https://github.com/gonka-ai/vllm/blob/mb/feat/port-pocv2-vllm-0.20/vllm/validation.py#L51)) silently mis-classifies raw inputs as processed when JSON / tool / structured-output prompts cluster low-ID tokens in top-K — the per-request pin overrides this. The framework already does this; if calling vLLM directly, include `"logprobs_mode": "raw_logprobs"` in the request body. Symptom of mis-pin: validator's `validated-by-*.json` shows 10–15% of positions with `logprob: -9999.0` even when executor has finite values → similarity collapses to ~0.6 on `rf_*`/`tool_*` prompts.
+6. **`return_token_ids: true`** is required in inference requests for `enforced_tokens` replay. Set in [`e2e/inference.py`](../../../e2e/inference.py); include manually if bypassing the framework.
+7. **`--model-extra-args="..."`** needs `=` syntax when the value starts with `--`. Right: `--model-extra-args="--disable-custom-all-reduce"`. Wrong: `--model-extra-args --disable-custom-all-reduce` (argparse treats the value as a new flag).
 
-## Cross-arch validation findings (chain `customSimilarity`)
+## Operational gotchas
 
-### 2026-06-07 — full 3-arch × 2-mode matrix on rf_*/tool_*/all 228 prompts (post `logprobs_mode` fix)
+1. **A100 + Ubuntu 24 / pip 23+** has PEP 668 enforced; `--break-system-packages` does not help. The framework uses `~/.e2e-venv` automatically.
+2. **Container died fast** — `deploy` polls `docker inspect .State.Running` between health checks and bails out within ~10 s. On `[wait_for_health] container 'vllm-e2e' exited`, run `ssh ... 'docker logs vllm-e2e 2>&1 | grep -E "Error|CUDA|Failed" | head -30'` for the cause.
+3. **Reverse SSH tunnel** for `poc` runs the callback HTTPServer locally. Closing the laptop mid-collection kills the tunnel and stops nonce accumulation. For 10k+ nonce runs, use a bastion in `screen` / `tmux`.
+4. **HEALTH_OK ≠ ready for `/v1/chat/completions`**. `/health` returns 200 once the API server boots; CUDA graph capture continues for another 1–3 min. Launching `infer` immediately after `deploy` can hit `ChunkedEncodingError` on the first few prompts. Wait ~60 s, or watch `docker logs vllm-e2e 2>&1 | tail -3` until no more `Capturing CUDA graphs` lines appear.
+5. **`--kv-cache-dtype fp8` + PoC on A100 marlin** requires `processed_logprobs`. `raw_logprobs` triggers a sampler dispatch that hits marlin's `unsupported 'a' scalar_type` GEMM error. Native FP8 (B200/H200) tolerates either mode. Chain validator on MiniMax M2.7 expects `raw_logprobs`, so A100 + kvfp8 + processed is PoC-only and cannot serve as cross-validated executor.
+6. **`--kv-cache-dtype fp8` requires the patched `poc_model_runner.py`** ([`vllm/poc/poc_model_runner.py`](https://github.com/gonka-ai/vllm/blob/mb/feat/port-pocv2-vllm-0.20/vllm/poc/poc_model_runner.py)) which adds the `kv.dtype != model.dtype` check that skips uint8/FP8 KV cache reuse in `execute_poc_forward`. The `kaitakuai/vllm:0.20.0-pocv2` image ships without this patch; `docker cp` the overlay and `docker restart` after deploy.
 
-228 prompts × 20 cross-val directions = 4560 validations, 4559 PASS at threshold 0.9. F1 sorted descending:
+## Cross-arch validation matrix (chain `customSimilarity`, MiniMax M2.7, 228 prompts × 20 directions)
+
+228 prompts × 12 cross-validation directions × 2 modes. 4559/4560 PASS at threshold 0.9 (the single FAIL is an edge-case AWQ-4bit A100 → B200 processed prompt).
 
 | executor → validator | mode | F1 | TP | FP |
 |---|---|---:|---:|---:|
@@ -146,26 +147,15 @@ Do NOT suffix `-awq` when running AWQ models — the model basename already says
 | B200 → H200 | raw | 0.802 | 84.6% | 26.8% |
 | B200 → A100 | raw | 0.786 | 81.6% | 25.9% |
 | A100 → B200 | raw | 0.785 | 89.0% | 37.7% |
-| (any) | processed | 0.71-0.75 | 73-81% | 29-38% |
+| (any) | processed | 0.71–0.75 | 73–81% | 29–38% |
 
-**Practical implications**:
-- `raw` consistently beats `processed` by ~0.07 F1 — always use `--logprobs-mode raw_logprobs`.
-- **A100 ↔ H200 raw** is the production pair (both directions F1 ≈ 0.83, FP ≈ 19%).
-- **B200 as validator** has the highest FP (26–38%) — Blackwell's tight native-FP8 distributions compress honest and fraud means. Prefer A100 or H200 as validators.
-- No A → B vs B → A asymmetry on clean data. The 2026-06-05 asymmetry finding below applied to a different (now superseded) bug.
+Properties:
+- `raw` separates better than `processed` by ~0.07 F1; production should use `--logprobs-mode raw_logprobs`.
+- A100 ↔ H200 raw is the production pair: both directions F1 ≈ 0.84, FP ≈ 19%.
+- B200 as validator carries the highest FP (26–38%). Blackwell's tight native-FP8 distributions compress honest and fraud means; prefer A100 or H200 as validators.
+- No A → B / B → A asymmetry on `--kv-cache-dtype fp8 + per-request --logprobs-mode` configurations.
 
-### Older asymmetry findings (2026-06-05, BF16 KV, no `logprobs_mode` pin)
-
-Same `customSimilarity` test on 5 inferences × 3 repeats per pair, WITHOUT `--kv-cache-dtype fp8` and WITHOUT per-request `logprobs_mode` pin:
-
-```
-executor \ validator   2xb200    2xh200    4xa100
-2xb200                    —      0.97 ✅   0.97 ✅
-2xh200                  0.97 ✅    —       0.97 ✅
-4xa100                  0.84 ❌  0.82 ❌     —
-```
-
-That asymmetry (A100 OK as validator, fails as executor) was due to marlin's flat top-5 distributions interacting poorly with `nextOriginalLogprob = 2*min1 - min2` extrapolation. Adding `--kv-cache-dtype fp8` AND the per-request `logprobs_mode` pin eliminates the asymmetry — see [`docs/findings.md`](../../docs/findings.md) for the full evolution.
+Full matrix and plots: [`docs/findings.md`](../../../docs/findings.md), [`artifacts/2026-06-07/README.md`](../../../artifacts/2026-06-07/README.md), [`artifacts/2026-06-07/_plots/`](../../../artifacts/2026-06-07/_plots/). Experimental Rank-Biased Overlap metric (F1 +0.07, FP −10 pp on raw): [`artifacts/2026-06-07/experiments.md`](../../../artifacts/2026-06-07/experiments.md) and [`e2e/plot_inference_experiments.py`](../../../e2e/plot_inference_experiments.py).
 
 ## Empirical throughput (MiniMax M2.7, 1000 nonces, bs=32)
 
@@ -177,12 +167,12 @@ That asymmetry (A100 OK as validator, fails as executor) was due to marlin's fla
 
 ## How to interpret results
 
-- `similarity = 1.0` → bit-perfect (only seen when validating against self)
-- `similarity ≥ 0.97` → **same-arch class** (Hopper↔Blackwell), production-safe
-- `similarity 0.95-0.97` → minor cross-config drift (different FlashInfer autotune, different MoE-backend variants within native FP8)
-- `similarity 0.80-0.85` → **cross-arch emulation drift** (A100 marlin vs native FP8) — chain rejects on `PassValue=0.99`
-- `similarity = 0.0` → token-sequence mismatch OR length mismatch (Go's `CompareLogits` returns 0 in both cases)
-- `--repeat N > 1` on the SAME (executor-record, validator) pair gives BIT-IDENTICAL similarity numbers across rounds — `enforced_tokens` fully determines forward pass; random seed doesn't matter when tokens are forced. Use `--repeat` only when validating MULTIPLE inference records, not for variance studies.
+- `similarity = 1.0` → bit-perfect, only against self.
+- `similarity ≥ 0.97` → same-arch or simple-content cross-arch (math, code, short tool calls).
+- `similarity 0.93–0.97` → typical honest cross-arch range for diverse prompts.
+- `similarity 0.83–0.93` → creative / long-form / Arabic prompts (open-ended generation amplifies cross-arch FP8 numerical drift in top-K rankings; chosen tokens still match 100%). Within honest band.
+- `similarity = 0.0` → token-sequence or length mismatch (chain `CompareLogits` returns 0 in both cases).
+- `--repeat N > 1` on the same `(executor-record, validator)` pair returns bit-identical similarity each round — `enforced_tokens` fully determines the forward pass; random seed is inert when tokens are forced. Use `--repeat` to amortize batch overhead across multiple inference records, not for variance studies.
 
 ## Background task pattern
 
@@ -202,4 +192,4 @@ If an `infer` run finishes with some prompts having `error` (e.g. ConnectionErro
 
 ## Tests
 
-The framework has 100+ pytest tests in `tests/` covering the math port, argparse wiring, mock-vLLM integration, etc. Before changing `validate.py` or `inference.py`, run `python3 -m pytest` from the framework root. The math tests are the contract with the Go validator — if they fail, the customSimilarity port is broken.
+The framework has 100+ pytest tests in `tests/` covering the math port, argparse wiring, and mock-vLLM integration. Run `python3 -m pytest` from the repo root before changing `validate.py` or `inference.py`. The math tests are the contract with the Go validator — failures mean the `customSimilarity` port has drifted from chain semantics.
