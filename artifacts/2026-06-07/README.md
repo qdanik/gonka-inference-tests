@@ -6,32 +6,62 @@ Each executor's 228 prompts were replayed through a validator running FP8 on the
 
 ## Inference validation plots
 
-![raw direction 1](_plots/02_inference_raw_B200_vs_A100.png)
+### Validator: H200 (independent third architecture)
+
+![raw B200 → H200](_plots/09_inference_raw_B200_vs_H200.png)
 
 **Figure 1.** Inference validation, `raw_logprobs` mode.
-**Honest:** MiniMax-M2.7 FP8 on **2×B200**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **2×B200**.  **Validator:** MiniMax-M2.7 FP8 on **4×A100**.
+**Honest:** MiniMax-M2.7 FP8 on **2×B200**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **2×B200**.  **Validator:** MiniMax-M2.7 FP8 on **2×H200**.
 Point shapes encode language (○ en, △ es, ☐ ar, ◆ zh).
 
 ---
 
-![processed direction 1](_plots/04_inference_processed_B200_vs_A100.png)
+![raw A100 → H200](_plots/10_inference_raw_A100_vs_H200.png)
 
-**Figure 2.** Inference validation, `processed_logprobs` mode.
-**Honest:** MiniMax-M2.7 FP8 on **2×B200**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **2×B200**.  **Validator:** MiniMax-M2.7 FP8 on **4×A100**.
-
----
-
-![raw direction 2](_plots/06_inference_raw_A100_vs_B200.png)
-
-**Figure 3.** Inference validation, `raw_logprobs` mode.
-**Honest:** MiniMax-M2.7 FP8 on **4×A100**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **4×A100**.  **Validator:** MiniMax-M2.7 FP8 on **2×B200**.
+**Figure 2.** Inference validation, `raw_logprobs` mode.
+**Honest:** MiniMax-M2.7 FP8 on **4×A100**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **4×A100**.  **Validator:** MiniMax-M2.7 FP8 on **2×H200**.
 
 ---
 
-![processed direction 2](_plots/08_inference_processed_A100_vs_B200.png)
+![processed B200 → H200](_plots/11_inference_processed_B200_vs_H200.png)
+
+**Figure 3.** Inference validation, `processed_logprobs` mode.
+**Honest:** MiniMax-M2.7 FP8 on **2×B200**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **2×B200**.  **Validator:** MiniMax-M2.7 FP8 on **2×H200**.
+
+---
+
+![processed A100 → H200](_plots/12_inference_processed_A100_vs_H200.png)
 
 **Figure 4.** Inference validation, `processed_logprobs` mode.
-**Honest:** MiniMax-M2.7 FP8 on **4×A100**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **4×A100**.  **Validator:** MiniMax-M2.7 FP8 on **2×B200**.
+**Honest:** MiniMax-M2.7 FP8 on **4×A100**.  **Fraud:** MiniMax-M2.7-AWQ-4bit on **4×A100**.  **Validator:** MiniMax-M2.7 FP8 on **2×H200**.
+
+---
+
+### Cross-validation: B200 ↔ A100 (executor / validator swap)
+
+For reference: the same 4 directions but with B200 and A100 validating each other (no H200 involvement).
+
+![raw B200 → A100](_plots/02_inference_raw_B200_vs_A100.png)
+
+**Figure 5.** B200 executor (honest FP8 / fraud AWQ-4bit), A100 validator, `raw` mode.
+
+---
+
+![raw A100 → B200](_plots/06_inference_raw_A100_vs_B200.png)
+
+**Figure 6.** A100 executor, B200 validator, `raw` mode.
+
+---
+
+![processed B200 → A100](_plots/04_inference_processed_B200_vs_A100.png)
+
+**Figure 7.** B200 executor, A100 validator, `processed` mode.
+
+---
+
+![processed A100 → B200](_plots/08_inference_processed_A100_vs_B200.png)
+
+**Figure 8.** A100 executor, B200 validator, `processed` mode.
 
 ---
 
@@ -45,19 +75,31 @@ Point shapes encode language (○ en, △ es, ☐ ar, ◆ zh).
 
 ## Summary of metrics
 
+### Validator = H200 (independent third architecture)
+
 | direction | mode | honest mean | fraud mean | Δ | F1 | TP | FP |
 |---|---|---:|---:|---:|---:|---:|---:|
-| B200 (exec) → A100 (val) | raw | 0.053 | 0.070 | **0.017** | 0.756 | 90.4% | 48.7% |
+| B200 (exec) → H200 (val) | raw | 0.052 | 0.071 | 0.018 | 0.763 | 95.2% | 54.4% |
+| **A100 (exec) → H200 (val)** | **raw** | 0.049 | 0.073 | **0.023** | **0.809** | 91.2% | 34.2% |
+| B200 (exec) → H200 (val) | processed | 0.037 | 0.047 | 0.009 | 0.701 | 86.0% | 59.2% |
+| A100 (exec) → H200 (val) | processed | 0.028 | 0.047 | **0.019** | 0.773 | 85.1% | 35.1% |
+
+### Validator = other of {A100, B200} (cross-validation)
+
+| direction | mode | honest mean | fraud mean | Δ | F1 | TP | FP |
+|---|---|---:|---:|---:|---:|---:|---:|
+| B200 (exec) → A100 (val) | raw | 0.053 | 0.070 | 0.017 | 0.756 | 90.4% | 48.7% |
 | B200 (exec) → A100 (val) | processed | 0.038 | 0.046 | 0.009 | 0.698 | 86.8% | 61.8% |
-| A100 (exec) → B200 (val) | raw | 0.053 | 0.074 | **0.020** | 0.763 | 87.7% | 42.1% |
+| A100 (exec) → B200 (val) | raw | 0.053 | 0.074 | 0.020 | 0.763 | 87.7% | 42.1% |
 | A100 (exec) → B200 (val) | processed | 0.031 | 0.048 | 0.017 | 0.740 | 85.5% | 45.6% |
 
 ## Key takeaways
 
-1. **Honest mean < Fraud mean across all 4 directions** — the metric separates FP8 from AWQ-4bit in both `raw` and `processed` modes, both directions.
-2. **`raw` gives larger separation than `processed`** (Δ≈0.017–0.020 vs 0.009–0.017). Processed mode applies temperature / mask transformations that compress logit ranges, blurring the FP8↔AWQ gap especially on `response_format` / `tools` prompts.
-3. **Direction-symmetric**: B200→A100 and A100→B200 produce near-identical means and F1 — the metric is not biased to either box being honest or fraud.
-4. **A100 marlin caveat**: PoC nonce vectors on A100 are not bit-identical between `raw` and `processed` (L2 ≈ 0.12–0.19 per nonce). On B200 they are bit-identical. Marlin's CUDA-graph capture depends on logprobs-mode → always compare runs in the SAME logprobs-mode.
+1. **Honest mean < Fraud mean in all 8 directions** — the metric separates FP8 from AWQ-4bit in both `raw` and `processed` modes, all three validator architectures (A100, B200, H200).
+2. **`raw` gives larger separation than `processed`** (Δ≈0.017–0.023 vs 0.009–0.019). Processed mode applies temperature / mask transformations that compress logit ranges, blurring the FP8↔AWQ gap especially on `response_format` / `tools` prompts.
+3. **H200 as validator gives the cleanest plots**: A100→H200 raw has F1=0.809 (best across all 8 directions). H200 sits between A100 marlin and B200 native FP8 numerically, giving balanced sensitivity.
+4. **Direction-symmetric**: B200→A100, A100→B200, *→H200 produce comparable means and F1 — the metric is not biased to either box being honest or fraud.
+5. **A100 marlin caveat**: PoC nonce vectors on A100 are not bit-identical between `raw` and `processed` (L2 ≈ 0.12–0.19 per nonce). On B200 they are bit-identical. Marlin's CUDA-graph capture depends on logprobs-mode → always compare runs in the SAME logprobs-mode.
 
 ## Test setup
 
@@ -78,6 +120,7 @@ All deploys use `--kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-pars
 | GPU | TP | gpu-mem-util | extra args | image |
 |---|---:|---:|---|---|
 | 2×B200 | 2 | 0.92 | `--disable-custom-all-reduce --kv-cache-dtype fp8` | `kaitakuai/vllm:0.20.0-pocv2` |
+| 2×H200 | 2 | 0.95 (tighter — 140 GB) | `--disable-custom-all-reduce --kv-cache-dtype fp8` | `kaitakuai/vllm:0.20.0-pocv2` |
 | 4×A100 | 4 | 0.92 | `--moe-backend marlin --disable-custom-all-reduce --kv-cache-dtype fp8` | `gonka-ai/mlnode:3.0.14-cu129` |
 
 ### PoC throughput (1024 nonces per dataset, batch_size=32)
