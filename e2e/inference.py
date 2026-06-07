@@ -186,7 +186,7 @@ def run_inference_sweep(target: ServerTarget, model: ModelSpec, paths: RunPaths,
             "response": response,
             "elapsed_s": elapsed,
             "error": err,
-        }, ensure_ascii=False, indent=2))
+        }, ensure_ascii=False, separators=(",", ":")))
         return position, label, out_path, response, elapsed, err
 
     with ThreadPoolExecutor(max_workers=max(1, concurrency)) as pool:

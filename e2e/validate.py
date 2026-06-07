@@ -289,7 +289,8 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
         payload = {"similarity": similarity, "request": req, "response": resp}
         if err is not None:
             payload["error"] = err
-        out_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2))
+        out_file.write_text(json.dumps(payload, ensure_ascii=False,
+                                       separators=(",", ":")))
         return (round_idx, label_dir.name, exec_file.name, out_file.name,
                 similarity, err, time.time() - t0)
 

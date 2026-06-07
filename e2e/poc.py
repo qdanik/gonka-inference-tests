@@ -225,7 +225,7 @@ def run_poc_collect(target: ServerTarget, model: ModelSpec, paths: RunPaths,
         # Excludes SSH tunnel setup; includes all RPC, generation, and poll overhead.
         "generation_time_sec": elapsed,
         "nonces_per_min": rate,
-    }, indent=2))
+    }, separators=(",", ":")))
     print(f"[poc] saved {len(artifacts)} nonces ({rate:.0f}/min, {elapsed:.1f}s) "
           f"→ {out_path}", flush=True)
 
