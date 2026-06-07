@@ -17,19 +17,21 @@ Trigger phrases: "запусти e2e тесты", "validate на другом GP
 
 ## Framework location
 
-`/Users/daniilyankouski/develop/gonka-test/validation/vllm/` — a self-contained Python CLI (`python3 -m e2e ...`). All commands run **locally** on the laptop; everything except `docker run` reaches the remote box via SSH tunnel. **No `--vllm-url` argument** — the framework opens `ssh -L <ephemeral>:127.0.0.1:8000` automatically.
+A self-contained Python CLI (`python3 -m e2e ...`) at the repo root. All commands run **locally** on the laptop; everything except `docker run` reaches the remote box via SSH tunnel. **No `--vllm-url` argument** — the framework opens `ssh -L <ephemeral>:127.0.0.1:8000` automatically.
 
 ```
-vllm/
-├── e2e/                 # CLI package — never edit user data here
-├── inferences/          # 37 inference specs, one JSON per label
-├── artifacts/<YYYY-MM-DD>/<model>-<gpu>/   # results
-└── README.md            # full param tables + per-GPU recipes
+<repo>/
+├── e2e/                 # CLI package
+├── inferences/          # 228 inference specs (25 base × 4 langs + 5 tools × 4 + 5 response_format × 4 + multi_turn × 4)
+├── tests/               # 143 pytest cases (math + CLI + plot)
+├── docs/                # commands.md, artifacts.md, recipes.md, gotchas.md, findings.md, inferences.md
+├── artifacts/<YYYY-MM-DD>/<run-name>/   # results
+└── README.md
 ```
 
-Always `cd /Users/daniilyankouski/develop/gonka-test/validation/vllm` before running `python3 -m e2e ...`.
+Run `python3 -m e2e ...` from the repo root (so the `e2e` package resolves). Either `cd <repo>` first, or invoke via `PYTHONPATH=<repo> python3 -m e2e ...`.
 
-## Four-step workflow
+## Workflow
 
 ```bash
 # 0. (one-time per box) snapshot_download the model — uses a venv on remote (~/.e2e-venv)
@@ -47,28 +49,62 @@ python3 -m e2e deploy \
   --tensor-parallel-size <N> \
   --gpu-memory-utilization <see table> \
   --max-num-seqs 128 --max-model-len 131072 \
-  --model-extra-args="<see table>"
+  --model-extra-args="<see table> --enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think"
 
-# 2. sweep prompts (default: all 37; use --inferences for a subset)
+# 2. sweep prompts (default: all 228; uses 16-way client concurrency)
 python3 -m e2e infer \
   --ssh-host shadeform@<ip> --gpu-name <tag> \
   --model-name MiniMaxAI/MiniMax-M2.7 \
   --logprobs-mode raw_logprobs
 
-# 3. cross-validate from another box (validator = remote, executor = local saved run)
+# 3. PoC nonce collection (reverse SSH tunnel auto-opens for callback)
+python3 -m e2e poc \
+  --ssh-host shadeform@<ip> --gpu-name <tag> \
+  --model-name MiniMaxAI/MiniMax-M2.7 \
+  --logprobs-mode raw_logprobs --nonces 1024 --batch-size 32
+
+# 4. cross-validate executor's saved inferences via a DIFFERENT GPU's vLLM (no
+#    box-restart needed; the executor data lives locally and the validator
+#    just replays via enforced_tokens). Writes validated-by-<vgpu>-N.json into
+#    each executor label dir.
 python3 -m e2e validate \
   --ssh-host shadeform@<validator-ip> --gpu-name <validator-tag> \
   --model-name MiniMaxAI/MiniMax-M2.7 \
   --logprobs-mode raw_logprobs \
-  --executor-run-id 2026-06-05/MiniMax-M2.7-<executor-tag> \
-  --repeat 3
+  --executor-run-id YYYY-MM-DD/MiniMax-M2.7-<executor-tag>
 
-# 4. PoC nonce collection (reverse SSH tunnel auto-opens for callback)
-python3 -m e2e poc \
-  --ssh-host shadeform@<ip> --gpu-name <tag> \
-  --model-name MiniMaxAI/MiniMax-M2.7 \
-  --logprobs-mode raw_logprobs --nonces 1000 --batch-size 32
+# 5. honest/fraud fraud-detection plots — inference plot reads validated-by-*.json
+#    (run step 4 against the validator for BOTH honest and fraud executor runs
+#    BEFORE plotting).
+python3 -m e2e plot --type=inference \
+  --honest    artifacts/YYYY-MM-DD/MiniMax-M2.7-<honest-tag> \
+  --fraud     artifacts/YYYY-MM-DD/MiniMax-M2.7-AWQ-4bit-<fraud-tag> \
+  --validator artifacts/YYYY-MM-DD/MiniMax-M2.7-<validator-tag>
+python3 -m e2e plot --type=poc \
+  --honest    artifacts/YYYY-MM-DD/MiniMax-M2.7-<honest-tag> \
+  --fraud     artifacts/YYYY-MM-DD/MiniMax-M2.7-AWQ-4bit-<fraud-tag> \
+  --validator artifacts/YYYY-MM-DD/MiniMax-M2.7-<validator-tag>
 ```
+
+## Sequence rule per box
+
+`infer` and `poc` MUST run sequentially on the same box — PoC monopolizes the engine via continuous-generation mode and would conflict with `/v1/chat/completions` requests. `validate` is just a chat-completions sweep, so it serializes with `infer` the same way. Between different boxes, parallel runs are fine.
+
+## Plot semantics
+
+- `--type=poc` — per-nonce L2 of executor's vector vs validator's vector. Honest pairs (same model on different GPUs) sit around L2≈0.33; fraud pairs (FP8↔AWQ) sit around L2≈0.74. F1 typically 0.86–0.87.
+- `--type=inference` — reads `validated-by-<vgpu>-1.json` files (chain-style validation via `enforced_tokens`); distance = `1 − customSimilarity`. **Requires running `validate` first** for both honest and fraud against the same validator. Raw mode gives ~2× larger separation than processed mode. F1 typically 0.70–0.76.
+
+## `--gpu-name` convention
+
+Encode server config in the tag so different runs land in distinct artifact dirs:
+
+| pattern | meaning |
+|---|---|
+| `<gpu>-fp8` | `--kv-cache-dtype fp8 --logprobs-mode raw_logprobs` (our default) |
+| `<gpu>-fp8-processed` | `--kv-cache-dtype fp8 --logprobs-mode processed_logprobs` |
+
+Do NOT suffix `-awq` when running AWQ models — the model basename already says `MiniMax-M2.7-AWQ-4bit` (vs FP8's `MiniMax-M2.7`).
 
 ## Per-GPU tuning matrix (MiniMax M2.7, vLLM 0.20.0-pocv2)
 
@@ -82,8 +118,9 @@ python3 -m e2e poc \
 
 ## Gotchas (in priority order)
 
-1. **`--disable-custom-all-reduce` is MANDATORY for TP>1** on Blackwell/Hopper/Ampere with this image. Without it you get `Cuda error /workspace/csrc/custom_all_reduce.cuh:455 'invalid argument'` and engine init fails. We've reproduced this on B200, H200, A100 TP≥2 — every multi-GPU run needs it.
-2. **`--moe-backend marlin` is MANDATORY for A100** (Ampere has no native FP8 hardware). Default backend either crashes or silently degrades. Marlin emulates FP8 MoE via INT4/8 kernels.
+1. **MiniMax-M2.7 mandatory flags** — append `--enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think` to `--model-extra-args` on every deploy. Without them, any request with `tools` returns HTTP 400 from `/v1/chat/completions`, and `<think>` blocks are not extracted into the reasoning field.
+2. **`--disable-custom-all-reduce` is MANDATORY for TP>1** on Blackwell/Hopper/Ampere with this image. Without it you get `Cuda error /workspace/csrc/custom_all_reduce.cuh:455 'invalid argument'` and engine init fails. We've reproduced this on B200, H200, A100 TP≥2 — every multi-GPU run needs it.
+3. **`--moe-backend marlin` is MANDATORY for A100** (Ampere has no native FP8 hardware). Default backend either crashes or silently degrades. Marlin emulates FP8 MoE via INT4/8 kernels.
 3. **H200 needs `gpu-memory-utilization 0.95`** for 131k context — 140GB HBM each is tight after CUDA graph profiling (v0.20.0 default behavior eats more than expected). On B200's 183GB, 0.92 is fine.
 4. **MiniMax M2.7 requires `--logprobs-mode raw_logprobs`** — chain validator on this model expects raw, not processed. The SAME flag must be used on every node (executor + every validator), otherwise `CompareLogits` will return token-mismatch verdict.
 5. **`return_token_ids: true`** is required in the inference request so `enforced_tokens` works — already set in `inference.py`. If you bypass the framework and curl manually, remember this.

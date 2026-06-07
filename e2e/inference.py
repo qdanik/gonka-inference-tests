@@ -152,32 +152,54 @@ def _stream_and_reconstruct(target: ServerTarget, request_body: dict,
 def run_inference_sweep(target: ServerTarget, model: ModelSpec, paths: RunPaths,
                         inferences_dir: Path,
                         names: list[str] | None = None,
+                        *, concurrency: int = 16,
                         ) -> list[Path]:
-    """Run each selected inference spec, write `inference-N.json` per label."""
+    """Run each selected inference spec, write `inference-N.json` per label.
+
+    `concurrency` controls how many requests are in flight simultaneously
+    against the vLLM server (which itself can serve up to `--max-num-seqs`
+    sequences in parallel). 16 (=4 per GPU on a TP=4 box) saturates the
+    engine without stressing the SSH tunnel.
+    """
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     specs = load_inference_specs(inferences_dir, names)
 
-    written: list[Path] = []
-    for i, (label, spec) in enumerate(specs):
+    # Pre-reserve output paths sequentially so per-label index assignment is
+    # deterministic regardless of completion order.
+    plans: list[tuple[int, str, dict, Path, dict]] = []
+    for position, (label, spec) in enumerate(specs):
         idx = paths.next_index(label, "inference")
         out_path = paths.label_dir(label) / f"inference-{idx}.json"
-        print(f"[infer] [{i+1:2d}/{len(specs)}] {label} → {out_path.name}",
-              flush=True)
-
         request_body = _build_request(model.name, spec)
-        response, elapsed, err = _stream_and_reconstruct(target, request_body)
+        plans.append((position, label, spec, out_path, request_body))
 
+    written: list[Path] = []
+    total = len(plans)
+    completed = 0
+
+    def _run_one(plan):
+        position, label, spec, out_path, request_body = plan
+        response, elapsed, err = _stream_and_reconstruct(target, request_body)
         out_path.write_text(json.dumps({
             "request": request_body,
             "response": response,
             "elapsed_s": elapsed,
             "error": err,
         }, ensure_ascii=False, indent=2))
-        written.append(out_path)
+        return position, label, out_path, response, elapsed, err
 
-        enf_len = len(response["choices"][0]["logprobs"]["content"])
-        ec = response.get("usage", {}).get("completion_tokens", "-")
-        status = "ok" if not err else f"FAIL: {err}"
-        print(f"           enf={enf_len:4} ec={ec} {elapsed:6.2f}s  {status}",
-              flush=True)
+    with ThreadPoolExecutor(max_workers=max(1, concurrency)) as pool:
+        futures = [pool.submit(_run_one, p) for p in plans]
+        for fut in as_completed(futures):
+            position, label, out_path, response, elapsed, err = fut.result()
+            completed += 1
+            enf_len = len(response["choices"][0]["logprobs"]["content"])
+            ec = response.get("usage", {}).get("completion_tokens", "-")
+            status = "ok" if not err else f"FAIL: {err}"
+            print(f"[infer] [{completed:3d}/{total}] {label} → {out_path.name}\n"
+                  f"           enf={enf_len:4} ec={ec} {elapsed:6.2f}s  {status}",
+                  flush=True)
+            written.append(out_path)
 
     return written

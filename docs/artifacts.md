@@ -13,7 +13,7 @@ artifacts/
     │   │   ├── validated-by-2xh200-fp8-2.json
     │   │   └── validated-by-4xa100-fp8-1.json
     │   └── ...
-    ├── MiniMax-M2.7-AWQ-4bit-2xb200-awq/        # different model basename → cleanly separate
+    ├── MiniMax-M2.7-AWQ-4bit-2xb200-fp8/        # AWQ weights, kv-cache fp8, raw logprobs
     │   ├── _poc/nonces_1000.json
     │   └── ...
     └── _plots/                                  # output from `plot` subcommand
@@ -27,6 +27,19 @@ artifacts/
 |---|---|---|
 | `<YYYY-MM-DD>` | `--date` or today | `2026-06-07` |
 | `<run-name>` | basename of `--model-name` + `-` + `--gpu-name` (override with `--run-name`) | `MiniMax-M2.7-2xb200-fp8` |
+
+## `--gpu-name` convention
+
+Encode server config in the tag so different runs land in distinct directories:
+
+| pattern | meaning |
+|---|---|
+| `<gpu>-fp8` | `--kv-cache-dtype fp8 --logprobs-mode raw_logprobs` (our default for MiniMax) |
+| `<gpu>-fp8-processed` | `--kv-cache-dtype fp8 --logprobs-mode processed_logprobs` |
+| `<gpu>` | default kv cache, raw logprobs |
+| `<gpu>-processed` | default kv cache, processed logprobs |
+
+Do NOT add `-awq` to the gpu-name when running AWQ models — the model basename (`MiniMax-M2.7-AWQ-4bit`) already differentiates it from FP8 (`MiniMax-M2.7`). Duplicate suffix (`MiniMax-M2.7-AWQ-4bit-2xb200-awq`) is noise.
 | `<inference-label>` | filename stem of the spec in `inferences/` | `math_arithmetic_en` |
 | `<N>` | auto-increment within the label directory (no overwrite, no manual counter) | `inference-1.json`, `inference-2.json` |
 | `<validator-gpu>` | validator's `--gpu-name`. Validator artifacts land **next to the executor's** in the executor's run directory | `validated-by-4xa100-fp8-1.json` |

@@ -145,11 +145,12 @@ def _post_init(vllm_url: str, model_name: str, callback_url: str,
     return r.json()
 
 
-def _post_stop(vllm_url: str) -> None:
+def _post_stop(vllm_url: str) -> dict | None:
     try:
-        requests.post(f"{vllm_url}/api/v1/pow/stop", json={}, timeout=10)
+        r = requests.post(f"{vllm_url}/api/v1/pow/stop", json={}, timeout=10)
+        return r.json() if r.ok else None
     except requests.RequestException:
-        pass
+        return None
 
 
 def run_poc_collect(target: ServerTarget, model: ModelSpec, paths: RunPaths,
@@ -175,11 +176,14 @@ def run_poc_collect(target: ServerTarget, model: ModelSpec, paths: RunPaths,
 
     try:
         with reverse_tunnel(target, remote_port, local_port):
+            # t0 captures the honest PoC start: the moment we ask the engine
+            # to begin generation. SSH tunnel setup before this point is
+            # framework overhead, not PoC work.
+            t0 = time.time()
             init = _post_init(target.vllm_url, model.name,
                               callback_url_for_vllm, batch_size)
             print(f"[poc] init response: {init}", flush=True)
 
-            t0 = time.time()
             last_print = 0.0
             while True:
                 n = sink.total()
@@ -200,13 +204,14 @@ def run_poc_collect(target: ServerTarget, model: ModelSpec, paths: RunPaths,
                 time.sleep(1)
 
             _post_stop(target.vllm_url)
-            time.sleep(1)
+            # t_end captures the honest PoC end: /pow/stop has returned.
+            t_end = time.time()
     finally:
         httpd.shutdown()
         httpd.server_close()
 
-    artifacts = sink.drain()[:nonces]
-    elapsed = time.time() - t0
+    artifacts = sink.drain()
+    elapsed = t_end - t0
     rate = (len(artifacts) / elapsed * 60) if elapsed > 0 else 0.0
     out_path.write_text(json.dumps({
         "block_hash": BLOCK_HASH,
@@ -216,11 +221,13 @@ def run_poc_collect(target: ServerTarget, model: ModelSpec, paths: RunPaths,
         "model": model.name,
         "total_nonces": len(artifacts),
         "artifacts": artifacts,
+        # End-to-end PoC time: from /pow/init request sent to /pow/stop response.
+        # Excludes SSH tunnel setup; includes all RPC, generation, and poll overhead.
         "generation_time_sec": elapsed,
         "nonces_per_min": rate,
     }, indent=2))
-    print(f"[poc] saved {len(artifacts)} nonces ({rate:.0f}/min) → {out_path}",
-          flush=True)
+    print(f"[poc] saved {len(artifacts)} nonces ({rate:.0f}/min, {elapsed:.1f}s) "
+          f"→ {out_path}", flush=True)
 
     return PoCRunResult(
         total_nonces=len(artifacts),

@@ -4,6 +4,7 @@ In order of how often you'll hit them.
 
 | issue | fix | which GPUs / images |
 |---|---|---|
+| `HTTPError: 400 Client Error: Bad Request for url: /v1/chat/completions` on any request with `tools` (or empty assistant message when prompt has `<think>`) | Add `--enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think` to `--model-extra-args` | **MANDATORY for MiniMax-M2.7** on every image/GPU |
 | `CUDA error custom_all_reduce.cuh:455 'invalid argument'` on engine init | `--model-extra-args="--disable-custom-all-reduce"` | **mandatory for TP>1** on every arch we've tested (B200/H200/A100/H100) |
 | `Failed: Cuda error invalid argument` in `_apply_block_scale` on A100 | `--moe-backend marlin` — A100 (Ampere sm_80) has no native FP8 hardware | A100 only |
 | `unsupported 'a' scalar_type` in marlin during PoC forward | use `--logprobs-mode processed_logprobs` (raw mode breaks marlin's sampler path with kvfp8) | A100 + marlin + kvfp8 + PoC (validator path works either way) |

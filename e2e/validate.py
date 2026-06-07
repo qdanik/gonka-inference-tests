@@ -220,6 +220,7 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
                          names: list[str] | None = None,
                          *, pass_value: float = PASS_VALUE_DEFAULT,
                          repeat: int = 1,
+                         concurrency: int = 16,
                          ) -> int:
     """Validate every `inference-N.json` from each selected label directory.
 
@@ -249,12 +250,16 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
             )
         label_dirs = [d for d in label_dirs if d.name in wanted]
 
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
     gpu_tag = target_b.gpu_name
     total = 0
     failed = 0
+
+    # Build the plan: one entry per (round, label, executor_file). Skip
+    # records that errored in infer — `enforced_tokens` would be garbage.
+    plan: list[tuple[int, Path, Path, dict, Path]] = []
     for round_idx in range(1, repeat + 1):
-        if repeat > 1:
-            print(f"[validate] === round {round_idx}/{repeat} ===", flush=True)
         for label_dir in label_dirs:
             label = label_dir.name
             executor_files = sorted(label_dir.glob("inference-*.json"))
@@ -262,47 +267,49 @@ def run_cross_validation(target_b: ServerTarget, validator_model: ModelSpec,
                 print(f"[validate] {label}: no inference-*.json — skipped",
                       flush=True)
                 continue
-
             for exec_file in executor_files:
                 executor_record = json.loads(exec_file.read_text())
-                # Skip records that failed during infer — `enforced_tokens`
-                # is empty/garbage, the validator would just produce noise.
-                # The file stays on disk for debugging; we just don't
-                # cross-validate it.
                 if executor_record.get("error") is not None:
                     err = executor_record["error"]
                     print(f"[validate] {label}/{exec_file.name} SKIPPED "
                           f"(infer error: {str(err)[:80]})", flush=True)
                     continue
-
-                t0 = time.time()
-                idx = executor_run_paths.next_index(label, f"validated-by-{gpu_tag}")
+                idx = executor_run_paths.next_index(
+                    label, f"validated-by-{gpu_tag}")
                 out_file = label_dir / f"validated-by-{gpu_tag}-{idx}.json"
-                print(f"[validate] {label}/{exec_file.name} → {out_file.name}",
-                      flush=True)
+                plan.append((round_idx, label_dir, exec_file,
+                             executor_record, out_file))
 
-                req, resp, similarity, err = _validate_one(
-                    target_b, validator_model, executor_record,
-                )
-                total += 1
-                passed = err is None and similarity >= pass_value
-                if not passed:
-                    failed += 1
+    def _work(entry):
+        round_idx, label_dir, exec_file, executor_record, out_file = entry
+        t0 = time.time()
+        req, resp, similarity, err = _validate_one(
+            target_b, validator_model, executor_record,
+        )
+        payload = {"similarity": similarity, "request": req, "response": resp}
+        if err is not None:
+            payload["error"] = err
+        out_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2))
+        return (round_idx, label_dir.name, exec_file.name, out_file.name,
+                similarity, err, time.time() - t0)
 
-                # `similarity` first — it's the headline number every
-                # consumer looks for; `request`/`response` are the bulky
-                # supporting evidence that follows.
-                payload = {"similarity": similarity,
-                           "request": req, "response": resp}
-                if err is not None:
-                    payload["error"] = err
-                out_file.write_text(json.dumps(payload, ensure_ascii=False,
-                                              indent=2))
-
-                flag = "PASS" if passed else "FAIL"
-                elapsed = time.time() - t0
-                print(f"           {flag} similarity={similarity:.4f} "
-                      f"(≥{pass_value}) {elapsed:.1f}s", flush=True)
+    completed = 0
+    with ThreadPoolExecutor(max_workers=max(1, concurrency)) as pool:
+        futures = [pool.submit(_work, e) for e in plan]
+        for fut in as_completed(futures):
+            (round_idx, label, exec_name, out_name,
+             similarity, err, elapsed) = fut.result()
+            total += 1
+            completed += 1
+            passed = err is None and similarity >= pass_value
+            if not passed:
+                failed += 1
+            flag = "PASS" if passed else "FAIL"
+            round_tag = f"[r{round_idx}] " if repeat > 1 else ""
+            print(f"[validate] [{completed:3d}/{len(plan)}] {round_tag}"
+                  f"{label}/{exec_name} → {out_name}\n"
+                  f"           {flag} similarity={similarity:.4f} "
+                  f"(≥{pass_value}) {elapsed:.1f}s", flush=True)
 
     print(f"[validate] {total - failed}/{total} passed "
           f"(similarity ≥ {pass_value})", flush=True)

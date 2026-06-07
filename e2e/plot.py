@@ -78,14 +78,68 @@ def load_nonces(path: Path) -> dict[int, np.ndarray]:
             for a in d["artifacts"]}
 
 
-def _pretty_name(p: Path) -> str:
-    """Pull a readable label from any of the path forms we accept."""
+_MODEL_ABBREVIATIONS = [
+    # Order matters: longest/most-specific patterns first.
+    ("MiniMax-M2.7-AWQ-4bit", "MM-M2.7-4bit"),
+    ("MiniMax-M2.7",          "MM-M2.7"),
+]
+
+_GPU_ABBREVIATIONS = [
+    ("-2xb200", "-B200"),
+    ("-2xh200", "-H200"),
+    ("-4xa100", "-A100"),
+    ("-4xh100", "-H100"),
+    ("-1xb300", "-B300"),
+]
+
+
+def _abbreviate(name: str) -> str:
+    """Compress run-dir name into short title-friendly form.
+
+    `MiniMax-M2.7-2xb200-fp8`                    → `MM-M2.7-B200`
+    `MiniMax-M2.7-2xb200-fp8-processed`          → `MM-M2.7-B200`
+    `MiniMax-M2.7-AWQ-4bit-4xa100-fp8-processed` → `MM-M2.7-4bit-A100`
+    """
+    for full, short in _MODEL_ABBREVIATIONS:
+        if full in name:
+            name = name.replace(full, short)
+            break
+    # Drop logprobs-mode suffix (raw is implicit; processed surfaces via mode label).
+    if name.endswith("-processed"):
+        name = name[: -len("-processed")]
+    # Drop kvfp8 marker.
+    name = name.replace("-fp8", "")
+    # Normalize GPU tag (-2xb200 → -B200).
+    for full, short in _GPU_ABBREVIATIONS:
+        if full in name:
+            name = name.replace(full, short)
+            break
+    return name
+
+
+def _raw_dir_name(p: Path) -> str:
+    """Extract the full (un-abbreviated) run-dir name from any accepted form."""
     if p.is_file():
-        # nonces_*.json → run-name = parent of _poc/
         return p.parent.parent.name
     if p.name == "_poc":
         return p.parent.name
     return p.name
+
+
+def _pretty_name(p: Path) -> str:
+    """Pull a readable, abbreviated label from any of the path forms we accept."""
+    return _abbreviate(_raw_dir_name(p))
+
+
+def _detect_mode(*paths: Path) -> str:
+    """Returns 'raw' / 'processed' / 'mixed' based on the run-dir suffixes."""
+    modes = set()
+    for p in paths:
+        name = _raw_dir_name(p)
+        modes.add("processed" if name.endswith("-processed") else "raw")
+    if len(modes) == 1:
+        return modes.pop()
+    return "mixed"
 
 
 # -------------------------------------------------------------------------
@@ -193,7 +247,11 @@ def _best_f1(honest: np.ndarray, fraud: np.ndarray) -> _Threshold:
         denom = 2 * tp + fp + fn
         f1s.append((2 * tp / denom) if denom else 0.0)
     max_f1 = max(f1s)
-    plateau = [t for t, f in zip(candidates, f1s) if abs(f - max_f1) < 1e-12]
+    # Plateau tolerance: thresholds whose F1 is within 0.001 of the max are
+    # considered equivalent. With strict 1e-12 the plateau usually collapses
+    # to a single point because our F1 values rarely repeat exactly; a small
+    # tolerance produces a true "safe band" of thresholds (lower → upper).
+    plateau = [t for t, f in zip(candidates, f1s) if abs(f - max_f1) < 0.001]
     lower, upper = plateau[0], plateau[-1]
     tp_at = int((fraud > lower).sum())
     fp_at = int((honest > lower).sum())
@@ -220,15 +278,16 @@ def _render_scatter(*, x_honest, y_honest, x_fraud, y_fraud,
                label=f"Fraud ({len(y_fraud)} samples, "
                      f"mean={np.mean(y_fraud):.4f})")
 
+    # Always render both Lower and Upper — even when they coincide, showing
+    # both in the legend tells the reader the F1 plateau is a single point.
     bound_handles: list[tuple] = []
     if not math.isnan(threshold.lower):
         ln_lo = ax.axhline(threshold.lower, color=_LOWER_BOUND_COLOR,
                            linestyle="--", linewidth=1.5)
         bound_handles.append((ln_lo, f"Lower: {threshold.lower:.6f}"))
-        if threshold.upper != threshold.lower:
-            ln_up = ax.axhline(threshold.upper, color=_UPPER_BOUND_COLOR,
-                               linestyle="--", linewidth=1.5)
-            bound_handles.append((ln_up, f"Upper: {threshold.upper:.6f}"))
+        ln_up = ax.axhline(threshold.upper, color=_UPPER_BOUND_COLOR,
+                           linestyle="--", linewidth=1.5)
+        bound_handles.append((ln_up, f"Upper: {threshold.upper:.6f}"))
 
     ax.set_xlabel(x_label)
     ax.set_ylabel("Distance")
@@ -279,6 +338,7 @@ def plot_poc(honest_path: Path, fraud_path: Path, validator_path: Path,
     honest_name = _pretty_name(honest_path)
     fraud_name = _pretty_name(fraud_path)
     validator_name = _pretty_name(validator_path)
+    mode = _detect_mode(honest_path, fraud_path, validator_path)
     _print_summary("poc", honest_name, fraud_name, validator_name,
                    honest_d, fraud_d, threshold)
 
@@ -286,42 +346,106 @@ def plot_poc(honest_path: Path, fraud_path: Path, validator_path: Path,
         x_honest=common_h, y_honest=honest_d,
         x_fraud=common_f, y_fraud=fraud_d,
         threshold=threshold, x_label="Nonce #",
-        title_main=(f"PoC Nonce Validation — Honest {honest_name} vs "
-                    f"Fraud {fraud_name} → Validator {validator_name}"),
+        title_main=(f"PoC Nonce Validation [{mode}] — "
+                    f"Honest {honest_name} vs Fraud {fraud_name} → "
+                    f"Validator {validator_name}"),
         title_sub=f"{title_suffix} | {threshold.title_blurb()}",
         out_path=output,
     )
 
 
+def _validator_gpu_tag(validator_path: Path) -> str:
+    """Extract `<gpu>` portion from a validator run dir, e.g.
+    `MiniMax-M2.7-4xa100-fp8` → `4xa100-fp8`. Used to find
+    `validated-by-<gpu>-N.json` files inside executor run dirs."""
+    name = _raw_dir_name(validator_path)
+    for full, _ in _MODEL_ABBREVIATIONS:
+        if name.startswith(full + "-"):
+            return name[len(full) + 1:]
+    raise ValueError(
+        f"could not extract validator GPU tag from {name!r}; "
+        f"expected prefix like 'MiniMax-M2.7-' or 'MiniMax-M2.7-AWQ-4bit-'."
+    )
+
+
+def _load_validated_distances(
+    executor_run_dir: Path, validator_gpu_tag: str,
+) -> dict[str, dict]:
+    """For each label in `executor_run_dir`, load `validated-by-<vgpu>-1.json`
+    and compute distance = 1 - similarity. Length is taken from the executor's
+    saved inference response (the X axis is response length in characters).
+
+    Returns `{label: {"distance": float, "length": int, "lang": str|None}}`."""
+    if not executor_run_dir.is_dir():
+        raise FileNotFoundError(f"executor run dir not found: {executor_run_dir}")
+    out: dict[str, dict] = {}
+    for label_dir in sorted(executor_run_dir.iterdir()):
+        if not label_dir.is_dir() or label_dir.name.startswith("_"):
+            continue
+        vfile = label_dir / f"validated-by-{validator_gpu_tag}-1.json"
+        if not vfile.exists():
+            continue
+        try:
+            vd = json.loads(vfile.read_text())
+        except json.JSONDecodeError:
+            continue
+        sim = vd.get("similarity")
+        if sim is None or vd.get("error"):
+            continue
+        # X-axis = `usage.total_tokens` (prompt + completion). Falls back to
+        # logprobs.content length if `usage` is missing (= completion only —
+        # still always non-zero for valid inferences).
+        length = 0
+        for inf in sorted(label_dir.glob("inference-*.json")):
+            try:
+                rec = json.loads(inf.read_text())
+            except json.JSONDecodeError:
+                continue
+            if rec.get("error"):
+                continue
+            response = rec.get("response") or {}
+            usage = response.get("usage") or {}
+            length = int(usage.get("total_tokens") or 0)
+            if length == 0:
+                lp_content = ((response.get("choices") or [{}])[0]
+                              .get("logprobs", {}).get("content") or [])
+                length = len(lp_content)
+            break
+        out[label_dir.name] = {
+            "distance": max(0.0, 1.0 - float(sim)),
+            "length": length,
+            "lang": _detect_lang(label_dir.name),
+        }
+    return out
+
+
 def plot_inference(honest_path: Path, fraud_path: Path,
                    validator_path: Path,
                    output: Path, title_suffix: str) -> Path:
-    """Inference distance plot — uses inference-*.json only (no validated-by)."""
-    honest = _load_inferences(honest_path)
-    fraud = _load_inferences(fraud_path)
-    validator = _load_inferences(validator_path)
+    """Inference distance plot — uses `validated-by-<vgpu>-1.json` (chain-style
+    enforced_tokens validation), NOT raw inference-*.json. Distance = 1 -
+    customSimilarity from the validator's replay of the executor's tokens."""
+    vgpu = _validator_gpu_tag(validator_path)
+    honest = _load_validated_distances(honest_path, vgpu)
+    fraud = _load_validated_distances(fraud_path, vgpu)
 
-    common = sorted(set(honest) & set(fraud) & set(validator))
+    common = sorted(set(honest) & set(fraud))
     if not common:
         raise ValueError(
-            f"no labels common to all three runs (honest={honest_path}, "
-            f"fraud={fraud_path}, validator={validator_path})"
+            f"no labels have validated-by-{vgpu}-1.json in BOTH "
+            f"honest={honest_path} and fraud={fraud_path}. "
+            f"Run `e2e validate --executor-run-id <honest|fraud>` against "
+            f"the validator first."
         )
 
-    honest_pts: list[tuple[float, float, str | None]] = []   # (x_len, distance, lang)
-    fraud_pts: list[tuple[float, float, str | None]] = []
-    for label in common:
-        h, f, v = honest[label], fraud[label], validator[label]
-        try:
-            h_dist = _custom_distance(h.logprobs, v.logprobs)
-            f_dist = _custom_distance(f.logprobs, v.logprobs)
-        except Exception:
-            continue
-        honest_pts.append((h.length_chars, h_dist, h.lang))
-        fraud_pts.append((f.length_chars, f_dist, f.lang))
-
-    if not honest_pts:
-        raise ValueError("no comparable label triples produced distances")
+    honest_pts: list[tuple[float, float, str | None]] = [
+        (honest[l]["length"], honest[l]["distance"], honest[l]["lang"])
+        for l in common
+    ]
+    fraud_pts: list[tuple[float, float, str | None]] = [
+        (fraud[l]["length"], fraud[l]["distance"], fraud[l]["lang"])
+        for l in common
+    ]
 
     honest_d = np.array([d for _, d, _ in honest_pts])
     fraud_d = np.array([d for _, d, _ in fraud_pts])
@@ -330,13 +454,15 @@ def plot_inference(honest_path: Path, fraud_path: Path,
     honest_name = _pretty_name(honest_path)
     fraud_name = _pretty_name(fraud_path)
     validator_name = _pretty_name(validator_path)
+    mode = _detect_mode(honest_path, fraud_path, validator_path)
     _print_summary("inference", honest_name, fraud_name, validator_name,
                    honest_d, fraud_d, threshold)
 
     return _render_inference_scatter(
         honest_pts, fraud_pts, threshold,
-        title_main=(f"Inference Validation — Honest {honest_name} vs "
-                    f"Fraud {fraud_name} → Validator {validator_name}"),
+        title_main=(f"Inference Validation [{mode}] — "
+                    f"Honest {honest_name} vs Fraud {fraud_name} → "
+                    f"Validator {validator_name}"),
         title_sub=f"{title_suffix} | {threshold.title_blurb()}",
         out_path=output,
     )
@@ -375,17 +501,18 @@ def _render_inference_scatter(honest_pts, fraud_pts, threshold,
     _grouped_scatter(fraud_pts, _FRAUD_COLOR, "Fraud",
                      float(np.mean([d for _, d, _ in fraud_pts])))
 
+    # Always render both Lower and Upper — even when they coincide, showing
+    # both in the legend tells the reader the F1 plateau is a single point.
     bound_handles: list[tuple] = []
     if not math.isnan(threshold.lower):
         ln_lo = ax.axhline(threshold.lower, color=_LOWER_BOUND_COLOR,
                            linestyle="--", linewidth=1.5)
         bound_handles.append((ln_lo, f"Lower: {threshold.lower:.6f}"))
-        if threshold.upper != threshold.lower:
-            ln_up = ax.axhline(threshold.upper, color=_UPPER_BOUND_COLOR,
-                               linestyle="--", linewidth=1.5)
-            bound_handles.append((ln_up, f"Upper: {threshold.upper:.6f}"))
+        ln_up = ax.axhline(threshold.upper, color=_UPPER_BOUND_COLOR,
+                           linestyle="--", linewidth=1.5)
+        bound_handles.append((ln_up, f"Upper: {threshold.upper:.6f}"))
 
-    ax.set_xlabel("Length (characters)")
+    ax.set_xlabel("Total tokens (prompt + completion)")
     ax.set_ylabel("Distance")
     ax.set_title(f"{title_main}\n{title_sub}")
     ax.grid(alpha=0.3)
@@ -446,7 +573,7 @@ def default_output_path(kind: str, honest: Path, fraud: Path,
 def run_plot(kind: str, honest: Path, fraud: Path,
              validator: Path | None = None,
              output: Path | None = None,
-             title_suffix: str = "MiniMax-M2.7 FP8 vs AWQ-4bit") -> Path:
+             title_suffix: str = "MM-M2.7 FP8 vs MM-M2.7-4bit") -> Path:
     """Top-level dispatch used by both CLI and tests."""
     if validator is None:
         raise ValueError(f"--type={kind} requires --validator")

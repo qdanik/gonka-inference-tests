@@ -30,9 +30,9 @@ python3 -m e2e deploy \
   --host-model-path /home/shadeform/hf/MiniMax-M2.7 \
   --logprobs-mode raw_logprobs --tensor-parallel-size 2 \
   --gpu-memory-utilization 0.92 --max-num-seqs 128 --max-model-len 131072 \
-  --model-extra-args="--disable-custom-all-reduce --kv-cache-dtype fp8"
+  --model-extra-args="--disable-custom-all-reduce --kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think"
 
-# 3. run inference sweep (140 prompts × 4 languages by default)
+# 3. run inference sweep (228 prompts × 4 languages by default)
 python3 -m e2e infer \
   --ssh-host shadeform@<ip> --gpu-name 2xb200 \
   --model-name MiniMaxAI/MiniMax-M2.7 --logprobs-mode raw_logprobs

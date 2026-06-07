@@ -2,9 +2,21 @@
 
 Configurations that have been tested end-to-end (deploy → infer → PoC → validate).
 
+## MiniMax M2.7 mandatory flags
+
+Every MiniMax M2.7 deploy MUST include these `vllm serve` flags (they configure the tool-call parser and the `<think>` reasoning parser; without them, any request with `tools` returns HTTP 400 from `/v1/chat/completions`):
+
+```
+--enable-auto-tool-choice
+--tool-call-parser minimax_m2
+--reasoning-parser minimax_m2_append_think
+```
+
+Compose with per-GPU tuning below by appending to `--model-extra-args`.
+
 ## MiniMax M2.7 FP8 — per-arch tuning
 
-| GPU | `--tensor-parallel-size` | `--gpu-memory-utilization` | `--model-extra-args` |
+| GPU | `--tensor-parallel-size` | `--gpu-memory-utilization` | `--model-extra-args` (append the 3 mandatory flags) |
 |---|---:|---:|---|
 | 2×B200 (183 GB each) | `2` | `0.92` | `--disable-custom-all-reduce --kv-cache-dtype fp8` |
 | 2×H200 (140 GB each) | `2` | `0.95` (tighter — 0.92 leaves too little for 131k KV) | `--disable-custom-all-reduce --kv-cache-dtype fp8` |
@@ -45,7 +57,7 @@ python3 -m e2e download-model \
   --host-model-path /home/shadeform/hf/MiniMax-M2.7
 
 python3 -m e2e download-model \
-  --ssh-host shadeform@<b200-ip> --gpu-name 2xb200-awq \
+  --ssh-host shadeform@<b200-ip> --gpu-name 2xb200-fp8 \
   --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit \
   --host-model-path /home/shadeform/hf/MiniMax-M2.7-AWQ
 
@@ -58,7 +70,7 @@ python3 -m e2e deploy \
   --host-model-path /home/shadeform/hf/MiniMax-M2.7 \
   --logprobs-mode raw_logprobs --tensor-parallel-size 2 \
   --gpu-memory-utilization 0.92 --max-num-seqs 128 --max-model-len 131072 \
-  --model-extra-args="--disable-custom-all-reduce --kv-cache-dtype fp8"
+  --model-extra-args="--disable-custom-all-reduce --kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think"
 
 python3 -m e2e infer \
   --ssh-host shadeform@<b200-ip> \
@@ -75,18 +87,18 @@ python3 -m e2e deploy \
   --ssh-host shadeform@<b200-ip> \
   --docker-image ghcr.io/gonka-ai/mlnode:3.0.14-cu129 \
   --entrypoint-prefix "vllm serve" \
-  --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit --gpu-name 2xb200-awq \
+  --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit --gpu-name 2xb200-fp8 \
   --host-model-path /home/shadeform/hf/MiniMax-M2.7-AWQ \
   --logprobs-mode raw_logprobs --tensor-parallel-size 2 \
   --gpu-memory-utilization 0.92 --max-num-seqs 128 --max-model-len 131072 \
-  --model-extra-args="--disable-custom-all-reduce --kv-cache-dtype fp8"
+  --model-extra-args="--disable-custom-all-reduce --kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-parser minimax_m2 --reasoning-parser minimax_m2_append_think"
 
 python3 -m e2e infer  --ssh-host shadeform@<b200-ip> \
-  --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit --gpu-name 2xb200-awq \
+  --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit --gpu-name 2xb200-fp8 \
   --logprobs-mode raw_logprobs
 
 python3 -m e2e poc   --ssh-host shadeform@<b200-ip> \
-  --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit --gpu-name 2xb200-awq \
+  --model-name demon-zombie/MiniMax-M2.7-AWQ-4bit --gpu-name 2xb200-fp8 \
   --logprobs-mode raw_logprobs --nonces 1000 --batch-size 32
 ```
 
@@ -103,11 +115,11 @@ Then:
 ```bash
 python3 -m e2e plot --type=poc \
   --honest    artifacts/2026-06-07/MiniMax-M2.7-2xh200-fp8 \
-  --fraud     artifacts/2026-06-07/MiniMax-M2.7-AWQ-4bit-2xh200-awq \
+  --fraud     artifacts/2026-06-07/MiniMax-M2.7-AWQ-4bit-2xh200-fp8 \
   --validator artifacts/2026-06-07/MiniMax-M2.7-2xb200-fp8
 
 python3 -m e2e plot --type=inference \
   --honest    artifacts/2026-06-07/MiniMax-M2.7-2xh200-fp8 \
-  --fraud     artifacts/2026-06-07/MiniMax-M2.7-AWQ-4bit-2xh200-awq \
+  --fraud     artifacts/2026-06-07/MiniMax-M2.7-AWQ-4bit-2xh200-fp8 \
   --validator artifacts/2026-06-07/MiniMax-M2.7-2xb200-fp8
 ```

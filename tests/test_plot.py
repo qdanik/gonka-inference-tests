@@ -10,7 +10,8 @@ import numpy as np
 import pytest
 
 from e2e.plot import (
-    _best_f1, _decode_vec, _detect_lang, _load_inferences, _pretty_name,
+    _abbreviate, _best_f1, _decode_vec, _detect_lang, _detect_mode,
+    _load_inferences, _pretty_name,
     load_nonces, plot_inference, plot_poc, resolve_nonces_file, run_plot,
 )
 
@@ -132,45 +133,75 @@ def _write_inf(run: Path, label: str, response_text: str,
     }))
 
 
+def _write_validated(executor_run: Path, label: str, vgpu_tag: str,
+                     similarity: float):
+    """Drop a `validated-by-<vgpu>-1.json` into the executor's label dir."""
+    label_dir = executor_run / label; label_dir.mkdir(parents=True, exist_ok=True)
+    (label_dir / f"validated-by-{vgpu_tag}-1.json").write_text(json.dumps({
+        "similarity": similarity,
+        "request": {},
+        "response": {},
+    }))
+
+
 class TestPlotInference:
     def test_writes_png_three_runs(self, tmp_path: Path):
-        honest = tmp_path / "honest"
-        fraud = tmp_path / "fraud"
-        validator = tmp_path / "val"
-        top = [("a", -0.1), ("b", -1.0), ("c", -2.0), ("d", -3.0), ("e", -4.0)]
-        honest_lp = [_make_logprob_entry("a", -0.1, top) for _ in range(10)]
-        fraud_lp = [_make_logprob_entry("x", -0.1,
-                                        [("x", -0.1), ("y", -1.0),
-                                         ("z", -2.0), ("w", -3.0), ("v", -4.0)])
-                    for _ in range(10)]
-        for r, lp in [(honest, honest_lp), (validator, honest_lp),
-                      (fraud, fraud_lp)]:
+        # Validator dir name must carry a known model prefix so _validator_gpu_tag
+        # can extract the tag used in validated-by-<tag>-1.json filenames.
+        honest = tmp_path / "MiniMax-M2.7-RUN1"
+        fraud = tmp_path / "MiniMax-M2.7-AWQ-4bit-RUN1"
+        validator = tmp_path / "MiniMax-M2.7-VGPU"
+        VGPU = "VGPU"
+        top = [("a", -0.1), ("b", -1.0)]
+        lp = [_make_logprob_entry("a", -0.1, top) for _ in range(5)]
+        for r in (honest, fraud, validator):
             _write_inf(r, "lbl_en", "x" * 200, lp)
             _write_inf(r, "lbl_zh", "y" * 300, lp)
+        # Honest validations land at 0.97 (good), fraud at 0.85 (worse).
+        for lbl in ("lbl_en", "lbl_zh"):
+            _write_validated(honest, lbl, VGPU, 0.97)
+            _write_validated(fraud, lbl, VGPU, 0.85)
         out = tmp_path / "inf.png"
         plot_inference(honest, fraud, validator, out, "test")
         assert out.is_file() and out.stat().st_size > 1000
 
     def test_skips_labels_missing_in_one_run(self, tmp_path: Path):
-        honest = tmp_path / "h"; fraud = tmp_path / "f"; val = tmp_path / "v"
-        top = [("a", -0.1), ("b", -1.0)]
-        lp = [_make_logprob_entry("a", -0.1, top) for _ in range(5)]
-        _write_inf(honest, "shared_en", "x"*50, lp)
-        _write_inf(fraud, "shared_en", "x"*50, lp)
-        _write_inf(val, "shared_en", "x"*50, lp)
-        _write_inf(honest, "only_in_honest_en", "y"*50, lp)
-        # Should succeed with just 1 common label
+        honest = tmp_path / "MiniMax-M2.7-H"
+        fraud = tmp_path / "MiniMax-M2.7-AWQ-4bit-F"
+        val = tmp_path / "MiniMax-M2.7-VV"
+        VGPU = "VV"
+        lp = [_make_logprob_entry("a", -0.1, [("a", -0.1)]) for _ in range(2)]
+        for r in (honest, fraud, val):
+            _write_inf(r, "shared_en", "x" * 50, lp)
+        _write_inf(honest, "only_in_honest_en", "y" * 50, lp)
+        # Only `shared_en` has validated-by in both honest and fraud.
+        _write_validated(honest, "shared_en", VGPU, 0.95)
+        _write_validated(fraud, "shared_en", VGPU, 0.85)
+        # `only_in_honest_en` has no fraud counterpart → dropped.
+        _write_validated(honest, "only_in_honest_en", VGPU, 0.92)
         plot_inference(honest, fraud, val, tmp_path / "out.png", "test")
 
     def test_no_common_labels_raises(self, tmp_path: Path):
-        honest = tmp_path / "h"; fraud = tmp_path / "f"; val = tmp_path / "v"
-        top = [("a", -0.1), ("b", -1.0)]
-        lp = [_make_logprob_entry("a", -0.1, top) for _ in range(2)]
-        _write_inf(honest, "label1", "x", lp)
-        _write_inf(fraud, "label2", "y", lp)
-        _write_inf(val, "label3", "z", lp)
-        with pytest.raises(ValueError, match="no labels common"):
+        honest = tmp_path / "MiniMax-M2.7-H"
+        fraud = tmp_path / "MiniMax-M2.7-AWQ-4bit-F"
+        val = tmp_path / "MiniMax-M2.7-VV"
+        VGPU = "VV"
+        lp = [_make_logprob_entry("a", -0.1, [("a", -0.1)])]
+        _write_inf(honest, "label1", "x", lp); _write_validated(honest, "label1", VGPU, 0.9)
+        _write_inf(fraud, "label2", "y", lp);  _write_validated(fraud, "label2", VGPU, 0.9)
+        with pytest.raises(ValueError, match="no labels have validated-by"):
             plot_inference(honest, fraud, val, tmp_path / "out.png", "test")
+
+    def test_validator_gpu_tag_extracted_correctly(self, tmp_path: Path):
+        from e2e.plot import _validator_gpu_tag
+        assert _validator_gpu_tag(Path("/x/MiniMax-M2.7-2xb200-fp8")) \
+            == "2xb200-fp8"
+        assert _validator_gpu_tag(Path("/x/MiniMax-M2.7-4xa100-fp8-processed")) \
+            == "4xa100-fp8-processed"
+        assert _validator_gpu_tag(Path("/x/MiniMax-M2.7-AWQ-4bit-4xa100-fp8")) \
+            == "4xa100-fp8"
+        with pytest.raises(ValueError, match="could not extract"):
+            _validator_gpu_tag(Path("/x/OtherModel-2xb200-fp8"))
 
     def test_skips_errored_inferences(self, tmp_path: Path):
         d = tmp_path / "r" / "label_en"
@@ -215,3 +246,70 @@ class TestPrettyName:
     def test_other_dir_uses_self(self, tmp_path: Path):
         d = tmp_path / "RunX"; d.mkdir()
         assert _pretty_name(d) == "RunX"
+
+    def test_minimax_fp8_b200_raw_abbreviates(self, tmp_path: Path):
+        d = tmp_path / "MiniMax-M2.7-2xb200-fp8"; d.mkdir()
+        assert _pretty_name(d) == "MM-M2.7-B200"
+
+    def test_minimax_fp8_b200_processed_abbreviates(self, tmp_path: Path):
+        d = tmp_path / "MiniMax-M2.7-2xb200-fp8-processed"; d.mkdir()
+        assert _pretty_name(d) == "MM-M2.7-B200"
+
+    def test_awq_b200_raw_abbreviates(self, tmp_path: Path):
+        d = tmp_path / "MiniMax-M2.7-AWQ-4bit-2xb200-fp8"; d.mkdir()
+        assert _pretty_name(d) == "MM-M2.7-4bit-B200"
+
+    def test_awq_a100_processed_abbreviates(self, tmp_path: Path):
+        d = tmp_path / "MiniMax-M2.7-AWQ-4bit-4xa100-fp8-processed"; d.mkdir()
+        assert _pretty_name(d) == "MM-M2.7-4bit-A100"
+
+    def test_unknown_pattern_passes_through(self, tmp_path: Path):
+        d = tmp_path / "SomeOther-Model-2xb200-fp8"; d.mkdir()
+        # Model prefix not in abbreviation list — only GPU/suffix changes apply.
+        assert _pretty_name(d) == "SomeOther-Model-B200"
+
+
+class TestAbbreviate:
+    def test_all_gpus_normalized(self):
+        for gpu, short in [("2xb200", "B200"), ("2xh200", "H200"),
+                           ("4xa100", "A100"), ("4xh100", "H100"),
+                           ("1xb300", "B300")]:
+            assert _abbreviate(f"MiniMax-M2.7-{gpu}-fp8") == f"MM-M2.7-{short}"
+
+    def test_strips_fp8_marker(self):
+        assert _abbreviate("MiniMax-M2.7-2xb200-fp8") == "MM-M2.7-B200"
+
+    def test_strips_processed_suffix(self):
+        assert _abbreviate("MiniMax-M2.7-2xb200-fp8-processed") == "MM-M2.7-B200"
+
+    def test_awq_takes_precedence_over_base_model(self):
+        # AWQ pattern is longer; must match before the bare MiniMax-M2.7 prefix.
+        assert _abbreviate("MiniMax-M2.7-AWQ-4bit-2xb200-fp8") \
+            == "MM-M2.7-4bit-B200"
+
+
+class TestDetectMode:
+    def test_all_raw(self, tmp_path: Path):
+        paths = []
+        for name in ["MM-M2.7-2xb200-fp8", "MM-M2.7-AWQ-4bit-2xb200-fp8",
+                     "MM-M2.7-4xa100-fp8"]:
+            d = tmp_path / name; d.mkdir(); paths.append(d)
+        assert _detect_mode(*paths) == "raw"
+
+    def test_all_processed(self, tmp_path: Path):
+        paths = []
+        for name in ["MM-M2.7-2xb200-fp8-processed",
+                     "MM-M2.7-AWQ-4bit-2xb200-fp8-processed",
+                     "MM-M2.7-4xa100-fp8-processed"]:
+            d = tmp_path / name; d.mkdir(); paths.append(d)
+        assert _detect_mode(*paths) == "processed"
+
+    def test_mixed(self, tmp_path: Path):
+        a = tmp_path / "MM-M2.7-2xb200-fp8"; a.mkdir()
+        b = tmp_path / "MM-M2.7-2xb200-fp8-processed"; b.mkdir()
+        assert _detect_mode(a, b) == "mixed"
+
+    def test_detects_mode_from_nonces_file(self, tmp_path: Path):
+        f = tmp_path / "MM-M2.7-2xb200-fp8-processed" / "_poc" / "n.json"
+        f.parent.mkdir(parents=True); f.write_text("{}")
+        assert _detect_mode(f) == "processed"
