@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explica conceptos de probabilidad con ejemplos claros."
+    },
+    {
+      "role": "user",
+      "content": "Explica el problema de Monty Hall y por qué cambiar de puerta da una probabilidad de 2/3 de ganar."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10041
+}

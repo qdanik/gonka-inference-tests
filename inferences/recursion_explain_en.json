@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You answer technical questions concisely with code examples."
+    },
+    {
+      "role": "user",
+      "content": "What is recursion? Show a recursive Fibonacci with memoization in Python and explain why memoization helps."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10050
+}

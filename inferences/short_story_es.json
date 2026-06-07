@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres un narrador creativo. Escribes prosa vívida con imágenes potentes."
+    },
+    {
+      "role": "user",
+      "content": "Escribe un cuento corto de 200 palabras sobre una guardafaro que encuentra un mensaje en una botella escrito por ella misma."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10091
+}

@@ -1,0 +1,57 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "只返回有效的 JSON,严格遵循提供的 schema。"
+    },
+    {
+      "role": "user",
+      "content": "从以下食谱中提取配料和步骤:'制作经典西班牙土豆蛋饼:将 4 个中等大小的土豆去皮切薄片。切碎 1 个洋葱。在大量橄榄油中以中火煎 15 分钟。在大碗中加盐打入 6 个鸡蛋。将土豆和洋葱与鸡蛋混合,静置 5 分钟。倒入加少许油的热锅中。每面煎 4 分钟。'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11073,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "recipe",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "quantity"
+              ]
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "total_time_minutes": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ingredients",
+          "steps"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

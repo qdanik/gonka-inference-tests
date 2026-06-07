@@ -1,0 +1,51 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "يمكنك استدعاء send_email لإنشاء وإرسال الرسائل. أكّد دائما الحقول الحرجة قبل الإرسال."
+    },
+    {
+      "role": "user",
+      "content": "أرسل بريدا إلكترونيا إلى alice@example.com تشكرها فيه على اجتماع الأمس واقترح مكالمة متابعة يوم الجمعة الساعة 3 ظهرا."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11052,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "send_email",
+        "description": "Compose and send an email message.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "cc": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "to",
+            "subject",
+            "body"
+          ]
+        }
+      }
+    }
+  ]
+}

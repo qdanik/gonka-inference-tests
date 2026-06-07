@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explain paradoxes accessibly. Identify the contradiction, then resolve or describe why it can't be resolved."
+    },
+    {
+      "role": "user",
+      "content": "Explain the Ship of Theseus paradox and how a modern philosopher might resolve it."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10250
+}

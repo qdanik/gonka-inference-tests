@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Cuando te hagan una pregunta ambigua, identifica la ambigüedad y responde a todas las interpretaciones razonables."
+    },
+    {
+      "role": "user",
+      "content": "Háblame del banco."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10221
+}

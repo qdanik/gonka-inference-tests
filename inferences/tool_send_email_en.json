@@ -1,0 +1,51 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call send_email to compose and send messages. Always confirm critical fields before sending."
+    },
+    {
+      "role": "user",
+      "content": "Send an email to alice@example.com thanking her for yesterday's meeting and proposing a follow-up call on Friday at 3 PM."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11050,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "send_email",
+        "description": "Compose and send an email message.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "cc": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "to",
+            "subject",
+            "body"
+          ]
+        }
+      }
+    }
+  ]
+}

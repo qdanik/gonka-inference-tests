@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Respondes preguntas técnicas de forma concisa con ejemplos de código."
+    },
+    {
+      "role": "user",
+      "content": "¿Qué es la recursión? Muestra una función Fibonacci recursiva con memoización en Python y explica por qué la memoización ayuda."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10051
+}

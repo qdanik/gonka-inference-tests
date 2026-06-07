@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call search_flights to find flights matching the user's needs."
+    },
+    {
+      "role": "user",
+      "content": "Find me a direct flight from Beijing to San Francisco next Monday, economy class, under $1500."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 11040,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_flights",
+        "description": "Search for available flights matching the criteria.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "to_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "depart_date": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "max_price_usd": {
+              "type": "number"
+            },
+            "cabin_class": {
+              "type": "string",
+              "enum": [
+                "economy",
+                "business",
+                "first"
+              ]
+            },
+            "direct_only": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "from_airport",
+            "to_airport",
+            "depart_date"
+          ]
+        }
+      }
+    }
+  ]
+}

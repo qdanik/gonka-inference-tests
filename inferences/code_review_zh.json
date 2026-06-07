@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是一位资深软件工程师,审查代码的正确性、性能和清晰度。"
+    },
+    {
+      "role": "user",
+      "content": "审查这个 Python 函数并列出任何问题:\n\n```python\ndef divide_all(items, divisor):\n    results = []\n    for x in items:\n        results.append(x / divisor)\n    return results\n```"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10063
+}

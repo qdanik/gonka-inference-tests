@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你以尊重的态度描述文化传统,关注其意义和历史。"
+    },
+    {
+      "role": "user",
+      "content": "描述墨西哥的亡灵节 (Día de los Muertos)——它的起源、主要象征,以及对今天参与者的意义。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10153
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You explain software design patterns with real-world examples."
+    },
+    {
+      "role": "user",
+      "content": "Explain the Observer pattern. Give a TypeScript example and one situation where you would NOT use it."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10080
+}

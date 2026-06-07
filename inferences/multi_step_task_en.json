@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Carry out multi-step instructions in order and verify each step."
+    },
+    {
+      "role": "user",
+      "content": "Step 1: Pick a city. Step 2: List 3 famous landmarks there. Step 3: For each landmark, give one historical fact and one practical visitor tip. Number every step in your output."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10200
+}

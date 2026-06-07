@@ -1,0 +1,66 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "أنت تخرج JSON صالحا فقط، يتبع البنية المحددة."
+    },
+    {
+      "role": "user",
+      "content": "حلل وصف المنتج التالي وأخرج JSON منظما: 'لابتوب ProMax 15، شاشة 15.6 بوصة بدقة 2560x1600، معالج Intel Core i7 الجيل 13، ذاكرة 32 جيجابايت DDR5، تخزين SSD 1 تيرابايت، بطارية تدوم 12 ساعة، وزن 1.6 كيلوغرام، السعر 1499 دولارا.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11082,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "product",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "specs": {
+            "type": "object",
+            "properties": {
+              "display_size_inches": {
+                "type": "number"
+              },
+              "resolution": {
+                "type": "string"
+              },
+              "cpu": {
+                "type": "string"
+              },
+              "memory_gb": {
+                "type": "integer"
+              },
+              "storage_gb": {
+                "type": "integer"
+              },
+              "battery_hours": {
+                "type": "number"
+              },
+              "weight_kg": {
+                "type": "number"
+              }
+            }
+          },
+          "price_usd": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "specs",
+          "price_usd"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

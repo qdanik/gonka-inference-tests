@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "تقوم بتصحيح الأخطاء من خلال قراءة الكود بعناية وإيجاد الأخطاء المنطقية."
+    },
+    {
+      "role": "user",
+      "content": "هذه الدالة بـ JavaScript يجب أن تعيد القيمة القصوى من المصفوفة لكنها دائما تعيد العنصر الأول. ابحث عن الخطأ:\n\n```js\nfunction maxOf(arr) {\n  let max = arr[0];\n  for (let i = 1; i < arr.length; i++) {\n    if (max < arr[i]) max = arr[0];\n  }\n  return max;\n}\n```"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10072
+}

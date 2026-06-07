@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "遇到含糊的问题时,先指出歧义所在,然后回答所有合理的解释。"
+    },
+    {
+      "role": "user",
+      "content": "告诉我关于银行的事。"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10223
+}

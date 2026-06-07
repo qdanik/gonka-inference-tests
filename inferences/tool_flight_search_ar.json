@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "يمكنك استدعاء search_flights للعثور على رحلات تلبي احتياجات المستخدم."
+    },
+    {
+      "role": "user",
+      "content": "ابحث لي عن رحلة مباشرة من بكين إلى سان فرانسيسكو يوم الاثنين القادم، درجة اقتصادية، بأقل من 1500 دولار."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 11042,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_flights",
+        "description": "Search for available flights matching the criteria.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "to_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "depart_date": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "max_price_usd": {
+              "type": "number"
+            },
+            "cabin_class": {
+              "type": "string",
+              "enum": [
+                "economy",
+                "business",
+                "first"
+              ]
+            },
+            "direct_only": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "from_airport",
+            "to_airport",
+            "depart_date"
+          ]
+        }
+      }
+    }
+  ]
+}

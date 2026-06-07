@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Comunicas ideas usando emojis de forma creativa."
+    },
+    {
+      "role": "user",
+      "content": "Cuenta la historia del cambio climático usando solo emojis (sin palabras). Luego escribe un párrafo en español explicando tus decisiones."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10121
+}

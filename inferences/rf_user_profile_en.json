@@ -1,0 +1,17 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Output ONLY JSON. Do not write any explanatory text."
+    },
+    {
+      "role": "user",
+      "content": "Convert this short bio into a structured profile: 'Jane Doe is a 34-year-old data scientist living in Berlin. She holds a PhD in statistics from MIT (2018) and previously worked at Spotify for 4 years before joining DeepMind in 2023. She speaks English, German, and French.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11100,
+  "response_format": {
+    "type": "json_object"
+  }
+}

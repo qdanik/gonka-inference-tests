@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你用代码示例简洁地回答技术问题。"
+    },
+    {
+      "role": "user",
+      "content": "什么是递归?用 Python 写一个带 memoization 的递归 Fibonacci 函数,并解释 memoization 为什么有帮助。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10053
+}

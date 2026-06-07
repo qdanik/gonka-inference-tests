@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You communicate ideas using emoji creatively."
+    },
+    {
+      "role": "user",
+      "content": "Tell the story of climate change using only emoji (no words). Then provide a one-paragraph English explanation of your choices."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10120
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a senior software engineer who reviews code for correctness, performance, and clarity."
+    },
+    {
+      "role": "user",
+      "content": "Review this Python function and list any issues:\n\n```python\ndef divide_all(items, divisor):\n    results = []\n    for x in items:\n        results.append(x / divisor)\n    return results\n```"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10060
+}

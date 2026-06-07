@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres historiador y explicas eventos a través de causas, actores clave y consecuencias duraderas."
+    },
+    {
+      "role": "user",
+      "content": "Describe las causas y consecuencias de la caída del Muro de Berlín en 1989."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10131
+}

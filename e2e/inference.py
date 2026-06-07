@@ -13,6 +13,7 @@ feed into `enforced_tokens` later.
 """
 from __future__ import annotations
 import json
+import random
 import time
 from pathlib import Path
 from typing import Any
@@ -53,7 +54,7 @@ def _build_request(model_name: str, spec: dict) -> dict:
     token-ID string (not detokenized text) — the only shape the chain
     validator accepts as `enforced_tokens.tokens[*].token`.
     """
-    return {
+    body = {
         "messages": spec["messages"],
         "model": model_name,
         "stream": True,
@@ -61,10 +62,22 @@ def _build_request(model_name: str, spec: dict) -> dict:
         "logprobs": True,
         "top_logprobs": 5,
         "max_tokens": spec["max_tokens"],
+        "max_completion_tokens": spec["max_tokens"],
         "temperature": 0.5,
-        "seed": spec["seed"],
+        # Seed is RANDOMIZED per request (overrides spec['seed']) to bypass
+        # any vLLM-side response cache. spec['seed'] remains in the file as
+        # reference but is not what's sent.
+        "seed": random.randint(1, 2**31 - 1),
         "return_token_ids": True,
+        # Keep <|im_end|>, <think>, etc. in the stream so token comparison
+        # covers the FULL generation, not just the user-facing text.
+        "skip_special_tokens": False,
     }
+    # Optional spec passthroughs for richer tests (function calling, JSON mode)
+    for opt in ("tools", "response_format"):
+        if opt in spec:
+            body[opt] = spec[opt]
+    return body
 
 
 def _stream_and_reconstruct(target: ServerTarget, request_body: dict,

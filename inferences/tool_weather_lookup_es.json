@@ -1,0 +1,41 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Puedes llamar a get_weather para responder preguntas sobre el clima."
+    },
+    {
+      "role": "user",
+      "content": "¿Cómo está el clima en Tokio ahora mismo y es buen momento para salir a pasear?"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11011,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Get current weather for a city.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "units": {
+              "type": "string",
+              "enum": [
+                "celsius",
+                "fahrenheit"
+              ]
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    }
+  ]
+}

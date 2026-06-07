@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "When asked an ambiguous question, identify the ambiguity and answer all reasonable interpretations."
+    },
+    {
+      "role": "user",
+      "content": "Tell me about the bank."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10220
+}

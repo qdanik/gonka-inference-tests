@@ -1,0 +1,44 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "يمكنك استدعاء convert_currency عندما يسأل المستخدم عن أسعار الصرف."
+    },
+    {
+      "role": "user",
+      "content": "كم تساوي 250 يورو بالين الياباني وفقا لسعر الصرف الحالي؟"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11022,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "convert_currency",
+        "description": "Convert an amount between two currencies at the current exchange rate.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number"
+            },
+            "from_currency": {
+              "type": "string",
+              "description": "ISO 4217 code"
+            },
+            "to_currency": {
+              "type": "string",
+              "description": "ISO 4217 code"
+            }
+          },
+          "required": [
+            "amount",
+            "from_currency",
+            "to_currency"
+          ]
+        }
+      }
+    }
+  ]
+}

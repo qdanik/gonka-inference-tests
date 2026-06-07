@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Puedes llamar a search_flights para encontrar vuelos que cumplan los requisitos del usuario."
+    },
+    {
+      "role": "user",
+      "content": "Búscame un vuelo directo de Pekín a San Francisco el próximo lunes, clase económica, por menos de 1500 dólares."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 11041,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_flights",
+        "description": "Search for available flights matching the criteria.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "to_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "depart_date": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "max_price_usd": {
+              "type": "number"
+            },
+            "cabin_class": {
+              "type": "string",
+              "enum": [
+                "economy",
+                "business",
+                "first"
+              ]
+            },
+            "direct_only": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "from_airport",
+            "to_airport",
+            "depart_date"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "أخرج JSON فقط متبعا المخطط. لا تضف أي نص آخر."
+    },
+    {
+      "role": "user",
+      "content": "لخّص محضر الاجتماع التالي: 'اليوم ناقشنا خارطة طريق الربع الثالث. جادلت علياء بأن البحث يجب أن يكون الأولوية القصوى لأن العملاء يشكون منه أكثر. اعترض بسام — تكامل المدفوعات أكثر إلحاحا لأنه يعطل 5 عملاء مؤسسيين. اتفقنا أخيرا: تحسينات البحث في الأسبوعين 1-2، تكامل المدفوعات في الأسبوعين 3-4. الاجتماع التالي 15 سبتمبر.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11092,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "meeting_summary",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "what": {
+                  "type": "string"
+                },
+                "when": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "what"
+              ]
+            }
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_meeting_date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "topics",
+          "decisions"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

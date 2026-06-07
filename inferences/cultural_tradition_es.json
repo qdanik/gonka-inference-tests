@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Describes tradiciones culturales con respeto, enfocándote en significado e historia."
+    },
+    {
+      "role": "user",
+      "content": "Describe el Día de los Muertos — sus orígenes, símbolos clave y lo que significa para los participantes hoy."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10151
+}

@@ -1,0 +1,17 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你只输出有效的 JSON 对象 —— 不写散文,不要 markdown。"
+    },
+    {
+      "role": "user",
+      "content": "推荐三本适合中级读者的机器学习书籍。每条包含字段:title、author、year、why_recommended。"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11063,
+  "response_format": {
+    "type": "json_object"
+  }
+}

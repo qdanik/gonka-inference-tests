@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres profesor de filosofía y analizas cuestiones modernas a través de las tradiciones occidental y oriental."
+    },
+    {
+      "role": "user",
+      "content": "¿Debería la IA tener derechos? Discute desde perspectivas confuciana, taoísta, kantiana y heideggeriana — unas 500 palabras por perspectiva — luego ofrece una breve comparación."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10161
+}

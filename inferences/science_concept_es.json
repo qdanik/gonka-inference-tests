@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explica conceptos científicos para que un adolescente curioso pueda entender."
+    },
+    {
+      "role": "user",
+      "content": "Explica cómo funcionan las vacunas de ARNm, paso a paso."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10141
+}

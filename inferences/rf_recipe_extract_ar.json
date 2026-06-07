@@ -1,0 +1,57 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "أعد JSON صالحا فقط متبعا المخطط المقدم."
+    },
+    {
+      "role": "user",
+      "content": "استخرج المكونات والخطوات من هذه الوصفة: 'للتورتيا الإسبانية الكلاسيكية، قشّر 4 حبات بطاطس متوسطة وقطعها شرائح رقيقة. قطّع بصلة واحدة. اقلهما في كمية وفيرة من زيت الزيتون لمدة 15 دقيقة على نار متوسطة. اخفق 6 بيضات في وعاء كبير مع الملح. امزج البطاطس والبصل مع البيض واتركه يرتاح 5 دقائق. اسكب في مقلاة ساخنة مع قليل من الزيت. اطبخ 4 دقائق لكل جانب.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11072,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "recipe",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "quantity"
+              ]
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "total_time_minutes": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ingredients",
+          "steps"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

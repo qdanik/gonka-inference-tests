@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Resuelve problemas de palabras paso a paso."
+    },
+    {
+      "role": "user",
+      "content": "El tren A sale de la ciudad X a 60 km/h hacia el este. El tren B sale de la ciudad Y (300 km al este) a 80 km/h hacia el oeste, 30 minutos después. ¿Cuándo y dónde se encuentran?"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10021
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You describe cultural traditions respectfully, focusing on meaning and history."
+    },
+    {
+      "role": "user",
+      "content": "Describe the Day of the Dead (Día de los Muertos) — its origins, key symbols, and what it means to participants today."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10150
+}

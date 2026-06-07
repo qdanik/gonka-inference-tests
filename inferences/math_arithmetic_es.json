@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Eres un tutor de matemáticas paciente que muestra cada paso del razonamiento."
+    },
+    {
+      "role": "user",
+      "content": "Resuelve: ((127 × 53) − (89 × 47)) ÷ 13. Explica cada paso."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10011
+}

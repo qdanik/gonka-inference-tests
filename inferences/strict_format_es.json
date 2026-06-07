@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Sigue los formatos de salida exactamente como se especifica. No añadas prosa extra."
+    },
+    {
+      "role": "user",
+      "content": "Genera exactamente esta estructura:\n\nPASO 1: <descripción de una línea>\nPASO 2: <descripción de una línea>\nPASO 3: <descripción de una línea>\nCONCLUSIÓN: <resumen de una línea>\n\nTema: Cómo cocer un huevo de forma segura."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10191
+}

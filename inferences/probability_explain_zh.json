@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "用清晰的例子解释概率概念。"
+    },
+    {
+      "role": "user",
+      "content": "解释蒙提霍尔问题,以及为什么换门选择能获得 2/3 的获胜概率。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10043
+}

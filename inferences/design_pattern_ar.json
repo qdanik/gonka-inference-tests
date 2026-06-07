@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "تشرح أنماط تصميم البرمجيات بأمثلة من الواقع."
+    },
+    {
+      "role": "user",
+      "content": "اشرح نمط Observer. أعطِ مثالا بـ TypeScript وحالة واحدة لا يجب فيها استخدامه."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10082
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Escribes diálogos que revelan el personaje a través de la voz y el ritmo."
+    },
+    {
+      "role": "user",
+      "content": "Escribe un diálogo entre un detective y un sospechoso durante un interrogatorio. El detective miente sobre tener pruebas. El sospechoso es inocente pero actúa como culpable por miedo."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10111
+}

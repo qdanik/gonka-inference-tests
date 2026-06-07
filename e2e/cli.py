@@ -14,6 +14,7 @@ from .config import (
 from .deploy import deploy
 from .download import download_model
 from .inference import run_inference_sweep
+from .plot import run_plot
 from .poc import run_poc_collect
 from .ssh_tunnel import forward_tunnel
 from .validate import run_cross_validation
@@ -40,6 +41,7 @@ def _server_from_args(args) -> ServerTarget:
         logprobs_mode=args.logprobs_mode,
         enforce_eager=args.enforce_eager,
         gpu_name=args.gpu_name,
+        entrypoint_prefix=args.entrypoint_prefix,
     )
 
 
@@ -127,6 +129,12 @@ def _add_common(parser: argparse.ArgumentParser) -> None:
                         help="Pass --enforce-eager to vLLM (disables torch.compile + "
                              "CUDA graphs). OFF by default — kept as opt-in for "
                              "debugging or known-bad torch.compile configs.")
+    parser.add_argument("--entrypoint-prefix", default="",
+                        help="Args to prepend to docker CMD when the image's "
+                             "ENTRYPOINT is a thin shell wrapper (e.g. "
+                             "'vllm serve' for gonka-ai/mlnode). Leave empty "
+                             "when ENTRYPOINT already runs vllm serve "
+                             "(e.g. ghcr.io/kaitakuai/vllm).")
     parser.add_argument("--gpu-name", required=True,
                         help="Short GPU tag (e.g. 'b300', 'h100', 'rtx-pro-6000'). "
                              "Used in run-name (<model>-<gpu>) and as the "
@@ -167,6 +175,24 @@ def main() -> int:
                             "run (e.g. 'sys_math_en,multi_turn_en'). "
                             "If omitted: run every JSON in vllm/inferences/.")
 
+    p_pl = sub.add_parser("plot",
+                          help="render honest/fraud distance scatter (kaitakuai 1:1 style)")
+    p_pl.add_argument("--type", required=True, choices=("poc", "inference"),
+                      help="poc → L2 of nonce vectors vs Nonce#; "
+                           "inference → 1−similarity vs response length")
+    p_pl.add_argument("--honest", required=True,
+                      help="Honest executor path (nonces file OR run dir)")
+    p_pl.add_argument("--fraud", required=True,
+                      help="Fraud executor path (different model claiming honest)")
+    p_pl.add_argument("--validator", required=True,
+                      help="Validator path (nonces file/dir for poc; run dir for inference)")
+    p_pl.add_argument("--output", default=None,
+                      help="PNG output path. Default: "
+                           "artifacts/<today>/_plots/<auto-named>.png")
+    p_pl.add_argument("--title-suffix",
+                      default="MiniMax-M2.7 FP8 vs AWQ-4bit",
+                      help="Subtitle string after the run-pair label")
+
     p_val = sub.add_parser("validate",
                            help="cross-validate executor run via validator model")
     _add_common(p_val)
@@ -188,6 +214,18 @@ def main() -> int:
                             "(M auto-increments). Useful for variance studies.")
 
     args = p.parse_args()
+
+    # `plot` is local-only — no SSH/vLLM. Dispatch before building target.
+    if args.cmd == "plot":
+        run_plot(
+            kind=args.type,
+            honest=Path(args.honest),
+            fraud=Path(args.fraud),
+            validator=Path(args.validator),
+            output=Path(args.output) if args.output else None,
+            title_suffix=args.title_suffix,
+        )
+        return 0
 
     target = _server_from_args(args)
     model = _model_from_args(args)

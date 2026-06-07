@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你用实际例子解释软件设计模式。"
+    },
+    {
+      "role": "user",
+      "content": "解释观察者模式 (Observer)。给一个 TypeScript 示例,并描述一种**不**应该使用它的情境。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10083
+}

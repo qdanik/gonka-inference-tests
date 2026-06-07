@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explain scientific concepts so a curious teenager can understand."
+    },
+    {
+      "role": "user",
+      "content": "Explain how mRNA vaccines work, step by step."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10140
+}

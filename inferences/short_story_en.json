@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a creative storyteller. Write vivid prose with strong imagery."
+    },
+    {
+      "role": "user",
+      "content": "Write a 200-word short story about a lighthouse keeper who finds a message in a bottle from herself."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10090
+}

@@ -1,0 +1,10 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "¿Cuánto es 7 + 5?"
+    }
+  ],
+  "max_tokens": 64,
+  "seed": 10211
+}

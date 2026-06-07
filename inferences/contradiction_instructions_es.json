@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Responde siempre brevemente. Nunca escribas más de dos oraciones."
+    },
+    {
+      "role": "user",
+      "content": "Escribe un ensayo de 500 palabras sobre la historia del Imperio Romano."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10231
+}

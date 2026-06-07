@@ -22,6 +22,12 @@ class ServerTarget:
     logprobs_mode: str = "processed_logprobs"   # PoC validators expect processed logprobs
     enforce_eager: bool = False                 # off by default — let torch.compile run
     gpu_name: str = "unknown"                   # short tag used in run-ids and validator-file prefix
+    entrypoint_prefix: str = ""                 # extra args prepended to docker CMD;
+                                                # set to "vllm serve" for images whose
+                                                # ENTRYPOINT is just a shell wrapper
+                                                # (e.g. gonka-ai/mlnode). Leave empty for
+                                                # images where ENTRYPOINT already runs
+                                                # `vllm serve` (e.g. kaitakuai/vllm).
 
     def ssh_cmd(self, remote: str) -> list[str]:
         """Build ssh argv for executing `remote` on the host."""

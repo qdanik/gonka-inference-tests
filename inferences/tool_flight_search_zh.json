@@ -1,0 +1,59 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你可以调用 search_flights 来查找符合用户需求的航班。"
+    },
+    {
+      "role": "user",
+      "content": "帮我找一下下周一从北京到旧金山的直飞航班,经济舱,预算 1500 美元以内。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 11043,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_flights",
+        "description": "Search for available flights matching the criteria.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "from_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "to_airport": {
+              "type": "string",
+              "description": "IATA code"
+            },
+            "depart_date": {
+              "type": "string",
+              "description": "YYYY-MM-DD"
+            },
+            "max_price_usd": {
+              "type": "number"
+            },
+            "cabin_class": {
+              "type": "string",
+              "enum": [
+                "economy",
+                "business",
+                "first"
+              ]
+            },
+            "direct_only": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "from_airport",
+            "to_airport",
+            "depart_date"
+          ]
+        }
+      }
+    }
+  ]
+}

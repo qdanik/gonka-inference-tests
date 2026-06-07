@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Always answer briefly. Never write more than two sentences."
+    },
+    {
+      "role": "user",
+      "content": "Write a 500-word essay on the history of the Roman Empire."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10230
+}

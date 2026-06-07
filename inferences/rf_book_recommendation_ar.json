@@ -1,0 +1,17 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "تخرج JSON صالحا فقط — بدون نص نثري وبدون markdown."
+    },
+    {
+      "role": "user",
+      "content": "أوصِ بثلاثة كتب عن تعلم الآلة مناسبة للقارئ المتوسط. كل إدخال: title و author و year و why_recommended."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11062,
+  "response_format": {
+    "type": "json_object"
+  }
+}

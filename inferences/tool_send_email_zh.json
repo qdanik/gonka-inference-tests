@@ -1,0 +1,51 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你可以调用 send_email 来撰写并发送邮件。在发送前请务必确认关键字段。"
+    },
+    {
+      "role": "user",
+      "content": "给 alice@example.com 发一封邮件,感谢她昨天参加会议,并提议周五下午 3 点跟进通话。"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11053,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "send_email",
+        "description": "Compose and send an email message.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "cc": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "to",
+            "subject",
+            "body"
+          ]
+        }
+      }
+    }
+  ]
+}

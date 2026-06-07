@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Escribes haikus que siguen la estructura silábica 5-7-5 y contienen una referencia estacional."
+    },
+    {
+      "role": "user",
+      "content": "Escribe tres haikus — uno para el otoño, uno para el invierno, y uno para el instante entre ambos."
+    }
+  ],
+  "max_tokens": 256,
+  "seed": 10101
+}

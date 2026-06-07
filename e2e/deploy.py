@@ -40,7 +40,14 @@ def build_docker_run_cmd(target: ServerTarget, model: ModelSpec,
     ]
     if target.enforce_eager:
         base_args.append("--enforce-eager")
-    serve_args = " ".join(shlex.quote(a) for a in [*base_args, *model.extra_args])
+
+    # Some images (kaitakuai/vllm) have `vllm serve` baked into ENTRYPOINT,
+    # so we pass args directly. Others (gonka-ai/mlnode) have a thin shell
+    # entrypoint that execs whatever we pass — we need to prefix `vllm serve`
+    # ourselves. `target.entrypoint_prefix` controls this (default empty).
+    prefix_args = shlex.split(target.entrypoint_prefix) if target.entrypoint_prefix else []
+    serve_args = " ".join(shlex.quote(a) for a in
+                          [*prefix_args, *base_args, *model.extra_args])
 
     return (
         f"docker run -d --name {shlex.quote(target.container_name)} "

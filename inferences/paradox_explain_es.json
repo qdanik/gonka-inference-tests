@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explica paradojas de forma accesible. Identifica la contradicción, luego resuélvela o describe por qué no puede resolverse."
+    },
+    {
+      "role": "user",
+      "content": "Explica la paradoja del Barco de Teseo y cómo un filósofo moderno podría resolverla."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10251
+}

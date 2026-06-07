@@ -1,0 +1,44 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call convert_currency when the user asks about exchange rates."
+    },
+    {
+      "role": "user",
+      "content": "How much is 250 euros in Japanese yen at the current exchange rate?"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11020,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "convert_currency",
+        "description": "Convert an amount between two currencies at the current exchange rate.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number"
+            },
+            "from_currency": {
+              "type": "string",
+              "description": "ISO 4217 code"
+            },
+            "to_currency": {
+              "type": "string",
+              "description": "ISO 4217 code"
+            }
+          },
+          "required": [
+            "amount",
+            "from_currency",
+            "to_currency"
+          ]
+        }
+      }
+    }
+  ]
+}

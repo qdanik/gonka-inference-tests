@@ -1,0 +1,66 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你只输出符合所给 schema 的 JSON。"
+    },
+    {
+      "role": "user",
+      "content": "将以下产品描述解析为结构化 JSON:'ProMax 15 笔记本电脑,15.6 英寸 2560x1600 显示屏,Intel Core i7 第 13 代处理器,32 GB DDR5 内存,1 TB SSD 存储,12 小时电池,重量 1.6 公斤,售价 1499 美元。'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11083,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "product",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "specs": {
+            "type": "object",
+            "properties": {
+              "display_size_inches": {
+                "type": "number"
+              },
+              "resolution": {
+                "type": "string"
+              },
+              "cpu": {
+                "type": "string"
+              },
+              "memory_gb": {
+                "type": "integer"
+              },
+              "storage_gb": {
+                "type": "integer"
+              },
+              "battery_hours": {
+                "type": "number"
+              },
+              "weight_kg": {
+                "type": "number"
+              }
+            }
+          },
+          "price_usd": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "specs",
+          "price_usd"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

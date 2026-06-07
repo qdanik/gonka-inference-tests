@@ -1,0 +1,57 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Return ONLY valid JSON following the provided schema."
+    },
+    {
+      "role": "user",
+      "content": "Extract the ingredients and steps from this recipe: 'For a classic Spanish tortilla, peel and slice 4 medium potatoes thinly. Chop 1 onion. Fry both in plenty of olive oil for 15 minutes over medium heat. Beat 6 eggs in a large bowl with salt. Mix the potatoes and onion with the eggs and let stand 5 minutes. Pour into a hot pan with a little oil. Cook 4 minutes per side.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11070,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "recipe",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "quantity"
+              ]
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "total_time_minutes": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ingredients",
+          "steps"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

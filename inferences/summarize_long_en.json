@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Produce concise summaries that preserve all key facts."
+    },
+    {
+      "role": "user",
+      "content": "Summarize this in 3 bullet points:\n\nThe Industrial Revolution, beginning in late 18th century Britain, transformed manufacturing through steam power, mechanized textile production, and the iron industry. It shifted populations from rural farms to urban factories, creating new social classes and labor conditions that became the subject of intense political debate. Innovations like the spinning jenny, the steam engine, and the locomotive accelerated production but also led to environmental degradation, child labor scandals, and worker movements demanding rights. By the mid-19th century, the Revolution had spread to Belgium, France, Germany, and the United States, fundamentally reshaping the global economy and laying the foundations for modern capitalism, modern cities, and modern labor law."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10240
+}

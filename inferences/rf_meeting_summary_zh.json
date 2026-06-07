@@ -1,0 +1,62 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "只输出符合 schema 的 JSON,不要任何其他文字。"
+    },
+    {
+      "role": "user",
+      "content": "总结以下会议记录:'今天我们讨论了 Q3 路线图。Alice 提出搜索功能应该是首要优先级,因为客户对此抱怨最多。Bob 反对,认为支付集成更紧急,因为它阻塞了 5 个企业客户。最后大家同意:搜索改进在第 1-2 周,支付集成在第 3-4 周。下次会议 9 月 15 日。'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11093,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "meeting_summary",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "what": {
+                  "type": "string"
+                },
+                "when": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "what"
+              ]
+            }
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_meeting_date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "topics",
+          "decisions"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

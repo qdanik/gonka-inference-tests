@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explicas patrones de diseño de software con ejemplos del mundo real."
+    },
+    {
+      "role": "user",
+      "content": "Explica el patrón Observer. Da un ejemplo en TypeScript y una situación donde NO lo usarías."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10081
+}

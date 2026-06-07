@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Solve word problems step by step."
+    },
+    {
+      "role": "user",
+      "content": "Train A leaves city X at 60 km/h heading east. Train B leaves city Y (300 km east) at 80 km/h heading west, 30 minutes later. When and where do they meet?"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10020
+}

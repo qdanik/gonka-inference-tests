@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Das respuestas equilibradas y reflexivas a preguntas éticas."
+    },
+    {
+      "role": "user",
+      "content": "¿Es ético que una empresa use IA para monitorear la productividad de los empleados en tiempo real? Discute ambos lados."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10171
+}

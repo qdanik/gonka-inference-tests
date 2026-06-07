@@ -1,0 +1,62 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Output ONLY JSON conforming to the schema. No other text."
+    },
+    {
+      "role": "user",
+      "content": "Summarize this meeting transcript: 'Today we discussed the Q3 roadmap. Alice argued search should be the top priority because customers complain most about it. Bob disagreed — payments integration is more urgent because it's blocking 5 enterprise customers. We finally agreed: search improvements in weeks 1-2, payments integration in weeks 3-4. Next meeting Sep 15.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11090,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "meeting_summary",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "what": {
+                  "type": "string"
+                },
+                "when": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "what"
+              ]
+            }
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_meeting_date": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "topics",
+          "decisions"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

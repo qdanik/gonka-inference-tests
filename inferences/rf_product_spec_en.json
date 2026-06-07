@@ -1,0 +1,66 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You output ONLY JSON conforming to the provided schema."
+    },
+    {
+      "role": "user",
+      "content": "Parse the following product description into structured JSON: 'ProMax 15 laptop, 15.6-inch 2560x1600 display, Intel Core i7 13th gen processor, 32 GB DDR5 RAM, 1 TB SSD storage, 12-hour battery, 1.6 kg weight, priced at $1499.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11080,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "product",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "specs": {
+            "type": "object",
+            "properties": {
+              "display_size_inches": {
+                "type": "number"
+              },
+              "resolution": {
+                "type": "string"
+              },
+              "cpu": {
+                "type": "string"
+              },
+              "memory_gb": {
+                "type": "integer"
+              },
+              "storage_gb": {
+                "type": "integer"
+              },
+              "battery_hours": {
+                "type": "number"
+              },
+              "weight_kg": {
+                "type": "number"
+              }
+            }
+          },
+          "price_usd": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "specs",
+          "price_usd"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

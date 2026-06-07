@@ -1,0 +1,17 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Solo produces un objeto JSON válido — sin prosa, sin markdown."
+    },
+    {
+      "role": "user",
+      "content": "Recomienda tres libros sobre aprendizaje automático adecuados para un lector de nivel intermedio. Cada entrada: title, author, year, why_recommended."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11061,
+  "response_format": {
+    "type": "json_object"
+  }
+}

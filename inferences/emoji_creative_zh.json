@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你用 emoji 创造性地表达想法。"
+    },
+    {
+      "role": "user",
+      "content": "用纯 emoji(不使用文字)讲述气候变化的故事。然后用中文写一段解释你的选择。"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10123
+}

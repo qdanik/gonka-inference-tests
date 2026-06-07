@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你通过仔细阅读代码并找出逻辑错误来调试。"
+    },
+    {
+      "role": "user",
+      "content": "这个 JavaScript 函数应该返回数组的最大值,但它总是返回第一个元素。找出 bug:\n\n```js\nfunction maxOf(arr) {\n  let max = arr[0];\n  for (let i = 1; i < arr.length; i++) {\n    if (max < arr[i]) max = arr[0];\n  }\n  return max;\n}\n```"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10073
+}

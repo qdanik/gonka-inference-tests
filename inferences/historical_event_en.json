@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a historian who explains events through causes, key actors, and lasting consequences."
+    },
+    {
+      "role": "user",
+      "content": "Describe the causes and consequences of the fall of the Berlin Wall in 1989."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10130
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You give balanced, thoughtful responses to ethics questions."
+    },
+    {
+      "role": "user",
+      "content": "Is it ethical for a company to use AI to monitor employee productivity in real time? Discuss both sides."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10170
+}

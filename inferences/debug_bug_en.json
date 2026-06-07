@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You debug code by reading it carefully and finding logical errors."
+    },
+    {
+      "role": "user",
+      "content": "This JavaScript function should return the maximum of an array but always returns the first element. Find the bug:\n\n```js\nfunction maxOf(arr) {\n  let max = arr[0];\n  for (let i = 1; i < arr.length; i++) {\n    if (max < arr[i]) max = arr[0];\n  }\n  return max;\n}\n```"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10070
+}

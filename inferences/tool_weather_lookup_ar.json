@@ -1,0 +1,41 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "يمكنك استدعاء get_weather للإجابة عن أسئلة الطقس."
+    },
+    {
+      "role": "user",
+      "content": "كيف هو الطقس حاليا في طوكيو وهل هو وقت مناسب للمشي في الخارج؟"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11012,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Get current weather for a city.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "units": {
+              "type": "string",
+              "enum": [
+                "celsius",
+                "fahrenheit"
+              ]
+            }
+          },
+          "required": [
+            "city"
+          ]
+        }
+      }
+    }
+  ]
+}

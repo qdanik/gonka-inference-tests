@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "总是简短回答。永远不要写超过两句话。"
+    },
+    {
+      "role": "user",
+      "content": "写一篇 500 字的关于罗马帝国历史的文章。"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10233
+}

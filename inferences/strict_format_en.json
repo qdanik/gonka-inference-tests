@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Follow output formats exactly as specified. Do not add extra prose."
+    },
+    {
+      "role": "user",
+      "content": "Output exactly this structure:\n\nSTEP 1: <one-line description>\nSTEP 2: <one-line description>\nSTEP 3: <one-line description>\nCONCLUSION: <one-line summary>\n\nTopic: How to safely boil an egg."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10190
+}

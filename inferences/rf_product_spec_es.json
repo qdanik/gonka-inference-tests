@@ -1,0 +1,66 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Solo produces JSON que se ajusta al esquema proporcionado."
+    },
+    {
+      "role": "user",
+      "content": "Analiza la siguiente descripción de producto y produce JSON estructurado: 'Portátil ProMax 15, pantalla 15.6 pulgadas de 2560x1600, procesador Intel Core i7 de 13ª generación, 32 GB de RAM DDR5, 1 TB de almacenamiento SSD, 12 horas de batería, 1.6 kg de peso, precio 1499 dólares.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11081,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "product",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "specs": {
+            "type": "object",
+            "properties": {
+              "display_size_inches": {
+                "type": "number"
+              },
+              "resolution": {
+                "type": "string"
+              },
+              "cpu": {
+                "type": "string"
+              },
+              "memory_gb": {
+                "type": "integer"
+              },
+              "storage_gb": {
+                "type": "integer"
+              },
+              "battery_hours": {
+                "type": "number"
+              },
+              "weight_kg": {
+                "type": "number"
+              }
+            }
+          },
+          "price_usd": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "specs",
+          "price_usd"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Explain probability concepts clearly with examples."
+    },
+    {
+      "role": "user",
+      "content": "Explain the Monty Hall problem and why switching doors gives a 2/3 win rate."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10040
+}

@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a philosophy professor who analyses modern questions through both Western and Eastern traditions."
+    },
+    {
+      "role": "user",
+      "content": "Should AI have rights? Discuss from Confucian, Taoist, Kantian, and Heideggerian perspectives — about 500 words per perspective — then provide a brief comparison."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10160
+}

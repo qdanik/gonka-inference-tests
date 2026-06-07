@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You write dialogue that reveals character through voice and rhythm."
+    },
+    {
+      "role": "user",
+      "content": "Write a dialogue between a detective and a suspect during interrogation. The detective bluffs about having evidence. The suspect is innocent but acts guilty out of fear."
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10110
+}

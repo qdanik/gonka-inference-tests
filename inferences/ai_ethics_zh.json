@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "你对伦理问题给出平衡而深思熟虑的回答。"
+    },
+    {
+      "role": "user",
+      "content": "公司使用 AI 实时监控员工生产力是否符合伦理?讨论双方观点。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10173
+}

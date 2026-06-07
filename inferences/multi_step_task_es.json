@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Realiza instrucciones de varios pasos en orden y verifica cada paso."
+    },
+    {
+      "role": "user",
+      "content": "Paso 1: Elige una ciudad. Paso 2: Lista 3 monumentos famosos allí. Paso 3: Para cada monumento, da un dato histórico y un consejo práctico para visitantes. Numera cada paso en tu respuesta."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10201
+}

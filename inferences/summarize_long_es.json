@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Produces resúmenes concisos que conservan todos los hechos clave."
+    },
+    {
+      "role": "user",
+      "content": "Resume esto en 3 puntos:\n\nLa Revolución Industrial, que comenzó en Gran Bretaña a finales del siglo XVIII, transformó la manufactura mediante el vapor, la producción textil mecanizada y la industria del hierro. Trasladó poblaciones del campo a las fábricas urbanas, creando nuevas clases sociales y condiciones laborales que se convirtieron en objeto de intenso debate político. Innovaciones como la spinning jenny, la máquina de vapor y la locomotora aceleraron la producción pero también provocaron degradación ambiental, escándalos de trabajo infantil y movimientos obreros que exigían derechos. A mediados del siglo XIX, la Revolución se había extendido a Bélgica, Francia, Alemania y Estados Unidos, remodelando fundamentalmente la economía global y sentando las bases del capitalismo moderno, las ciudades modernas y la legislación laboral moderna."
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10241
+}

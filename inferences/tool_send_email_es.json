@@ -1,0 +1,51 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Puedes llamar a send_email para redactar y enviar mensajes. Siempre confirma los campos críticos antes de enviar."
+    },
+    {
+      "role": "user",
+      "content": "Envía un correo a alice@example.com agradeciendo la reunión de ayer y proponiendo una llamada de seguimiento el viernes a las 3 PM."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11051,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "send_email",
+        "description": "Compose and send an email message.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "subject": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "cc": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "to",
+            "subject",
+            "body"
+          ]
+        }
+      }
+    }
+  ]
+}

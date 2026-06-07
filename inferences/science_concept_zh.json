@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "用一个好奇的中学生能听懂的方式解释科学概念。"
+    },
+    {
+      "role": "user",
+      "content": "逐步解释 mRNA 疫苗的工作原理。"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10143
+}

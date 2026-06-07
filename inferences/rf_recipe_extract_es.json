@@ -1,0 +1,57 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Devuelves SOLO JSON válido siguiendo el esquema proporcionado."
+    },
+    {
+      "role": "user",
+      "content": "Extrae los ingredientes y los pasos de esta receta: 'Para una tortilla española clásica, pela y corta 4 patatas medianas en rodajas finas. Pica 1 cebolla. Fríe ambas en abundante aceite de oliva durante 15 minutos a fuego medio. Bate 6 huevos en un bol grande con sal. Mezcla las patatas y la cebolla con los huevos, dejando reposar 5 minutos. Vierte en una sartén caliente con poco aceite. Cocina 4 minutos por cada lado.'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11071,
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "recipe",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ingredients": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "quantity"
+              ]
+            }
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "total_time_minutes": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ingredients",
+          "steps"
+        ]
+      },
+      "strict": true
+    }
+  }
+}

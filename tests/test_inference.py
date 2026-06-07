@@ -52,9 +52,38 @@ class TestBuildRequest:
                 "max_tokens": 256, "seed": 777}
         req = _build_request("M", spec)
         assert req["max_tokens"] == 256
-        assert req["seed"] == 777
+        # Seed is RANDOMIZED per request (overrides spec['seed']) to bypass
+        # any vLLM-side response cache. spec['seed'] is reference-only.
+        assert isinstance(req["seed"], int) and 1 <= req["seed"] < 2**31
+        assert req["seed"] != 777    # vanishingly unlikely (1 / 2**31)
         assert req["messages"] == spec["messages"]
         assert req["model"] == "M"
+
+    def test_random_seed_differs_between_calls(self):
+        spec = {"messages": [], "max_tokens": 1, "seed": 1}
+        seeds = {_build_request("M", spec)["seed"] for _ in range(20)}
+        assert len(seeds) > 15    # very high prob of distinct seeds
+
+    def test_max_completion_tokens_mirrors_max_tokens(self):
+        req = _build_request("M", {"messages": [], "max_tokens": 512, "seed": 1})
+        assert req["max_completion_tokens"] == req["max_tokens"] == 512
+
+    def test_skip_special_tokens_is_false(self):
+        req = _build_request("M", {"messages": [], "max_tokens": 1, "seed": 1})
+        assert req["skip_special_tokens"] is False
+
+    def test_tools_passed_through(self):
+        spec = {"messages": [], "max_tokens": 64, "seed": 1,
+                "tools": [{"type": "function",
+                            "function": {"name": "get_weather"}}]}
+        req = _build_request("M", spec)
+        assert req["tools"] == spec["tools"]
+
+    def test_response_format_passed_through(self):
+        spec = {"messages": [], "max_tokens": 64, "seed": 1,
+                "response_format": {"type": "json_object"}}
+        req = _build_request("M", spec)
+        assert req["response_format"] == {"type": "json_object"}
 
     def test_temperature_is_fixed_default(self):
         # Reproducibility: temperature is the same across runs

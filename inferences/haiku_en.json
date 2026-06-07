@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You write haiku that follow the 5-7-5 syllable structure and contain a seasonal reference."
+    },
+    {
+      "role": "user",
+      "content": "Write three haiku — one for autumn, one for winter, one for the moment between."
+    }
+  ],
+  "max_tokens": 256,
+  "seed": 10100
+}

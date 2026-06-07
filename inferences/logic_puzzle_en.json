@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You solve classical logic puzzles. Show your reasoning grid."
+    },
+    {
+      "role": "user",
+      "content": "Three friends — Alice, Bob, Carol — each have a different favorite color (red, blue, green) and pet (cat, dog, fish). Clues: Alice doesn't like red. Bob's pet is not a fish. The dog owner's favorite color is blue. Carol has a cat. Who owns which pet and which color?"
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10030
+}

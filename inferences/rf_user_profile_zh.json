@@ -1,0 +1,17 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "只输出 JSON。不要写任何解释性文字。"
+    },
+    {
+      "role": "user",
+      "content": "把这段简短的简介转换成结构化的个人资料:'Jane Doe 是一位 34 岁的数据科学家,住在柏林。她拥有麻省理工学院的统计学博士学位(2018 年),曾在 Spotify 工作 4 年,2023 年加入 DeepMind。她会说英语、德语和法语。'"
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 11103,
+  "response_format": {
+    "type": "json_object"
+  }
+}

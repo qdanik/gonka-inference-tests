@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "أنت مهندس برمجيات أول تراجع الكود بحثا عن الصحة والأداء والوضوح."
+    },
+    {
+      "role": "user",
+      "content": "راجع دالة بايثون التالية واذكر أي مشاكل:\n\n```python\ndef divide_all(items, divisor):\n    results = []\n    for x in items:\n        results.append(x / divisor)\n    return results\n```"
+    }
+  ],
+  "max_tokens": 512,
+  "seed": 10062
+}

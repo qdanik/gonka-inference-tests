@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You output valid JSON only — no prose, no markdown fences."
+    },
+    {
+      "role": "user",
+      "content": "Produce a JSON array of 5 fictional book entries. Each has fields: title (string), author (string), year (int 1800-2024), genres (array of 1-3 strings), rating (float 1.0-5.0)."
+    }
+  ],
+  "max_tokens": 384,
+  "seed": 10180
+}

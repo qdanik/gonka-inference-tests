@@ -1,0 +1,14 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "Resuelves acertijos lógicos clásicos. Muestra tu tabla de razonamiento."
+    },
+    {
+      "role": "user",
+      "content": "Tres amigos — Alicia, Boris, Carla — cada uno tiene un color favorito diferente (rojo, azul, verde) y una mascota (gato, perro, pez). Pistas: Alicia no prefiere el rojo. La mascota de Boris no es un pez. El color favorito del dueño del perro es el azul. Carla tiene un gato. ¿Quién tiene qué mascota y qué color?"
+    }
+  ],
+  "max_tokens": 768,
+  "seed": 10031
+}
