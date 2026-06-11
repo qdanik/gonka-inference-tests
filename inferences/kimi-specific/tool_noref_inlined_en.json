@@ -1,0 +1,35 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call test_tool to act on a filesystem path."
+    },
+    {
+      "role": "user",
+      "content": "Call the test tool with path /tmp/a.txt"
+    }
+  ],
+  "max_tokens": 64,
+  "seed": 990008,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "test_tool",
+        "description": "CONTROL: identical intent to tool_ref_defs_en but the schema is fully inlined (no $ref). This must be ACCEPTED — it isolates $ref as the sole cause of any rejection.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Filesystem path"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        }
+      }
+    }
+  ]
+}

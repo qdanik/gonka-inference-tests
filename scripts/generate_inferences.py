@@ -1,7 +1,11 @@
-"""Generate 100 inference prompts: 25 themes × 4 languages (en/es/ar/zh).
+"""Generate the 228-prompt DEFAULT inference set: 57 themes × 4 languages
+(en/es/ar/zh) — 46 base + 1 multi-turn + 10 special (5 tools + 5 response_format).
 
 Each theme is preserved semantically across languages. Outputs to
-`inferences/<theme>_<lang>.json` with shape `{messages, max_tokens, seed}`.
+`inferences/default/<theme>_<lang>.json` with shape `{messages, max_tokens, seed}`.
+This is the set `e2e infer` runs by default. Other sets (e.g.
+`inferences/kimi-specific/`) live alongside it and are selected with
+`e2e infer --inferences-dir inferences/<set>`.
 
 Run from repo root: `python3 scripts/generate_inferences.py`
 """
@@ -9,8 +13,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-OUT = Path(__file__).resolve().parent.parent / "inferences"
-OUT.mkdir(exist_ok=True)
+OUT = Path(__file__).resolve().parent.parent / "inferences" / "default"
+OUT.mkdir(parents=True, exist_ok=True)
 
 # Seed convention: theme_idx*100 + lang_offset (en=0, es=1, ar=2, zh=3)
 LANG_OFFSET = {"en": 0, "es": 1, "ar": 2, "zh": 3}

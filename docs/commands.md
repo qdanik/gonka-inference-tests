@@ -53,7 +53,8 @@ Creates `~/.e2e-venv` on the remote on first run (installs `huggingface_hub` and
 
 | flag | default | meaning |
 |---|---|---|
-| `--inferences` | none (= all 140) | comma-separated subset of labels to run, e.g. `math_arithmetic_en,code_review_zh`. Reads from `inferences/` (fixed) |
+| `--inferences-dir` | `inferences/default` | directory of `<label>.json` specs to run. Point at `inferences/kimi-specific` (or any path) to run a different set. See [inferences.md](inferences.md) |
+| `--inferences` | none (= every spec in `--inferences-dir`) | comma-separated subset of labels **within** `--inferences-dir`, e.g. `math_arithmetic_en,code_review_zh` |
 | `--concurrency` | `32` | requests in flight at once. vLLM serves up to `--max-num-seqs` (default 128). Lower to 16 if you see `ConnectionError` mid-stream |
 
 Every request to vLLM gets:

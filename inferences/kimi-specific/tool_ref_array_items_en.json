@@ -1,0 +1,43 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call batch_delete to remove several filesystem paths."
+    },
+    {
+      "role": "user",
+      "content": "Delete the paths /tmp/a.txt and /tmp/b.txt"
+    }
+  ],
+  "max_tokens": 64,
+  "seed": 990003,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "batch_delete",
+        "description": "Delete a list of paths. The $ref sits inside array items, not at the top level.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "paths": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Path"
+              }
+            }
+          },
+          "required": [
+            "paths"
+          ],
+          "$defs": {
+            "Path": {
+              "type": "string",
+              "description": "Filesystem path"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

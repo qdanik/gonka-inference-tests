@@ -1,0 +1,53 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call save_tree to persist a nested folder tree."
+    },
+    {
+      "role": "user",
+      "content": "Save a tree named root with two children named src and docs."
+    }
+  ],
+  "max_tokens": 96,
+  "seed": 990005,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "save_tree",
+        "description": "Persist a recursive tree. Node references itself via $ref, so the schema cannot be fully inlined (a dereferencer must detect the cycle).",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "root": {
+              "$ref": "#/$defs/Node"
+            }
+          },
+          "required": [
+            "root"
+          ],
+          "$defs": {
+            "Node": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Node"
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
