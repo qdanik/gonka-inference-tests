@@ -1,0 +1,21 @@
+{
+  "name": "stop_token_ids_noninteger_rejected",
+  "description": "stop_token_ids elements must be integer token ids; a string is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "stop_token_ids": [
+      "x"
+    ]
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "stop_token_ids"
+  }
+}

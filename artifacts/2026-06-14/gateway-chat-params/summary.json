@@ -1,0 +1,548 @@
+{
+  "generated_at": "2026-06-14T00:41:20",
+  "total": 60,
+  "passed": 60,
+  "failed": 0,
+  "results": [
+    {
+      "case": "bad_words_nonstring_element_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (bad_words[0] must be a string)"
+    },
+    {
+      "case": "bad_words_nonstring_element_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (bad_words[0] must be a string)"
+    },
+    {
+      "case": "bad_words_nonstring_element_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (bad_words[0] must be a string)"
+    },
+    {
+      "case": "max_completion_tokens_zero_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (max_completion_tokens must be greater than 0)"
+    },
+    {
+      "case": "max_completion_tokens_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.21,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "max_completion_tokens_zero_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (max_completion_tokens must be greater than 0)"
+    },
+    {
+      "case": "max_tokens_zero_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (max_tokens must be greater than 0)"
+    },
+    {
+      "case": "max_tokens_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.92,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "max_tokens_zero_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (max_tokens must be greater than 0)"
+    },
+    {
+      "case": "min_p_out_of_range_clamped",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.65,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "min_p_out_of_range_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.18,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "min_p_out_of_range_clamped",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.09,
+      "passed": true,
+      "detail": "accepted, content='<think>The user says: \"Reply with the si'"
+    },
+    {
+      "case": "min_tokens_noninteger_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (min_tokens must be a non-negative integer)"
+    },
+    {
+      "case": "min_tokens_noninteger_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (min_tokens must be a non-negative integer)"
+    },
+    {
+      "case": "min_tokens_noninteger_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (min_tokens must be a non-negative integer)"
+    },
+    {
+      "case": "parallel_tool_calls_nonbool_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (parallel_tool_calls must be a boolean)"
+    },
+    {
+      "case": "parallel_tool_calls_nonbool_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (parallel_tool_calls must be a boolean)"
+    },
+    {
+      "case": "parallel_tool_calls_nonbool_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.56,
+      "passed": true,
+      "detail": "rejected 400 (parallel_tool_calls must be a boolean)"
+    },
+    {
+      "case": "repetition_penalty_above_max_clamped",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.18,
+      "passed": true,
+      "detail": "accepted, content='OK, I understand your request and will c'"
+    },
+    {
+      "case": "repetition_penalty_above_max_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.27,
+      "passed": true,
+      "detail": "accepted, content='OK\\n\\nI have no thoughts,'"
+    },
+    {
+      "case": "repetition_penalty_above_max_clamped",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.77,
+      "passed": true,
+      "detail": "accepted, content='<think>The user says: \" Reply با\" no, ju'"
+    },
+    {
+      "case": "repetition_penalty_zero_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (repetition_penalty must be greater than 0)"
+    },
+    {
+      "case": "repetition_penalty_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (repetition_penalty must be greater than 0)"
+    },
+    {
+      "case": "repetition_penalty_zero_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (repetition_penalty must be greater than 0)"
+    },
+    {
+      "case": "seed_noninteger_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (seed must be a non-negative integer)"
+    },
+    {
+      "case": "seed_noninteger_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (seed must be a non-negative integer)"
+    },
+    {
+      "case": "seed_noninteger_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (seed must be a non-negative integer)"
+    },
+    {
+      "case": "skip_special_tokens_nonbool_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (skip_special_tokens must be a boolean)"
+    },
+    {
+      "case": "skip_special_tokens_nonbool_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (skip_special_tokens must be a boolean)"
+    },
+    {
+      "case": "skip_special_tokens_nonbool_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (skip_special_tokens must be a boolean)"
+    },
+    {
+      "case": "stop_nonstring_element_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (stop[0] must be a string)"
+    },
+    {
+      "case": "stop_nonstring_element_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (stop[0] must be a string)"
+    },
+    {
+      "case": "stop_nonstring_element_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (stop[0] must be a string)"
+    },
+    {
+      "case": "stop_token_ids_noninteger_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (stop_token_ids[0] must be an integer token id)"
+    },
+    {
+      "case": "stop_token_ids_noninteger_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (stop_token_ids[0] must be an integer token id)"
+    },
+    {
+      "case": "stop_token_ids_noninteger_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (stop_token_ids[0] must be an integer token id)"
+    },
+    {
+      "case": "temperature_above_max_clamped",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.32,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "temperature_above_max_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.22,
+      "passed": true,
+      "detail": "accepted, content='益智_basic比她喜欢看最好的自己对我.World'"
+    },
+    {
+      "case": "temperature_above_max_clamped",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.77,
+      "passed": true,
+      "detail": "accepted, content='<think>We have a dialogue:\\n\\nUser says: \"'"
+    },
+    {
+      "case": "temperature_below_min_clamped",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.11,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "temperature_below_min_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.11,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "temperature_below_min_clamped",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.77,
+      "passed": true,
+      "detail": "accepted, content='<think>The user says: \"Reply with the si'"
+    },
+    {
+      "case": "top_k_negative_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_k must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_k_negative_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.56,
+      "passed": true,
+      "detail": "rejected 400 (top_k must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_k_negative_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_k must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_k_zero_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.56,
+      "passed": true,
+      "detail": "rejected 400 (top_k must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_k_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_k must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_k_zero_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_k must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_p_above_one_clamped",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "top_p_above_one_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.98,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "top_p_above_one_clamped",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.94,
+      "passed": true,
+      "detail": "accepted, content='<think>The user asks: \"Reply with the si'"
+    },
+    {
+      "case": "top_p_negative_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.56,
+      "passed": true,
+      "detail": "rejected 400 (top_p must be greater than 0)"
+    },
+    {
+      "case": "top_p_negative_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_p must be greater than 0)"
+    },
+    {
+      "case": "top_p_negative_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_p must be greater than 0)"
+    },
+    {
+      "case": "top_p_zero_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_p must be greater than 0)"
+    },
+    {
+      "case": "top_p_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_p must be greater than 0)"
+    },
+    {
+      "case": "top_p_zero_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.56,
+      "passed": true,
+      "detail": "rejected 400 (top_p must be greater than 0)"
+    },
+    {
+      "case": "valid_baseline",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 0.64,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "valid_baseline",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 4.27,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "valid_baseline",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 0.95,
+      "passed": true,
+      "detail": "accepted, content='<think>The user says: \"Reply with the si'"
+    }
+  ]
+}

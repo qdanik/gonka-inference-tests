@@ -1,0 +1,18 @@
+{
+  "name": "repetition_penalty_above_max_clamped",
+  "description": "repetition_penalty > 2 is clamped to 2; request succeeds.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "repetition_penalty": 9
+  },
+  "expect": {
+    "outcome": "clamp",
+    "status": 200
+  }
+}

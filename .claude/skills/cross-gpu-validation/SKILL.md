@@ -13,7 +13,7 @@ The user has access to one or more rented GPU boxes and wants to:
 - Cross-validate one box's executor records on another box (Gonka chain `customSimilarity` algorithm, 1:1 port)
 - Collect PoC nonce artifacts to compare throughput across architectures
 
-Trigger phrases: "запусти e2e тесты", "validate на другом GPU", "deploy на N×B200", "проверь similarity между нодами", "сделай PoC коллекцию", "cross-arch validation".
+Trigger phrases: "run e2e tests", "validate on another GPU", "deploy on N×B200", "check similarity between nodes", "collect PoC nonces", "cross-arch validation".
 
 ## Framework location
 

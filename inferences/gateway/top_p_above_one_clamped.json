@@ -1,0 +1,18 @@
+{
+  "name": "top_p_above_one_clamped",
+  "description": "top_p > 1 is clamped to 1; request succeeds.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "top_p": 1.5
+  },
+  "expect": {
+    "outcome": "clamp",
+    "status": 200
+  }
+}

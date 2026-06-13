@@ -1,0 +1,19 @@
+{
+  "name": "top_p_zero_rejected",
+  "description": "top_p must be in (0,1]; 0 is rejected with a field-named 400.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "top_p": 0
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "top_p"
+  }
+}

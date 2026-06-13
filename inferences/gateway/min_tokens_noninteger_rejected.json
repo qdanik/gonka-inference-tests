@@ -1,0 +1,19 @@
+{
+  "name": "min_tokens_noninteger_rejected",
+  "description": "min_tokens must be a non-negative integer; a float is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "min_tokens": 1.5
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "min_tokens"
+  }
+}

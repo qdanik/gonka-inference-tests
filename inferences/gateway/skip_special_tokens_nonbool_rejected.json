@@ -1,0 +1,19 @@
+{
+  "name": "skip_special_tokens_nonbool_rejected",
+  "description": "skip_special_tokens must be a boolean; a string is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "skip_special_tokens": "yes"
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "skip_special_tokens"
+  }
+}
