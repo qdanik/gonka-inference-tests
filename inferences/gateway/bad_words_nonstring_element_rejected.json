@@ -1,0 +1,21 @@
+{
+  "name": "bad_words_nonstring_element_rejected",
+  "description": "bad_words elements must be strings; a number element is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "bad_words": [
+      5
+    ]
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "bad_words"
+  }
+}

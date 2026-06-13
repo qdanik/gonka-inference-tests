@@ -1,0 +1,47 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call open_path to open an optional filesystem path."
+    },
+    {
+      "role": "user",
+      "content": "Open the path /tmp/a.txt"
+    }
+  ],
+  "max_tokens": 64,
+  "seed": 990004,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "open_path",
+        "description": "Open a path. The $ref is nested inside an anyOf (optional-via-ref pattern).",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Path"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "$defs": {
+            "Path": {
+              "type": "string",
+              "description": "Filesystem path"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

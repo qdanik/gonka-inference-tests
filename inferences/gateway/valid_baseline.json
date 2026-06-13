@@ -1,0 +1,18 @@
+{
+  "name": "valid_baseline",
+  "description": "A normal in-range request succeeds (harness + happy-path check).",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "temperature": 0.5
+  },
+  "expect": {
+    "outcome": "accept",
+    "status": 200
+  }
+}

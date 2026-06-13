@@ -13,7 +13,7 @@ The user has access to one or more rented GPU boxes and wants to:
 - Cross-validate one box's executor records on another box (Gonka chain `customSimilarity` algorithm, 1:1 port)
 - Collect PoC nonce artifacts to compare throughput across architectures
 
-Trigger phrases: "запусти e2e тесты", "validate на другом GPU", "deploy на N×B200", "проверь similarity между нодами", "сделай PoC коллекцию", "cross-arch validation".
+Trigger phrases: "run e2e tests", "validate on another GPU", "deploy on N×B200", "check similarity between nodes", "collect PoC nonces", "cross-arch validation".
 
 ## Framework location
 
@@ -22,14 +22,18 @@ A self-contained Python CLI (`python3 -m e2e ...`) at the repo root. All command
 ```
 <repo>/
 ├── e2e/                 # CLI package
-├── inferences/          # 228 inference specs (25 base × 4 langs + 5 tools × 4 + 5 response_format × 4 + multi_turn × 4)
+├── inferences/          # spec sets, one subdir each (select with `infer --inferences-dir`):
+│   ├── default/         #   228 generated specs (run by default; 46 base + 1 multi-turn + 10 special, ×4 langs)
+│   └── kimi-specific/   #   hand-authored JSON Schema $ref probes (Kimi-K2.6 report)
 ├── tests/               # 143 pytest cases (math + CLI + plot)
-├── docs/                # commands.md, artifacts.md, recipes.md, gotchas.md, findings.md, inferences.md
+├── docs/                # commands.md, artifacts.md, recipes.md, gotchas.md, findings.md, inferences.md, kimi.md
 ├── artifacts/<YYYY-MM-DD>/<run-name>/   # results
 └── README.md
 ```
 
 Run `python3 -m e2e ...` from the repo root (so the `e2e` package resolves). Either `cd <repo>` first, or invoke via `PYTHONPATH=<repo> python3 -m e2e ...`.
+
+**Spec sets / other models.** `infer` runs `inferences/default/` unless `--inferences-dir inferences/<set>` points elsewhere. To validate a non-MiniMax model, add its `--model-extra-args` parsers (e.g. **Kimi-K2.6**: `--trust-remote-code --enable-auto-tool-choice --tool-call-parser kimi_k2 --reasoning-parser kimi_k2 --mm-encoder-tp-mode data`) — see [`docs/kimi.md`](../../../docs/kimi.md). The `kimi-specific/` set reproduces an upstream JSON-Schema `$ref` tool-rejection report.
 
 ## Workflow
 

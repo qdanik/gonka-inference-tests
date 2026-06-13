@@ -21,7 +21,10 @@ from .validate import run_cross_validation
 
 
 DEFAULT_ARTIFACTS = Path(__file__).resolve().parent.parent / "artifacts"
-DEFAULT_INFERENCES = Path(__file__).resolve().parent.parent / "inferences"
+# `inferences/` now holds one subdir per set; `infer` runs `default/` unless
+# `--inferences-dir` points elsewhere (e.g. `inferences/kimi-specific`).
+DEFAULT_INFERENCES_ROOT = Path(__file__).resolve().parent.parent / "inferences"
+DEFAULT_INFERENCE_SET = DEFAULT_INFERENCES_ROOT / "default"
 
 
 def _server_from_args(args) -> ServerTarget:
@@ -170,10 +173,16 @@ def main() -> int:
 
     p_inf = sub.add_parser("infer", help="run inference sweep")
     _add_common(p_inf)
+    p_inf.add_argument("--inferences-dir", default=str(DEFAULT_INFERENCE_SET),
+                       help="Directory of <label>.json specs to run. "
+                            "Default: inferences/default. Point at "
+                            "inferences/kimi-specific (or any path) to run a "
+                            "different set.")
     p_inf.add_argument("--inferences", default=None,
-                       help="Comma-separated subset of inference labels to "
-                            "run (e.g. 'sys_math_en,multi_turn_en'). "
-                            "If omitted: run every JSON in vllm/inferences/.")
+                       help="Comma-separated subset of inference labels WITHIN "
+                            "--inferences-dir to run (e.g. 'sys_math_en,"
+                            "multi_turn_en'). If omitted: run every JSON in the "
+                            "directory.")
     p_inf.add_argument("--concurrency", type=int, default=32,
                        help="Number of inference requests in flight at once. "
                             "vLLM serves up to --max-num-seqs (default 128) "
@@ -263,7 +272,7 @@ def main() -> int:
             # independent of the vLLM server default (and matches what
             # validate will pass on replay).
             written = run_inference_sweep(
-                t, model, paths, DEFAULT_INFERENCES, names,
+                t, model, paths, Path(args.inferences_dir), names,
                 concurrency=args.concurrency,
                 logprobs_mode=args.logprobs_mode,
             )

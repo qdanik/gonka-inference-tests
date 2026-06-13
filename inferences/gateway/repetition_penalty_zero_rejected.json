@@ -1,0 +1,19 @@
+{
+  "name": "repetition_penalty_zero_rejected",
+  "description": "repetition_penalty must be > 0; 0 is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "repetition_penalty": 0
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "repetition_penalty"
+  }
+}

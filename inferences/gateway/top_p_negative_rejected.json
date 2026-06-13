@@ -1,0 +1,19 @@
+{
+  "name": "top_p_negative_rejected",
+  "description": "top_p below the exclusive lower bound is rejected, not clamped to 0.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "top_p": -0.2
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "top_p"
+  }
+}

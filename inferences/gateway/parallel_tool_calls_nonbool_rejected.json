@@ -1,0 +1,19 @@
+{
+  "name": "parallel_tool_calls_nonbool_rejected",
+  "description": "parallel_tool_calls must be a boolean; a string is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "parallel_tool_calls": "true"
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "parallel_tool_calls"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call test_tool to act on a filesystem path."
+    },
+    {
+      "role": "user",
+      "content": "Call the test tool with path /tmp/a.txt"
+    }
+  ],
+  "max_tokens": 64,
+  "seed": 990001,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "test_tool",
+        "description": "Test tool with a referenced parameter schema.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/Path"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "$defs": {
+            "Path": {
+              "type": "string",
+              "description": "Filesystem path"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

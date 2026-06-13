@@ -5,7 +5,14 @@ import sys
 
 import pytest
 
-from e2e.cli import _parse_csv
+from e2e.cli import _parse_csv, DEFAULT_INFERENCE_SET
+
+
+class TestDefaultInferenceSet:
+    def test_default_set_is_the_default_subdir(self):
+        # `infer` runs inferences/default/ unless --inferences-dir overrides it.
+        assert DEFAULT_INFERENCE_SET.name == "default"
+        assert DEFAULT_INFERENCE_SET.parent.name == "inferences"
 
 
 class TestParseCsv:
@@ -70,6 +77,11 @@ class TestCliArgparse:
         r = _run_cli("infer", "--help", cwd=framework_root)
         assert r.returncode == 0
         assert "--inferences" in r.stdout
+
+    def test_infer_help_exposes_inferences_dir(self, framework_root):
+        r = _run_cli("infer", "--help", cwd=framework_root)
+        assert r.returncode == 0
+        assert "--inferences-dir" in r.stdout
 
     def test_validate_help_default_pass_value_is_0_9(self, framework_root):
         r = _run_cli("validate", "--help", cwd=framework_root)

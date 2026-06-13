@@ -1,0 +1,25 @@
+{
+  "name": "max_tokens_zero_rejected",
+  "description": "max_tokens:0 is rejected fast (no 0-byte hang) on normal routes; floored to 16 on Kimi.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 0
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "max_tokens",
+    "max_latency_s": 30,
+    "per_model": {
+      "moonshotai/Kimi-K2.6": {
+        "outcome": "clamp",
+        "status": 200
+      }
+    }
+  }
+}

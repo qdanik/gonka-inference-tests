@@ -51,7 +51,7 @@ python3 -m e2e poc \
 | `download-model` | snapshot_download an HF repo onto the remote box (creates `~/.e2e-venv`) |
 | `deploy` | docker pull + run vLLM container + wait for `/health` |
 | `poc` | collect PoC nonce artifacts via reverse SSH tunnel |
-| `infer` | run inference sweep over `inferences/*.json`, save responses |
+| `infer` | run inference sweep over a spec set (`--inferences-dir`, default `inferences/default/`), save responses |
 | `validate` | cross-validate executor run against another validator GPU using on-chain `customSimilarity` |
 | `plot` | render kaitakuai-style honest/fraud distance scatter (`--type=poc\|inference`) |
 
@@ -60,9 +60,11 @@ python3 -m e2e poc \
 ```
 repo/
 ├── e2e/                # framework package
-├── inferences/         # 140 prompt specs (25 themes × 4 langs + 5 tools + 5 response_format × 4 langs)
-├── scripts/            # generator for inferences/
-├── tests/              # 129 pytest cases (math + CLI + smoke)
+├── inferences/         # prompt specs, one subdir per set:
+│   ├── default/        #   228 generated specs (run by default)
+│   └── kimi-specific/  #   hand-authored JSON Schema $ref probes (Kimi report)
+├── scripts/            # generator for inferences/default/
+├── tests/              # 143 pytest cases (math + CLI + smoke)
 ├── artifacts/          # all per-run outputs (per-date, per-model-gpu)
 └── docs/               # detailed guides (read these next)
 ```
@@ -74,10 +76,11 @@ repo/
 - **[docs/recipes.md](docs/recipes.md)** — per-GPU deploy recipes (B200 / H200 / A100 / H100, FP8 / AWQ) with worked examples
 - **[docs/gotchas.md](docs/gotchas.md)** — every known issue we hit + the fix (`custom_all_reduce`, marlin, mlnode entrypoint, pip PEP-668, etc.)
 - **[docs/findings.md](docs/findings.md)** — empirical throughput numbers + cross-arch validation similarity matrix
-- **[docs/inferences.md](docs/inferences.md)** — the 140-prompt catalog + how to add new ones
+- **[docs/inferences.md](docs/inferences.md)** — the spec catalog, sets, `--inferences-dir`, and how to add new ones
+- **[docs/kimi.md](docs/kimi.md)** — running `moonshotai/Kimi-K2.6` (tool/reasoning parsers) + the `$ref` probe set
 
 ## Tests
 
 ```bash
-python3 -m pytest          # 129 tests; ~16s
+python3 -m pytest          # 143 tests; ~17s
 ```

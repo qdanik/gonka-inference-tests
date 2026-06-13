@@ -1,0 +1,21 @@
+{
+  "name": "stop_nonstring_element_rejected",
+  "description": "stop elements must be strings; a number element is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "stop": [
+      123
+    ]
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "stop"
+  }
+}

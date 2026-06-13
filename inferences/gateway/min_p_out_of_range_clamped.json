@@ -1,0 +1,18 @@
+{
+  "name": "min_p_out_of_range_clamped",
+  "description": "min_p outside [0,1] is clamped into range; request succeeds.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "min_p": 5
+  },
+  "expect": {
+    "outcome": "clamp",
+    "status": 200
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You can call test_tool to act on a filesystem path."
+    },
+    {
+      "role": "user",
+      "content": "Call the test tool with path /tmp/a.txt"
+    }
+  ],
+  "max_tokens": 64,
+  "seed": 990002,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "test_tool",
+        "description": "Test tool using the older JSON Schema Draft-07 'definitions' keyword.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "#/definitions/Path"
+            }
+          },
+          "required": [
+            "path"
+          ],
+          "definitions": {
+            "Path": {
+              "type": "string",
+              "description": "Filesystem path"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

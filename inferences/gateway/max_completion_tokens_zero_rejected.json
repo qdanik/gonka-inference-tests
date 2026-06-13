@@ -1,0 +1,25 @@
+{
+  "name": "max_completion_tokens_zero_rejected",
+  "description": "max_completion_tokens:0 is rejected like max_tokens:0; floored on Kimi.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_completion_tokens": 0
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "max_completion_tokens",
+    "max_latency_s": 30,
+    "per_model": {
+      "moonshotai/Kimi-K2.6": {
+        "outcome": "clamp",
+        "status": 200
+      }
+    }
+  }
+}

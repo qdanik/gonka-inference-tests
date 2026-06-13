@@ -1,0 +1,19 @@
+{
+  "name": "top_k_negative_rejected",
+  "description": "top_k other than -1 cannot be negative; -2 is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "top_k": -2
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "top_k"
+  }
+}

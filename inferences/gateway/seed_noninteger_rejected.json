@@ -1,0 +1,19 @@
+{
+  "name": "seed_noninteger_rejected",
+  "description": "seed must be an integer; a float is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "seed": 1.5
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "seed"
+  }
+}
