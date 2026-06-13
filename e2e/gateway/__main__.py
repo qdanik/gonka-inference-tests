@@ -63,12 +63,14 @@ def _add_run_args(parser: argparse.ArgumentParser) -> None:
                         help="comma-separated model ids to test; empty = all served")
     parser.add_argument("--admin-key", default="",
                         help="gateway admin Bearer key (or set $GONKA_GATEWAY_ADMIN_KEY)")
-    parser.add_argument("--cases-dir", type=Path, default=DEFAULT_CASES_DIR,
-                        help="dir of case fixtures (default inferences/gateway)")
-    parser.add_argument("--names", default="",
+    parser.add_argument("--pr", default="",
+                        help="PR id under test; only sets the artifacts dir (gateway-pr-<id>)")
+    parser.add_argument("--cases-dir", type=Path, default=None,
+                        help="override the fixtures dir (default inferences/gateway)")
+    parser.add_argument("--cases", default="",
                         help="comma-separated case names to run; empty = all")
     parser.add_argument("--out-dir", type=Path, default=None,
-                        help="artifacts dir (default artifacts/<date>/gateway-chat-params)")
+                        help="override artifacts dir (default artifacts/<date>/gateway-[pr-<id>|chat-params])")
     parser.add_argument("--timeout", type=int, default=120, help="per-request timeout seconds")
 
 
@@ -79,12 +81,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     target = GatewayTarget.from_args(args)
-    names = [n.strip() for n in args.names.split(",") if n.strip()] or None
-    cases = load_cases(args.cases_dir, names)
+    pr = args.pr.strip().lstrip("#")
+
+    cases_dir = args.cases_dir or DEFAULT_CASES_DIR
+    names = [n.strip() for n in args.cases.split(",") if n.strip()] or None
+    cases = load_cases(cases_dir, names)
+
     out_dir = args.out_dir
     if out_dir is None:
         from datetime import datetime
-        out_dir = DEFAULT_ARTIFACTS / datetime.now().strftime("%Y-%m-%d") / "gateway-chat-params"
+        label = f"gateway-pr-{pr}" if pr else "gateway-chat-params"
+        out_dir = DEFAULT_ARTIFACTS / datetime.now().strftime("%Y-%m-%d") / label
 
     results = run(target, cases, out_dir, timeout_s=args.timeout)
     failed = [r for r in results if not r.passed]

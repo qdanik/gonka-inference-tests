@@ -53,7 +53,12 @@ class Case:
 
 
 def load_cases(src_dir: Path, names: list[str] | None = None) -> list[Case]:
-    """Load every `<name>.json` case from src_dir (sorted), or a chosen subset."""
+    """Load every `<name>.json` case directly in src_dir (sorted), or a subset.
+
+    Fixtures live flat in one dir; `names` (from --cases) picks a subset for
+    targeted runs. Which PR a case belongs to is a run-time choice (--pr sets the
+    artifacts dir), not a directory layout.
+    """
     if not src_dir.is_dir():
         raise FileNotFoundError(f"fixtures dir not found: {src_dir}")
     by_name = {p.stem: p for p in sorted(src_dir.glob("*.json"))}

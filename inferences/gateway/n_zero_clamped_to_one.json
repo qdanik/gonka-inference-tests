@@ -1,0 +1,14 @@
+{
+  "name": "n_zero_clamped_to_one",
+  "description": "n:0 is clamped up to 1 and returns content fast, instead of asking the backend for zero completions and hanging until the deadline.",
+  "request": {
+    "messages": [{ "role": "user", "content": "Reply with the single word OK." }],
+    "max_tokens": 16,
+    "n": 0
+  },
+  "expect": {
+    "outcome": "clamp",
+    "status": 200,
+    "max_latency_s": 30
+  }
+}

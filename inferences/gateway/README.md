@@ -4,11 +4,17 @@ One JSON file per request that the **gateway** should clamp or reject. This is a
 growing corpus: when you find a request that misbehaves at the gateway boundary,
 add it here and it becomes a permanent regression check.
 
-Run them with [`e2e/gateway`](../../e2e/gateway/) (config from an auto-loaded `.env`):
+All cases live flat in this dir. Run them with [`e2e/gateway`](../../e2e/gateway/)
+(config from an auto-loaded `.env`):
 
 ```bash
-python -m e2e.gateway run
+python -m e2e.gateway run                                   # all cases
+python -m e2e.gateway run --cases case_a,case_b             # targeted subset
+python -m e2e.gateway run --pr 1316 --cases n_zero_clamped_to_one,n_above_max_clamped
 ```
+
+`--pr <id>` only routes results to `artifacts/<date>/gateway-pr-<id>/`; it does
+not select fixtures — pick a PR's cases by name with `--cases`.
 
 Every case runs against **every served model**. Where a model behaves
 differently for the same input, override just that model's expectation with

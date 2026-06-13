@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-06-14T01:09:23",
+  "total": 9,
+  "passed": 9,
+  "failed": 0,
+  "results": [
+    {
+      "case": "n_zero_clamped_to_one",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "n_zero_clamped_to_one",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "n_zero_clamped_to_one",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "accepted, content='<think>The user says: \"Reply with the si'"
+    },
+    {
+      "case": "n_above_max_clamped",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "n_above_max_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "n_above_max_clamped",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "accepted, content='<think>The user says: \"Reply with the si'"
+    },
+    {
+      "case": "n_in_range_unchanged",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "n_in_range_unchanged",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "accepted, content='OK'"
+    },
+    {
+      "case": "n_in_range_unchanged",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "accepted, content='<think>The user is asking for a program '"
+    }
+  ]
+}

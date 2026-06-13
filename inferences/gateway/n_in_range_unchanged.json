@@ -1,0 +1,13 @@
+{
+  "name": "n_in_range_unchanged",
+  "description": "n within [1,5] is left untouched and the request succeeds with content.",
+  "request": {
+    "messages": [{ "role": "user", "content": "Reply with the single word OK." }],
+    "max_tokens": 16,
+    "n": 2
+  },
+  "expect": {
+    "outcome": "accept",
+    "status": 200
+  }
+}

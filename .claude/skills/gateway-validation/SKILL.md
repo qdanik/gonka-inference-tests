@@ -48,11 +48,15 @@ GONKA_GATEWAY_URL=http://127.0.0.1:18080
 ```bash
 # fill .env from .env.example, then:
 python -m e2e.gateway run                       # all cases, all served models
-python -m e2e.gateway run --names top_p_zero_rejected,max_tokens_zero_rejected
+python -m e2e.gateway run --cases top_p_zero_rejected,max_tokens_zero_rejected
 python -m e2e.gateway run --models Qwen/Qwen3-235B-A22B-Instruct-2507-FP8
+python -m e2e.gateway run --pr 1316 --cases n_zero_clamped_to_one,n_above_max_clamped
 ```
 
-Exit code is non-zero if any case fails. Results: `artifacts/<date>/gateway-chat-params/summary.json`. After a clean run, write a `README.md` next to it summarizing the validation (models, tallies, anything found/fixed).
+- `--cases a,b` — run only those case names (targeted runs); empty = all.
+- `--pr <id>` — tag the run as a PR's; results go to `artifacts/<date>/gateway-pr-<id>/`. Fixtures stay flat in `inferences/gateway/`; `--pr` only changes the output dir, so pick the PR's cases with `--cases`.
+
+Exit code is non-zero if any case fails. Results: `artifacts/<date>/gateway-<pr-<id>|chat-params>/summary.json`. After a clean run, write a `README.md` next to it summarizing the validation (models, tallies, anything found/fixed).
 
 ## The corpus (inferences/gateway/)
 
@@ -95,5 +99,5 @@ A failing case is the harness working. When a case goes red:
 - The gateway is loopback-only on the server → always via the SSH tunnel; `--gateway-url` is its address **as seen on the server**, separate from `--ssh-host`.
 - Validation happens **before** forwarding, so non-streaming requests exercise it fully and give deterministic status/body. The `max_latency_s` guard distinguishes a fast reject from a request that hangs until the upstream deadline (e.g. a zero-budget request that produces no tokens).
 - A `clamp` result only proves the request **succeeded** (200 + content) — the response does not echo the clamped value; the exact clamped number is locked by the gateway's Go unit tests, not here.
-- Re-running burns real escrow balance on the clamp/accept cases (they run actual inference). Use `--names` to target a subset while iterating.
+- Re-running burns real escrow balance on the clamp/accept cases (they run actual inference). Use `--cases` to target a subset while iterating.
 - After redeploy, confirm the served set with the run's `served=[...]` line; a missing model means its escrow isn't active.

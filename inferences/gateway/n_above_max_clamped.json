@@ -1,0 +1,13 @@
+{
+  "name": "n_above_max_clamped",
+  "description": "n above the maximum (5) is capped; the request still succeeds with content.",
+  "request": {
+    "messages": [{ "role": "user", "content": "Reply with the single word OK." }],
+    "max_tokens": 16,
+    "n": 9
+  },
+  "expect": {
+    "outcome": "clamp",
+    "status": 200
+  }
+}

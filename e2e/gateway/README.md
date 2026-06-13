@@ -26,10 +26,17 @@ GONKA_GATEWAY_ADMIN_KEY=<admin-key> python -m e2e.gateway run \
 - `--ssh-host` / `--ssh-port` — how to reach the box.
 - `--gateway-url` — where the gateway listens **on that box** (server-side loopback).
 - `--models` — comma-separated model ids to test; empty = every served model.
-- `--names` — comma-separated case names; empty = all.
+- `--cases` — comma-separated case names for targeted runs; empty = all.
+- `--pr <id>` — tag the run as a PR's; writes to `artifacts/<date>/gateway-pr-<id>/`
+  (fixtures stay flat — pick the PR's cases with `--cases`).
+
+```bash
+# validate one PR's inferences into its own results dir
+python -m e2e.gateway run --pr 1316 --cases n_zero_clamped_to_one,n_above_max_clamped
+```
 
 Exit code is non-zero if any case fails. Results go to
-`artifacts/<date>/gateway-chat-params/summary.json`.
+`artifacts/<date>/gateway-<pr-<id>|chat-params>/summary.json`.
 
 ## Behavior tested
 
