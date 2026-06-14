@@ -7,6 +7,7 @@ the runner picks it up automatically. Each file:
     {
       "name": "top_p_zero_rejected",
       "description": "why this is interesting",
+      "models": ["MiniMaxAI/MiniMax-M2.7"],  # optional: restrict to these served models
       "request": { ...chat-completions body WITHOUT "model"... },
       "expect": {
         "outcome": "reject",              # "reject" | "clamp" | "accept"
@@ -19,10 +20,12 @@ the runner picks it up automatically. Each file:
       }
     }
 
-Every case runs against every served model; `expect.per_model[<model>]` overrides
-the base expectation where a model behaves differently (e.g. Kimi floors
-max_tokens:0 instead of rejecting it). The `model` field is injected by the
-runner, so fixtures stay node-agnostic. No secrets ever go in a fixture.
+By default every case runs against every served model. `models` restricts a case
+to specific routes (for model-specific behavior, e.g. the MiniMax tool-message
+shape). `expect.per_model[<model>]` overrides the base expectation where a model
+diverges (e.g. Kimi floors max_tokens:0 instead of rejecting it). The `model`
+field is injected by the runner, so fixtures stay node-agnostic. No secrets ever
+go in a fixture.
 """
 from __future__ import annotations
 
@@ -38,6 +41,7 @@ class Case:
     description: str
     request: dict[str, Any]
     expect: dict[str, Any]
+    models: list[str] | None = None  # restrict to these served models; None = all
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Case":
@@ -49,6 +53,7 @@ class Case:
             description=data.get("description", ""),
             request=data["request"],
             expect=data["expect"],
+            models=data.get("models"),
         )
 
 

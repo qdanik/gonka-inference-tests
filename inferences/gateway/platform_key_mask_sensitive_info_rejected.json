@@ -1,0 +1,19 @@
+{
+  "name": "platform_key_mask_sensitive_info_rejected",
+  "description": "platform-only key mask_sensitive_info is rejected as unsupported.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "mask_sensitive_info": true
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "mask_sensitive_info"
+  }
+}

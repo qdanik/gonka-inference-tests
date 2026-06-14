@@ -1,0 +1,21 @@
+{
+  "name": "so_exactly_one_zero",
+  "description": "structured_outputs with zero constraint fields is rejected (exactly-one rule).",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "structured_outputs": {
+      "disable_any_whitespace": true
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs"
+  }
+}

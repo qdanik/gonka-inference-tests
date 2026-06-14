@@ -1,0 +1,21 @@
+{
+  "name": "so_choice_not_array",
+  "description": "structured_outputs.choice that is not a string array is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "structured_outputs": {
+      "choice": "a"
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs"
+  }
+}

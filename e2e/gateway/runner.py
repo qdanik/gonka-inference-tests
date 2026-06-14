@@ -83,7 +83,11 @@ def run(target: GatewayTarget, cases: list[Case], out_dir: Path,
             print("[gateway] no models to test")
 
         for case in cases:
-            for model in models:
+            case_models = [m for m in models if not case.models or m in case.models]
+            if not case_models:
+                print(f"  SKIP {case.name} (none of its models {case.models} are served)")
+                continue
+            for model in case_models:
                 expect = _expect_for_model(case, model)
                 body = {**case.request, "model": model, "stream": False}
                 resp = send_chat(base_url, target.admin_key, body, timeout_s=timeout_s)

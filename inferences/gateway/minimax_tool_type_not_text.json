@@ -1,0 +1,45 @@
+{
+  "name": "minimax_tool_type_not_text",
+  "description": "MiniMax tool entry whose type is not \"text\" is rejected.",
+  "models": [
+    "MiniMaxAI/MiniMax-M2.7"
+  ],
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What is the weather in Tokyo?"
+      },
+      {
+        "role": "assistant",
+        "content": "Checking the weather.",
+        "tool_calls": [
+          {
+            "id": "call_1",
+            "type": "function",
+            "function": {
+              "name": "get_weather",
+              "arguments": "{\"city\":\"Tokyo\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "content": [
+          {
+            "name": "f",
+            "type": "image",
+            "text": "x"
+          }
+        ]
+      }
+    ],
+    "max_tokens": 16
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "content"
+  }
+}

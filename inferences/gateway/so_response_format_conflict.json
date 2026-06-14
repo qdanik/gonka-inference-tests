@@ -1,0 +1,26 @@
+{
+  "name": "so_response_format_conflict",
+  "description": "structured_outputs combined with response_format is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "structured_outputs": {
+      "json": {
+        "type": "string"
+      }
+    },
+    "response_format": {
+      "type": "json_object"
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs"
+  }
+}

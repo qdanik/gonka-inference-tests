@@ -1,0 +1,15 @@
+{
+  "name": "structural_tag_string_rejected",
+  "description": "structured_outputs.structural_tag as a JSON-encoded string is rejected with a fast 400 (the object form is required; the string form crashes the engine with a 500).",
+  "request": {
+    "messages": [{ "role": "user", "content": "Reply with the single word OK." }],
+    "max_tokens": 16,
+    "structured_outputs": { "structural_tag": "{\"type\":\"structural_tag\"}" }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs",
+    "max_latency_s": 30
+  }
+}

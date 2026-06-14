@@ -1,0 +1,14 @@
+{
+  "name": "tools_whitespace_name_rejected",
+  "description": "A tool defined with a whitespace-only function name is rejected, instead of passing the gateway and reaching the engine's tool parser with an effectively empty name.",
+  "request": {
+    "messages": [{ "role": "user", "content": "What is the weather in Tokyo?" }],
+    "max_tokens": 16,
+    "tools": [{ "type": "function", "function": { "name": "   ", "description": "Get weather", "parameters": { "type": "object", "properties": { "city": { "type": "string" } } } } }]
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "function.name"
+  }
+}

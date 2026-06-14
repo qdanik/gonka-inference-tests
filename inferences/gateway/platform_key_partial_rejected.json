@@ -1,0 +1,14 @@
+{
+  "name": "platform_key_partial_rejected",
+  "description": "A MiniMax-platform-only key (partial) is rejected with 400 as an unsupported parameter instead of being silently ignored, so a client porting from the MiniMax platform gets a clear error rather than a false-positive 200.",
+  "request": {
+    "messages": [{ "role": "user", "content": "Reply with the single word OK." }],
+    "max_tokens": 16,
+    "partial": true
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "partial"
+  }
+}

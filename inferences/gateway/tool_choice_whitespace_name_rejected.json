@@ -1,0 +1,15 @@
+{
+  "name": "tool_choice_whitespace_name_rejected",
+  "description": "tool_choice forcing a whitespace-only function name is rejected. Without the trim it reaches the engine as a forced call to a nonexistent tool and hangs the request to the deadline.",
+  "request": {
+    "messages": [{ "role": "user", "content": "What is the weather in Tokyo?" }],
+    "max_tokens": 16,
+    "tools": [{ "type": "function", "function": { "name": "get_weather", "description": "Get weather", "parameters": { "type": "object", "properties": { "city": { "type": "string" } } } } }],
+    "tool_choice": { "type": "function", "function": { "name": "   " } }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "tool_choice"
+  }
+}

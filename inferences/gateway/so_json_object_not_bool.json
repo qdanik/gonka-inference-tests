@@ -1,0 +1,21 @@
+{
+  "name": "so_json_object_not_bool",
+  "description": "structured_outputs.json_object that is not a boolean is rejected.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "structured_outputs": {
+      "json_object": "yes"
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs"
+  }
+}

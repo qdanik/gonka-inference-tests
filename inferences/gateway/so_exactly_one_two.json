@@ -1,0 +1,24 @@
+{
+  "name": "so_exactly_one_two",
+  "description": "structured_outputs with two constraint fields is rejected (exactly-one rule).",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "structured_outputs": {
+      "json": {
+        "type": "string"
+      },
+      "regex": "\\d+"
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs"
+  }
+}

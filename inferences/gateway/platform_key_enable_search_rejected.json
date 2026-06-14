@@ -1,0 +1,19 @@
+{
+  "name": "platform_key_enable_search_rejected",
+  "description": "platform-only key enable_search is rejected as unsupported.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "enable_search": true
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "enable_search"
+  }
+}

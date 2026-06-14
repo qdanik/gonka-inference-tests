@@ -1,0 +1,21 @@
+{
+  "name": "platform_key_search_kwargs_rejected",
+  "description": "platform-only key search_kwargs is rejected as unsupported.",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "search_kwargs": {
+      "k": 1
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "search_kwargs"
+  }
+}

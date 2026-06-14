@@ -1,0 +1,494 @@
+{
+  "generated_at": "2026-06-14T02:08:13",
+  "total": 54,
+  "passed": 54,
+  "failed": 0,
+  "results": [
+    {
+      "case": "structural_tag_string_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.structural_tag: invalid shape: must be an object (a JSON-enco)"
+    },
+    {
+      "case": "structural_tag_string_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "structural_tag_string_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.structural_tag: invalid shape: must be an object (a JSON-enco)"
+    },
+    {
+      "case": "structured_outputs_json_accepted",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 1.59,
+      "passed": true,
+      "detail": "accepted, content='{\"n\": 3}'"
+    },
+    {
+      "case": "structured_outputs_json_accepted",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "structured_outputs_json_accepted",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 2.99,
+      "passed": true,
+      "detail": "accepted, content='<think>We need to produce JSON with fiel'"
+    },
+    {
+      "case": "platform_key_partial_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"partial\" is currently rejected by the Gonka network.)"
+    },
+    {
+      "case": "platform_key_partial_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.54,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"partial\" is currently rejected by the Gonka network.)"
+    },
+    {
+      "case": "platform_key_partial_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"partial\" is currently rejected by the Gonka network.)"
+    },
+    {
+      "case": "so_exactly_one_zero",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.54,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: exactly one of json/regex/choice/grammar/json_object/structu)"
+    },
+    {
+      "case": "so_exactly_one_zero",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.54,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_exactly_one_zero",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: exactly one of json/regex/choice/grammar/json_object/structu)"
+    },
+    {
+      "case": "so_exactly_one_two",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.6,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: exactly one of json/regex/choice/grammar/json_object/structu)"
+    },
+    {
+      "case": "so_exactly_one_two",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.55,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_exactly_one_two",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.6,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: exactly one of json/regex/choice/grammar/json_object/structu)"
+    },
+    {
+      "case": "so_unknown_subfield",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: invalid wrapper shape: unknown sub-field \"bogus\")"
+    },
+    {
+      "case": "so_unknown_subfield",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.54,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_unknown_subfield",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: invalid wrapper shape: unknown sub-field \"bogus\")"
+    },
+    {
+      "case": "so_response_format_conflict",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.54,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: cannot be combined with response_format)"
+    },
+    {
+      "case": "so_response_format_conflict",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_response_format_conflict",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: cannot be combined with response_format)"
+    },
+    {
+      "case": "so_regex_uncompilable",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.regex: must compile as a regex: error parsing regexp: missing)"
+    },
+    {
+      "case": "so_regex_uncompilable",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_regex_uncompilable",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.regex: must compile as a regex: error parsing regexp: missing)"
+    },
+    {
+      "case": "so_choice_not_array",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.choice: must be a non-empty string array)"
+    },
+    {
+      "case": "so_choice_not_array",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_choice_not_array",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.choice: must be a non-empty string array)"
+    },
+    {
+      "case": "so_json_object_not_bool",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.54,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.json_object: must be a boolean)"
+    },
+    {
+      "case": "so_json_object_not_bool",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_json_object_not_bool",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs.json_object: must be a boolean)"
+    },
+    {
+      "case": "platform_key_web_search_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"web_search\" is currently rejected by the Gonka netwo)"
+    },
+    {
+      "case": "platform_key_web_search_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"web_search\" is currently rejected by the Gonka netwo)"
+    },
+    {
+      "case": "platform_key_web_search_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"web_search\" is currently rejected by the Gonka netwo)"
+    },
+    {
+      "case": "platform_key_enable_search_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"enable_search\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_enable_search_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"enable_search\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_enable_search_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"enable_search\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_search_kwargs_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"search_kwargs\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_search_kwargs_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"search_kwargs\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_search_kwargs_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"search_kwargs\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_mask_sensitive_info_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"mask_sensitive_info\" is currently rejected by the Go)"
+    },
+    {
+      "case": "platform_key_mask_sensitive_info_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"mask_sensitive_info\" is currently rejected by the Go)"
+    },
+    {
+      "case": "platform_key_mask_sensitive_info_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"mask_sensitive_info\" is currently rejected by the Go)"
+    },
+    {
+      "case": "minimax_tool_too_many_entries",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (messages[2].content: must be a non-empty array of {name,type,text} objects: 17 e)"
+    },
+    {
+      "case": "minimax_tool_name_too_long",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (messages[2].content entry: invalid shape: [0].name length 65 exceeds limit 64)"
+    },
+    {
+      "case": "minimax_tool_unknown_entry_key",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (messages[2].content entry: invalid shape: [0] has unsupported key \"foo\")"
+    },
+    {
+      "case": "minimax_tool_type_not_text",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (messages[2].content entry: invalid shape: [0].type must be \"text\")"
+    },
+    {
+      "case": "minimax_tool_content_not_array",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (messages[2].content: must be a non-empty array of {name,type,text} objects: not )"
+    },
+    {
+      "case": "minimax_tool_name_whitespace",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (messages[2].content entry: invalid shape: [0].name must be a non-empty string)"
+    },
+    {
+      "case": "tool_choice_whitespace_name_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (tool_choice.function: invalid shape: function.name must be a non-empty string)"
+    },
+    {
+      "case": "tool_choice_whitespace_name_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (tool_choice.function: invalid shape: function.name must be a non-empty string)"
+    },
+    {
+      "case": "tool_choice_whitespace_name_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (tool_choice.function: invalid shape: function.name must be a non-empty string)"
+    },
+    {
+      "case": "tools_whitespace_name_rejected",
+      "model": "Qwen/Qwen3-235B-A22B-Instruct-2507-FP8",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (tools[i].function.name: must be a non-empty string (tools[0]))"
+    },
+    {
+      "case": "tools_whitespace_name_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (tools[i].function.name: must be a non-empty string (tools[0]))"
+    },
+    {
+      "case": "tools_whitespace_name_rejected",
+      "model": "MiniMaxAI/MiniMax-M2.7",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.53,
+      "passed": true,
+      "detail": "rejected 400 (tools[i].function.name: must be a non-empty string (tools[0]))"
+    }
+  ]
+}

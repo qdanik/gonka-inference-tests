@@ -1,0 +1,24 @@
+{
+  "name": "so_unknown_subfield",
+  "description": "structured_outputs with an unknown sub-field is rejected (closed allow-list).",
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with the single word OK."
+      }
+    ],
+    "max_tokens": 16,
+    "structured_outputs": {
+      "json": {
+        "type": "string"
+      },
+      "bogus": 1
+    }
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400,
+    "message_contains": "structured_outputs"
+  }
+}

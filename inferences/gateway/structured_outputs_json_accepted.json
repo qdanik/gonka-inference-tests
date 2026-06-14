@@ -1,0 +1,18 @@
+{
+  "name": "structured_outputs_json_accepted",
+  "description": "structured_outputs.json is accepted and enforced by vLLM on non-Kimi routes; the Kimi route rejects the whole field.",
+  "request": {
+    "messages": [{ "role": "user", "content": "Return a JSON object with a single integer field n between 1 and 5." }],
+    "max_tokens": 4096,
+    "structured_outputs": {
+      "json": { "type": "object", "properties": { "n": { "type": "integer" } }, "required": ["n"] }
+    }
+  },
+  "expect": {
+    "outcome": "accept",
+    "status": 200,
+    "per_model": {
+      "moonshotai/Kimi-K2.6": { "outcome": "reject", "status": 400, "message_contains": "structured_outputs" }
+    }
+  }
+}

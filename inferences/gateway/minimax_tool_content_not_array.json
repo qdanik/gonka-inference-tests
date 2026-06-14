@@ -1,0 +1,17 @@
+{
+  "name": "minimax_tool_content_not_array",
+  "description": "MiniMax tool message whose content is a plain string (the OpenAI shape) instead of the {name,type,text}[] array is rejected.",
+  "models": ["MiniMaxAI/MiniMax-M2.7"],
+  "request": {
+    "messages": [
+      { "role": "user", "content": "What is the weather in Tokyo?" },
+      { "role": "assistant", "content": "Checking the weather.", "tool_calls": [{ "id": "call_1", "type": "function", "function": { "name": "get_weather", "arguments": "{\"city\":\"Tokyo\"}" } }] },
+      { "role": "tool", "content": "the weather is sunny" }
+    ],
+    "max_tokens": 16
+  },
+  "expect": {
+    "outcome": "reject",
+    "status": 400
+  }
+}
