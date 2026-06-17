@@ -41,3 +41,22 @@ def test_ignores_untracked_and_comments():
 def test_handles_empty_and_garbage():
     assert parse_prometheus("") == {}
     assert parse_prometheus("garbage line with no value\n# comment") == {}
+
+
+# --- nvidia-smi parsing ---------------------------------------------------
+
+from e2e.poc_inference.server_metrics import parse_nvidia_smi
+
+
+def test_parse_nvidia_smi_per_gpu_and_aggregate():
+    text = "0, 1200, 183359, 40\n1, 800, 183359, 10\n"
+    out = parse_nvidia_smi(text)
+    assert len(out["gpu"]) == 2
+    assert out["gpu_mem_used_mib"] == 2000.0
+    assert out["gpu_mem_total_mib"] == 2 * 183359.0
+    assert out["gpu_util_pct_mean"] == 25.0
+
+
+def test_parse_nvidia_smi_empty_and_garbage():
+    assert parse_nvidia_smi("") == {}
+    assert parse_nvidia_smi("not, enough\nx, y, z, w") == {}

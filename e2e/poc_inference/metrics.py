@@ -172,6 +172,25 @@ def summarize_validation(records: list[RequestRecord],
     }
 
 
+def summarize_gpu(server_samples: list[dict[str, Any]]) -> dict[str, Any]:
+    """Peak/mean GPU VRAM (MiB summed across GPUs) + utilization over a phase,
+    from the nvidia-smi fields the poller merged into each sample. {} if none."""
+    used = [s["gpu_mem_used_mib"] for s in server_samples if "gpu_mem_used_mib" in s]
+    util = [s["gpu_util_pct_mean"] for s in server_samples if "gpu_util_pct_mean" in s]
+    total = next((s["gpu_mem_total_mib"] for s in server_samples
+                  if "gpu_mem_total_mib" in s), None)
+    if not used:
+        return {}
+    return {
+        "samples": len(used),
+        "mem_total_mib": total,
+        "mem_used_peak_mib": round(max(used), 1),
+        "mem_used_mean_mib": round(sum(used) / len(used), 1),
+        "util_pct_peak": round(max(util), 1) if util else None,
+        "util_pct_mean": round(sum(util) / len(util), 1) if util else None,
+    }
+
+
 @dataclass
 class PhaseResult:
     """Everything one phase produces — serialized verbatim to its JSON file."""
@@ -195,6 +214,7 @@ class PhaseResult:
             "wall_clock_s": round(self.wall_clock_s, 3),
             "inference_summary": self.inference_summary(),
             "validation_summary": self.validation_summary(),
+            "gpu_summary": summarize_gpu(self.server_samples),
             "inference_records": [r.to_dict() for r in self.inference_records],
             "validation_records": [r.to_dict() for r in self.validation_records],
             "server_samples": self.server_samples,

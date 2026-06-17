@@ -15,6 +15,7 @@ from .metrics import (
     OUTCOME_ERROR,
     OUTCOME_TIMEOUT,
     PhaseResult,
+    summarize_gpu,
 )
 
 
@@ -78,6 +79,11 @@ def build_comparison(poc_only: PhaseResult, inference_only: PhaseResult,
                     val_base["completed_per_s"], val_comb["completed_per_s"]),
             },
         },
+        "gpu": {
+            "poc_only": summarize_gpu(poc_only.server_samples),
+            "inference_only": summarize_gpu(inference_only.server_samples),
+            "combined": summarize_gpu(combined.server_samples),
+        },
     }
 
 
@@ -138,6 +144,22 @@ def render_table(comparison: dict[str, Any]) -> str:
         f"| {_fmt(val['combined']['completion_rate'])} | — |",
         "",
     ]
+
+    gpu = comparison.get("gpu", {})
+    if any(gpu.get(p) for p in ("poc_only", "inference_only", "combined")):
+        def _peak(p):
+            return _fmt(_get(gpu, p, "mem_used_peak_mib"), " MiB")
+        def _util(p):
+            return _fmt(_get(gpu, p, "util_pct_peak"), "%")
+        lines += [
+            "### GPU (nvidia-smi, summed across GPUs)",
+            "",
+            "| metric | poc_only | inference_only | combined |",
+            "| --- | ---: | ---: | ---: |",
+            f"| peak VRAM used | {_peak('poc_only')} | {_peak('inference_only')} | {_peak('combined')} |",
+            f"| peak GPU util | {_util('poc_only')} | {_util('inference_only')} | {_util('combined')} |",
+            "",
+        ]
     return "\n".join(lines)
 
 

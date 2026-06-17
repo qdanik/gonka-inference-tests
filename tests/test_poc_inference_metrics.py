@@ -130,3 +130,22 @@ def test_phase_result_to_dict_roundtrips():
     assert data["validation_summary"]["total_nonces"] == 50
     assert data["inference_records"][0]["outcome"] == OUTCOME_COMPLETED
     assert data["server_samples"][0]["metrics"]["vllm:num_requests_running"] == 3.0
+
+
+def test_summarize_gpu_peak_and_mean():
+    from e2e.poc_inference.metrics import summarize_gpu
+    samples = [
+        {"t": 0.0, "gpu_mem_used_mib": 1000.0, "gpu_mem_total_mib": 366718.0, "gpu_util_pct_mean": 10.0},
+        {"t": 1.0, "gpu_mem_used_mib": 3000.0, "gpu_mem_total_mib": 366718.0, "gpu_util_pct_mean": 90.0},
+        {"t": 2.0, "error": "blip"},
+    ]
+    g = summarize_gpu(samples)
+    assert g["mem_used_peak_mib"] == 3000.0
+    assert g["mem_used_mean_mib"] == 2000.0
+    assert g["util_pct_peak"] == 90.0
+    assert g["samples"] == 2
+
+
+def test_summarize_gpu_empty():
+    from e2e.poc_inference.metrics import summarize_gpu
+    assert summarize_gpu([{"t": 0.0, "metrics": {}}]) == {}

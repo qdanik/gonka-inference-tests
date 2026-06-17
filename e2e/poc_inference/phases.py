@@ -68,7 +68,7 @@ def run_poc_only(target: ServerTarget, cfg: WorkloadConfig,
     """Phase 1: N validations, no inference."""
     print(f"[poc-inference] phase {PHASE_POC_ONLY}: "
           f"{cfg.num_validations} validations × {cfg.nonces_per_validation} nonces", flush=True)
-    poller = ServerMetricsPoller(target.vllm_url, interval_s=cfg.metrics_interval_s)
+    poller = ServerMetricsPoller(target.vllm_url, target=target, interval_s=cfg.metrics_interval_s)
     t0 = time.time()
     poller.start(t0)
     validation_records = run_validations(
@@ -97,7 +97,7 @@ def run_inference_only(target: ServerTarget, cfg: WorkloadConfig,
     print(f"[poc-inference] phase {PHASE_INFERENCE_ONLY}: hold "
           f"{cfg.inference_concurrency} in flight until "
           f"{cfg.target_completions} complete", flush=True)
-    poller = ServerMetricsPoller(target.vllm_url, interval_s=cfg.metrics_interval_s)
+    poller = ServerMetricsPoller(target.vllm_url, target=target, interval_s=cfg.metrics_interval_s)
     t0 = time.time()
     poller.start(t0)
 
@@ -130,7 +130,7 @@ def run_combined(target: ServerTarget, cfg: WorkloadConfig, specs: list[dict],
     print(f"[poc-inference] phase {PHASE_COMBINED}: "
           f"{cfg.inference_concurrency} inferences + "
           f"{cfg.num_validations} validations", flush=True)
-    poller = ServerMetricsPoller(target.vllm_url, interval_s=cfg.metrics_interval_s)
+    poller = ServerMetricsPoller(target.vllm_url, target=target, interval_s=cfg.metrics_interval_s)
     t0 = time.time()
     poller.start(t0)
 

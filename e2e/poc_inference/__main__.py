@@ -72,8 +72,10 @@ def _add_run_args(parser: argparse.ArgumentParser) -> None:
                         help="validation units per validation-bearing phase")
     parser.add_argument("--nonces-per-validation", type=int, default=50,
                         help="nonces validated per /generate unit")
-    parser.add_argument("--validation-concurrency", type=int, default=1,
-                        help="validations in flight (1 = sequential, like a real validator)")
+    parser.add_argument("--validation-concurrency", type=int, default=0,
+                        help="validation requests in flight. 0 (default) = fire all "
+                             "--num-validations at once (stress the server's validation "
+                             "queue); 1 = sequential; N = N concurrent.")
     parser.add_argument("--batch-size", type=int, default=32,
                         help="PoC RPC batch size")
     parser.add_argument("--poc-stronger-rng", action="store_true",
@@ -118,7 +120,8 @@ def _config_from_args(args) -> WorkloadConfig:
         fraud_threshold=args.fraud_threshold,
         nonces_per_validation=args.nonces_per_validation,
         num_validations=args.num_validations,
-        validation_concurrency=args.validation_concurrency,
+        # 0 ⇒ fire all validations at once (concurrent) to exercise the server queue.
+        validation_concurrency=args.validation_concurrency or args.num_validations,
         batch_size=args.batch_size,
         poc_stronger_rng=args.poc_stronger_rng,
         inference_concurrency=args.inference_concurrency,

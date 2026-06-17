@@ -9,7 +9,9 @@ phases and writes a JSON per phase plus a comparison table and plots:
 3. `combined` — both at once (the interference measurement)
 
 Headline metrics: inference **abort rate**, inference **output quality**
-(garbage detection), and throughput/latency on both sides.
+(garbage detection), throughput/latency on both sides, and **GPU memory /
+utilization** per phase (peak + mean VRAM via `nvidia-smi` over SSH, plus
+vLLM's `gpu_cache_usage_perc`).
 
 ---
 
@@ -136,7 +138,7 @@ Key flags (full list via `--help`):
 | `--target-completions` | 100 | phase runs until this many inferences complete |
 | `--reference-file` | — | canonical vectors for cross-validation; omit for self-validation |
 | `--dist-threshold` / `--p-mismatch` / `--fraud-threshold` | 0.4 / 0.02 / 0.01 | on-chain PoC-v2 stat-test values |
-| `--validation-concurrency` | 1 | validations in flight (1 = like a real validator) |
+| `--validation-concurrency` | 0 | validations fired at once. 0 = all `--num-validations` concurrently (server serializes them via a validation lock); 1 = sequential |
 | `--phase-deadline` | 1800 | hard per-phase wall-clock cap (s) |
 
 ---

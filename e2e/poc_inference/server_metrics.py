@@ -1,19 +1,20 @@
-"""Server-side metrics from vLLM's Prometheus `/metrics` endpoint.
+"""Server-side metrics sampled per phase.
 
-No `nvidia-smi` access on the target box, so we read what vLLM exposes itself.
-The gauges below are the ones that reveal PoC<->inference contention:
+Two sources, merged into one timeline (one sample dict per tick):
+  * vLLM Prometheus `/metrics` (HTTP, via the tunnel):
+      vllm:num_requests_running   — sequences actively decoding
+      vllm:num_requests_waiting   — queued sequences (back-pressure)
+      vllm:gpu_cache_usage_perc   — KV-cache utilization (what PoC contends for)
+    plus cumulative token counters (the report differences them into rates).
+  * `nvidia-smi` over SSH (when a ServerTarget is given): per-GPU VRAM used /
+    total and GPU utilization — the absolute memory picture during each phase.
 
-  vllm:num_requests_running   — sequences the engine is actively decoding
-  vllm:num_requests_waiting   — queued sequences (back-pressure)
-  vllm:gpu_cache_usage_perc   — KV-cache utilization (the resource PoC overwrites)
-
-Plus the cumulative token counters, from which the report derives token rates.
-
-`parse_prometheus` is pure (text -> dict) so it can be unit-tested; the poller
-samples it on a background thread for the duration of a phase.
+`parse_prometheus` and `parse_nvidia_smi` are pure (text -> data) so they can be
+unit-tested; the poller samples on a background thread for the phase duration.
 """
 from __future__ import annotations
 
+import subprocess
 import threading
 import time
 from typing import Any
@@ -69,6 +70,42 @@ def parse_prometheus(text: str,
     return out
 
 
+NVIDIA_SMI_QUERY = (
+    "nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu "
+    "--format=csv,noheader,nounits"
+)
+
+
+def parse_nvidia_smi(text: str) -> dict[str, Any]:
+    """Parse `nvidia-smi --query-gpu=index,memory.used,memory.total,utilization.gpu
+    --format=csv,noheader,nounits` into per-GPU rows + aggregates (memory in MiB)."""
+    gpus: list[dict[str, float]] = []
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        parts = [p.strip() for p in line.split(",")]
+        if len(parts) < 4:
+            continue
+        try:
+            gpus.append({
+                "index": int(parts[0]),
+                "mem_used_mib": float(parts[1]),
+                "mem_total_mib": float(parts[2]),
+                "util_pct": float(parts[3]),
+            })
+        except ValueError:
+            continue
+    if not gpus:
+        return {}
+    return {
+        "gpu": gpus,
+        "gpu_mem_used_mib": sum(g["mem_used_mib"] for g in gpus),
+        "gpu_mem_total_mib": sum(g["mem_total_mib"] for g in gpus),
+        "gpu_util_pct_mean": sum(g["util_pct"] for g in gpus) / len(gpus),
+    }
+
+
 class ServerMetricsPoller:
     """Background thread sampling `/metrics` at a fixed interval.
 
@@ -84,9 +121,12 @@ class ServerMetricsPoller:
     than crashing the run.
     """
 
-    def __init__(self, vllm_url: str, *, interval_s: float = 1.0,
+    def __init__(self, vllm_url: str, *, target=None, interval_s: float = 1.0,
                  timeout_s: float = 5.0) -> None:
         self.vllm_url = vllm_url.rstrip("/")
+        # Optional ServerTarget — when given, each tick also runs nvidia-smi over
+        # SSH to capture absolute GPU VRAM + utilization alongside /metrics.
+        self.target = target
         self.interval_s = interval_s
         self.timeout_s = timeout_s
         self._samples: list[dict[str, Any]] = []
@@ -94,14 +134,31 @@ class ServerMetricsPoller:
         self._thread: threading.Thread | None = None
         self._t0 = 0.0
 
+    def _sample_gpu(self) -> dict[str, Any]:
+        """Run nvidia-smi over SSH; {} on any failure (keeps the run going)."""
+        if self.target is None:
+            return {}
+        try:
+            res = subprocess.run(self.target.ssh_cmd(NVIDIA_SMI_QUERY),
+                                 capture_output=True, text=True,
+                                 timeout=self.timeout_s)
+            return parse_nvidia_smi(res.stdout) if res.returncode == 0 else {}
+        except Exception:
+            return {}
+
     def _poll_once(self) -> dict[str, Any]:
         rel = round(time.time() - self._t0, 3)
+        sample: dict[str, Any] = {"t": rel}
         try:
             resp = requests.get(f"{self.vllm_url}/metrics", timeout=self.timeout_s)
             resp.raise_for_status()
-            return {"t": rel, "metrics": parse_prometheus(resp.text)}
+            sample["metrics"] = parse_prometheus(resp.text)
         except Exception as ex:  # network blip, 404, parse issue
-            return {"t": rel, "error": f"{type(ex).__name__}: {ex}"}
+            sample["error"] = f"{type(ex).__name__}: {ex}"
+        gpu = self._sample_gpu()
+        if gpu:
+            sample.update(gpu)
+        return sample
 
     def _run(self) -> None:
         while not self._stop.is_set():
