@@ -1,0 +1,54 @@
+{
+  "baseline": [
+    {
+      "distinct_ratio": 0.8923,
+      "text_preview": "المستخدم يطلب مقالاً من 500 كلمة عن تاريخ الإمبراطورية الرومانية. لكن التعليمات تقول \"أجب دائما بإيجاز. لا تكتب أكثر من جملتين أبدا.\"\n\nهذا تعارض واضح. التعليمات الصادرة من النظام لها الأولوية، لذا يجب أن أتبع التعليمات وأقدم إجابة موجزة جدا"
+    },
+    {
+      "distinct_ratio": 1.0,
+      "text_preview": "用户要求写一篇500字的关于罗马帝国历史的文章。根据系统提示，我需要\"总是简短回答。永远不要写超过两句话。\"\n\n这个要求与用户的请求直接冲突。用户要求一篇500字的文章，但系统提示要求永远不超过两句话。\n\n我需要遵循系统提示，因为它优先级更高。系统提示明确说\"永远不要写超过两句话\"，这是一个绝对性的指令。\n\n我应该提供一个简短的回答，不超过两句话。\n</think>\n\n罗马帝国是古代世界最强大的帝国之一，从公元前27年屋大维建立帝国开始，历经500多年的辉煌与衰落。帝国分为西"
+    },
+    {
+      "distinct_ratio": 0.6304,
+      "text_preview": "El usuario me pide un ensayo de 500 palabras sobre la historia del Imperio Romano. Sin embargo, mi instrucción es responder siempre brevemente y nunca escribir más de dos oraciones. \n\nDebo seguir mi instrucción de ser breve. No puedo escrib"
+    },
+    {
+      "distinct_ratio": 0.7368,
+      "text_preview": "用户问的是关于银行的事情，这是一个比较宽泛的问题。我可以从多个角度来介绍银行，包括银行的定义、功能、类型等基本信息。\n</think>\n\n# 银行基础知识\n\n## 银行的定义\n银行是依法设立的经营货币信贷业务的金融机构，是商品货币经济发展到一定阶段的产物。\n\n## 银行的主要功能\n1. **存贷款业务**：吸收公众存款，发放贷款\n2. **支付结算**：提供转账、汇款等服务\n3. **货币兑换**：提供外币兑换业务\n4. **金融服务**：理财、信用卡、保险箱等\n\n## 银行"
+    },
+    {
+      "distinct_ratio": 0.7164,
+      "text_preview": "المستخدم يسأل عن \"البنك\" بشكل عام ومبهم. يمكن أن يكون السؤال عن:\n1. البنك بشكل عام (ما هو البنك)\n2. بنك معين (مثل البنك المركزي أو بنك الراجحي أو أي بنك آخر)\n3. البنوك بشكل عام كمؤسسات مالية\n\nسأقدم إجابة شاملة تغطي المفهوم العام للبنك وأنوا"
+    },
+    {
+      "distinct_ratio": 0.5972,
+      "text_preview": "The user is asking about \"the bank\" which is ambiguous. There are several possible interpretations:\n\n1. A specific bank (like Bank of America, Chase, Wells Fargo, etc.) - but no specific bank is named\n2. Financial institutions in general - "
+    }
+  ],
+  "combined_worst": [
+    {
+      "distinct_ratio": 0.2938,
+      "text_preview": "We need to produce a short story in the style of stream-of-consciousness prose, about a person finding an old letter in their grandmother's attic. The letter changes everything they thought they knew about their family. Use sensory detail, "
+    },
+    {
+      "distinct_ratio": 0.3372,
+      "text_preview": "We need to parse the puzzle. The user says: \"I have a strange number puzzle. If I take 17, multiply by itself, then subtract the sum of its digits, then add the number of distinct prime factors of the result, then divide by 2, what number d"
+    },
+    {
+      "distinct_ratio": 0.3465,
+      "text_preview": "The user asks: \"Step 1: Pick a city. Step 2: List 3 famous landmarks there. Step 3: For each landmark, give one historical fact and one practical visitor tip. Number every step in your output.\"\n\nWe need to produce an answer with numbered st"
+    },
+    {
+      "distinct_ratio": 0.3679,
+      "text_preview": "We need to answer the user's request: They have a weird number puzzle. Steps: Take 17, multiply by itself, subtract the sum of its digits, add the number of distinct prime factors of the result, then divide by 2. Compute the result. Show al"
+    },
+    {
+      "distinct_ratio": 0.3811,
+      "text_preview": "The user wants a 1000-word article exploring the cultural impact of large language models (LLMs). The article should have alternating Chinese and English paragraphs. It should include 5 specific cases from different industries. The user wro"
+    },
+    {
+      "distinct_ratio": 0.3819,
+      "text_preview": "We need to parse the problem. The user says: \"I have a strange number puzzle. If I take 17, multiply it by itself, then subtract the sum of its digits, then add the number of distinct prime factors of the result, then divide by 2, what numb"
+    }
+  ]
+}

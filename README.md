@@ -79,6 +79,11 @@ repo/
 - **[docs/inferences.md](docs/inferences.md)** — the spec catalog, sets, `--inferences-dir`, and how to add new ones
 - **[docs/kimi.md](docs/kimi.md)** — running `moonshotai/Kimi-K2.6` (tool/reasoning parsers) + the `$ref` probe set
 
+### Specialized harnesses (subpackages)
+
+- **[e2e/poc_inference/](e2e/poc_inference/README.md)** (`python3 -m e2e.poc_inference run`) — measures PoC-validation vs inference interference (abort rate, output quality, throughput) across three phases.
+- **[e2e/gateway/](e2e/gateway/README.md)** (`python3 -m e2e.gateway run`) — verifies how the Gonka gateway clamps/rejects chat-completion params.
+
 ## Tests
 
 ```bash

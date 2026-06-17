@@ -65,6 +65,14 @@ class MockVLLMState:
         self.health_status: int = 200
         # PoC support
         self.pow_callback_url: str | None = None
+        # PoC /generate (poc_inference): canned validation verdict + metrics text.
+        self.pow_generate_n_mismatch: int = 0
+        self.pow_generate_fraud: bool = False
+        self.metrics_text: str = (
+            'vllm:num_requests_running{model_name="M"} 1.0\n'
+            'vllm:num_requests_waiting{model_name="M"} 0.0\n'
+            'vllm:gpu_cache_usage_perc{model_name="M"} 0.1\n'
+        )
 
 
 def _free_port() -> int:
@@ -96,6 +104,13 @@ def _make_mock_handler(state: MockVLLMState) -> type[BaseHTTPRequestHandler]:
         def do_GET(self) -> None:
             if self.path == "/health":
                 self.send_response(state.health_status); self.end_headers()
+            elif self.path == "/metrics":
+                data = state.metrics_text.encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
             else:
                 self._send_json({"error": "not found"}, 404)
 
@@ -114,6 +129,23 @@ def _make_mock_handler(state: MockVLLMState) -> type[BaseHTTPRequestHandler]:
                     self.wfile.write(b"data: [DONE]\n\n")
                 else:
                     self._send_json(state.next_response or {})
+            elif self.path == "/api/v1/pow/generate":
+                nonces = body.get("nonces", [])
+                if body.get("validation"):
+                    self._send_json({
+                        "status": "completed", "request_id": "test",
+                        "n_total": len(nonces),
+                        "n_mismatch": state.pow_generate_n_mismatch,
+                        "mismatch_nonces": [],
+                        "p_value": 1.0,
+                        "fraud_detected": state.pow_generate_fraud,
+                    })
+                else:
+                    self._send_json({
+                        "status": "completed", "request_id": "test",
+                        "artifacts": [{"nonce": n, "vector_b64": "AAAAAAA="} for n in nonces],
+                        "encoding": {"dtype": "f16", "k_dim": body.get("params", {}).get("k_dim", 12), "endian": "le"},
+                    })
             elif self.path == "/api/v1/pow/init/generate":
                 state.pow_callback_url = body.get("url")
                 self._send_json({"status": "OK",
