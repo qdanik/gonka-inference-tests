@@ -53,6 +53,54 @@ python3 -m e2e deploy \
 (`--disable-custom-all-reduce` is required for TP > 1 on Blackwell/Hopper/Ampere
 with this image — see [gotchas.md](gotchas.md).)
 
+## Hopper (H200) — verified config
+
+Verified on **8×H200 (TP=8), mlnode image `ghcr.io/gonka-ai/mlnode:3.0.14-cu129`**.
+K2.6 is a `KimiK25ForConditionalGeneration` (multimodal) model with **MLA**
+attention and **INT4 compressed-tensors** MoE experts (W4A16, group_size 32).
+Three Hopper-specific facts that are NOT in the generic recipe:
+
+| flag / step | value | why |
+|---|---|---|
+| `--attention-backend` | `FLASHMLA` | Required on Hopper. Without it vLLM auto-picks `FLASHINFER`, which aborts engine init: `Selected backend FLASHINFER ... ['head_size not supported', 'MLA not supported']`. `CUTLASS_MLA` is **Blackwell-only**; `TRITON_MLA` is the slower fallback. FLASHMLA forces KV `block_size=64`. |
+| `tiktoken.model` | fetch explicitly | K2.6's custom tokenizer (`tokenization_kimi.py`) needs `tiktoken.model`, which does **not** match `download-model`'s default patterns → missing → `TypeError: stat: ... not NoneType` (vocab_file is None). Pull it into the model dir before deploy (see below). |
+| INT4 MoE | auto-detected | vLLM reads `quantization_config` (compressed-tensors) and uses **Marlin** MoE on Hopper. Do **not** set `VLLM_USE_FLASHINFER_MOE_INT4` — that is the Blackwell NVFP4 path. |
+
+```bash
+# fetch the tiktoken vocab the default download skips (small, ~2.8 MB)
+ssh <box> 'curl -sL -H "Authorization: Bearer $HF_TOKEN" \
+  https://huggingface.co/moonshotai/Kimi-K2.6/resolve/main/tiktoken.model \
+  -o <host-model-path>/tiktoken.model'
+
+# deploy: TP=8, FLASHMLA, INT4 auto. custom-all-reduce left enabled (H200 NVLink,
+# no crash); enforce-eager for the custom arch's first boot.
+python3 -m e2e deploy --ssh-host shadeform@<ip> --gpu-name 8xh200 \
+  --docker-image ghcr.io/gonka-ai/mlnode:3.0.14-cu129 --entrypoint-prefix "vllm serve" \
+  --model-name moonshotai/Kimi-K2.6 \
+  --tensor-parallel-size 8 --gpu-memory-utilization 0.90 \
+  --max-model-len 120000 --max-num-seqs 128 \
+  --model-extra-args "--trust-remote-code --enforce-eager --max-num-batched-tokens 32768 --reasoning-parser kimi_k2 --attention-backend FLASHMLA" \
+  --host-model-path /dev/shm/hf/Kimi-K2.6
+```
+
+Observed at boot: weights 71.2 GiB/GPU (~570 GB total), KV cache 711,296 tokens,
+max concurrency 5.93× @ 120k ctx, engine init ~59 s after a ~295 s weight load.
+
+### Downloading K2.6 (~555 GB) without stalling
+
+The anonymous HF `hf_transfer` + Xet path **stalls** on this many large shards
+(network RX drops to 0, only metadata files complete). Force the classic
+downloader, or authenticate:
+
+```bash
+HF_HUB_ENABLE_HF_TRANSFER=0 HF_HUB_DISABLE_XET=1 \
+  python3 -c "from huggingface_hub import snapshot_download; \
+  snapshot_download('moonshotai/Kimi-K2.6', local_dir='<path>', token='hf_...', max_workers=8)"
+```
+
+`/dev/shm` (RAM disk) fits the model on a high-RAM box (e.g. 714 GB shm on the
+8×H200) and loads faster than disk; otherwise use a disk path.
+
 ## Run an inference set
 
 `e2e infer` runs `inferences/default/` (228 prompts) unless you point it at

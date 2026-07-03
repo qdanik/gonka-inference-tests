@@ -1,0 +1,54 @@
+{
+  "baseline": [
+    {
+      "distinct_ratio": 0.881,
+      "text_preview": "\n\nLo siento, pero las instrucciones del sistema me limitan a un máximo de dos oraciones, por lo que no puedo escribir un ensayo completo de 500 palabras. ¿Te gustaría que te proporcionara un resumen muy breve del Imperio Romano en su lugar?"
+    },
+    {
+      "distinct_ratio": 1.0,
+      "text_preview": "\n\n抱歉，我无法写500字的文章。根据指示，我只能提供简短回答。\n\n罗马帝国（公元前27年-公元476年）从罗马共和国演变而来，由屋大维建立。它经历了领土扩张、文化繁荣，最终分裂为东西两部。"
+    },
+    {
+      "distinct_ratio": 0.7353,
+      "text_preview": "\n\n# 银行基础知识\n\n## 银行的定义\n银行是依法设立的经营货币信贷业务的金融机构，是商品货币经济发展到一定阶段的产物。\n\n## 银行的主要功能\n1. **存贷款业务**：吸收公众存款，发放贷款\n2. **支付结算**：提供转账、汇款等服务\n3. **货币兑换**：办理外币兑换业务\n4. **金融服务**：提供理财、咨询等增值服务\n\n## 银行的类型\n- **中央银行**：如中国人民银行，负责制定货币政策\n- **商业银行**：如工商银行、农业银行等，提供日常金融服务\n- "
+    },
+    {
+      "distinct_ratio": 0.8454,
+      "text_preview": "\n\nYour question is ambiguous — \"the bank\" could refer to several things:\n\n1. **Financial institution** — A place for deposits, loans, and financial services.\n\n2. **Riverbank** — The sloping ground beside a river or stream.\n\n3. **Blood bank*"
+    },
+    {
+      "distinct_ratio": 0.8793,
+      "text_preview": "\n\n# تاريخ الإمبراطورية الرومانية\n\nالإمبراطورية الرومانية من أعظم الإمبراطوريات في التاريخ. تأسست عام 27 ق.م بعد سقوط الجمهورية الرومانية، وامتدت من بريطانيا شرقاً حتى العراق غرباً. أسسها أغسطس قيصر الذي أصبح أول إمبراطور روماني.\n\nحكمت الإمب"
+    },
+    {
+      "distinct_ratio": 0.7258,
+      "text_preview": "\n\n# البنك (Bank)\n\n## التعريف العام\nالبنك هو مؤسسة مالية تعمل كوسيط مالي، يقبل الودائع من الأفراد والمؤسسات ويقدم القروض والخدمات المالية الأخرى.\n\n## أنواع البنوك الرئيسية:\n\n### 1. البنك المركزي\n- يشرف على السياسة النقدية\n- ينظم البنوك التجا"
+    }
+  ],
+  "combined_worst": [
+    {
+      "distinct_ratio": 0.425,
+      "text_preview": "\n\n# AI 模型对比\n\n| 模型 | 上下文长度 | 推理能力 | 代码质量 | 多语种能力 | 成本 |\n|------|-----------|---------|---------|-----------|------|\n| **GPT-4** | 128K tokens | ⭐⭐⭐⭐⭐ 强 | ⭐⭐⭐⭐⭐ 优秀 | ⭐⭐⭐⭐⭐ 强（100+语言） | $0.03-0.12/1K tokens |\n| **Claude 3 Opus** | 200K tokens |"
+    },
+    {
+      "distinct_ratio": 0.456,
+      "text_preview": "\n\n# مقارنة شاملة بين النماذج الرئيسية\n\n| المعيار | GPT-4 | Claude 3 Opus | Gemini Ultra 1.0 | Gemini Ultra 1.5 | Kimi K2 |\n|---------|-------|--------------|------------------|------------------|---------|\n| **طول السياق** | 128K توكن | 200"
+    },
+    {
+      "distinct_ratio": 0.469,
+      "text_preview": "\n\n# Resolución paso a paso\n\n## 📌 Expresión original\n$$((127 × 53) − (89 × 47)) ÷ 13$$\n\n---\n\n## Paso 1: Resolver la primera multiplicación (127 × 53)\n\n| Descomposición | Cálculo |\n|----------------|---------|\n| 127 × 50 | = 6,350 |\n| 127 × 3"
+    },
+    {
+      "distinct_ratio": 0.4859,
+      "text_preview": "\n\n# Full-Stack Web App 学习路线图 / Learning Roadmap\n## React (Frontend) + Go (Backend) | 7 天精通 / 7 Days to Mastery\n\n---\n\n## 📅 Day 1: 环境搭建 & Go 基础 / Environment Setup & Go Basics\n\n### 学习内容 / Content\n\n| 主题 / Topic | 英文 | 中文 |\n|-------------|-----"
+    },
+    {
+      "distinct_ratio": 0.4863,
+      "text_preview": "\n\n# حساب: ((127 × 53) − (89 × 47)) ÷ 13\n\n## الخطوة 1: حساب عملية الضرب الأولى (127 × 53)\n\nسأستخدم طريقة التفكيك:\n\n$$127 × 53 = 127 × (50 + 3)$$\n\n$$= 127 × 50 + 127 × 3$$\n\n$$= 6350 + 381$$\n\n$$\\boxed{127 × 53 = 6731}$$\n\n---\n\n## الخطوة 2: حساب"
+    },
+    {
+      "distinct_ratio": 0.5287,
+      "text_preview": "\n\n# Patrón Observer\n\n## ¿Qué es?\n\nEl patrón **Observer** define una relación **uno a muchos** entre objetos. Cuando el sujeto cambia de estado, todos sus observadores son notificados automáticamente.\n\n```\n┌──────────────────────────────────"
+    }
+  ]
+}
