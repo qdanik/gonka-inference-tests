@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-08-03T02:46:07",
+  "total": 3,
+  "passed": 3,
+  "failed": 0,
+  "results": [
+    {
+      "case": "min_p_out_of_range_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.97,
+      "passed": true,
+      "detail": "accepted, content='OK </think> OK'"
+    },
+    {
+      "case": "temperature_below_min_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.9,
+      "passed": true,
+      "detail": "accepted, content='OK </think> OK'"
+    },
+    {
+      "case": "top_p_above_one_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 0.91,
+      "passed": true,
+      "detail": "accepted, content='OK </think> (You asked me to reply with '"
+    }
+  ]
+}

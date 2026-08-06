@@ -1,0 +1,359 @@
+{
+  "generated_at": "2026-08-03T02:45:26",
+  "total": 39,
+  "passed": 36,
+  "failed": 3,
+  "results": [
+    {
+      "case": "bad_words_nonstring_element_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (bad_words[0]: must be a string)"
+    },
+    {
+      "case": "max_completion_tokens_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.33,
+      "passed": true,
+      "detail": "accepted, content='OK </think> がんば steviol teasing Gardnera'"
+    },
+    {
+      "case": "max_tokens_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.54,
+      "passed": true,
+      "detail": "accepted, content='OK </think> 略\\n\\nOK'"
+    },
+    {
+      "case": "min_p_out_of_range_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 0,
+      "latency_s": 120.0,
+      "passed": false,
+      "detail": "transport error: HTTPConnectionPool(host='127.0.0.1', port=61128): Read timed out. (read timeout=120)"
+    },
+    {
+      "case": "min_tokens_noninteger_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (min_tokens: must be a non-negative integer)"
+    },
+    {
+      "case": "n_above_max_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 2.09,
+      "passed": true,
+      "detail": "accepted, content='OK </think> OK'"
+    },
+    {
+      "case": "n_in_range_unchanged",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 1.02,
+      "passed": true,
+      "detail": "accepted, content='OK </think> OK'"
+    },
+    {
+      "case": "n_zero_clamped_to_one",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.03,
+      "passed": true,
+      "detail": "accepted, content='OK </think> OK'"
+    },
+    {
+      "case": "parallel_tool_calls_nonbool_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.59,
+      "passed": true,
+      "detail": "rejected 400 (parallel_tool_calls: must be a boolean)"
+    },
+    {
+      "case": "platform_key_enable_search_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"enable_search\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_mask_sensitive_info_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"mask_sensitive_info\" is currently rejected by the Go)"
+    },
+    {
+      "case": "platform_key_partial_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"partial\" is currently rejected by the Gonka network.)"
+    },
+    {
+      "case": "platform_key_search_kwargs_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"search_kwargs\" is currently rejected by the Gonka ne)"
+    },
+    {
+      "case": "platform_key_web_search_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (Chat completions parameter \"web_search\" is currently rejected by the Gonka netwo)"
+    },
+    {
+      "case": "repetition_penalty_above_max_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.15,
+      "passed": true,
+      "detail": "accepted, content='OK </think> Wait, I need to check my ins'"
+    },
+    {
+      "case": "repetition_penalty_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (repetition_penalty: must be greater than 0)"
+    },
+    {
+      "case": "seed_noninteger_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (seed: must be a non-negative integer)"
+    },
+    {
+      "case": "skip_special_tokens_nonbool_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (skip_special_tokens: must be a boolean)"
+    },
+    {
+      "case": "so_choice_not_array",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_exactly_one_two",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_exactly_one_zero",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_json_object_not_bool",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_regex_uncompilable",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_response_format_conflict",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "so_unknown_subfield",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "stop_nonstring_element_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (stop[0]: must be a string)"
+    },
+    {
+      "case": "stop_token_ids_noninteger_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (stop_token_ids[0]: must be an integer token id)"
+    },
+    {
+      "case": "structural_tag_string_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "structured_outputs_json_accepted",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (structured_outputs: not supported on this model — use response_format instead)"
+    },
+    {
+      "case": "temperature_above_max_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 200,
+      "latency_s": 1.21,
+      "passed": true,
+      "detail": "accepted, content='。** </think>  → user.asarray海量Unknown因为这'"
+    },
+    {
+      "case": "temperature_below_min_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 0,
+      "latency_s": 120.0,
+      "passed": false,
+      "detail": "transport error: HTTPConnectionPool(host='127.0.0.1', port=61128): Read timed out. (read timeout=120)"
+    },
+    {
+      "case": "tool_choice_whitespace_name_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (tool_choice.function: invalid shape: function.name must be a non-empty string)"
+    },
+    {
+      "case": "tools_whitespace_name_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (tools[i].function.name: must be a non-empty string (tools[0]))"
+    },
+    {
+      "case": "top_k_negative_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.57,
+      "passed": true,
+      "detail": "rejected 400 (top_k: must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_k_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (top_k: must be -1 or a positive integer)"
+    },
+    {
+      "case": "top_p_above_one_clamped",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "clamp",
+      "status": 0,
+      "latency_s": 120.01,
+      "passed": false,
+      "detail": "transport error: HTTPConnectionPool(host='127.0.0.1', port=61128): Read timed out. (read timeout=120)"
+    },
+    {
+      "case": "top_p_negative_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (top_p: must be greater than 0)"
+    },
+    {
+      "case": "top_p_zero_rejected",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "reject",
+      "status": 400,
+      "latency_s": 0.58,
+      "passed": true,
+      "detail": "rejected 400 (top_p: must be greater than 0)"
+    },
+    {
+      "case": "valid_baseline",
+      "model": "moonshotai/Kimi-K2.6",
+      "expected": "accept",
+      "status": 200,
+      "latency_s": 1.24,
+      "passed": true,
+      "detail": "accepted, content='OK </think> OK'"
+    }
+  ]
+}

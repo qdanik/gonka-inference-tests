@@ -1,0 +1,377 @@
+{
+  "generated_at": "2026-08-03T15:53:09",
+  "runs": 5,
+  "healthy": true,
+  "stats": {
+    "succeeded": {
+      "values": [
+        99.0,
+        100.0,
+        100.0,
+        100.0,
+        100.0
+      ],
+      "median": 100.0,
+      "minimum": 99.0,
+      "maximum": 100.0,
+      "spread": 0.01
+    },
+    "success_rate": {
+      "values": [
+        0.99,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "median": 1.0,
+      "minimum": 0.99,
+      "maximum": 1.0,
+      "spread": 0.01
+    },
+    "tokens_per_s": {
+      "values": [
+        140.7,
+        457.4,
+        289.7,
+        311.8,
+        667.7
+      ],
+      "median": 311.8,
+      "minimum": 140.7,
+      "maximum": 667.7,
+      "spread": 1.69
+    },
+    "burst_wall_clock_s": {
+      "values": [
+        180.07,
+        55.97,
+        88.36,
+        82.11,
+        38.34
+      ],
+      "median": 82.11,
+      "minimum": 38.34,
+      "maximum": 180.07,
+      "spread": 1.726
+    },
+    "shed_429": {
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "median": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "spread": 0.0
+    },
+    "shed_502": {
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "median": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "spread": 0.0
+    },
+    "transport_failures": {
+      "values": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "median": 0.0,
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "spread": 0.0
+    },
+    "total_waited_s": {
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "median": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "spread": 0.0
+    },
+    "loaded_p95_s": {
+      "values": [
+        44.65,
+        37.22,
+        39.59,
+        38.84,
+        35.81
+      ],
+      "median": 38.84,
+      "minimum": 35.81,
+      "maximum": 44.65,
+      "spread": 0.228
+    }
+  },
+  "reports": [
+    {
+      "model": "moonshotai/Kimi-K2.6",
+      "requested": 100,
+      "concurrency": 100,
+      "max_tokens": 256,
+      "seed_base": 178576465700000,
+      "seed_first": 178576465700000,
+      "seed_last": 178576465700104,
+      "max_attempts": 5,
+      "baseline": {
+        "count": 5,
+        "p50": 10.61,
+        "p90": 47.94,
+        "p95": 47.94,
+        "p99": 47.94,
+        "maximum": 47.94
+      },
+      "loaded": {
+        "count": 99,
+        "p50": 18.26,
+        "p90": 36.84,
+        "p95": 44.65,
+        "p99": 129.71,
+        "maximum": 129.71
+      },
+      "experienced": {
+        "count": 99,
+        "p50": 18.26,
+        "p90": 36.84,
+        "p95": 44.65,
+        "p99": 129.71,
+        "maximum": 129.71
+      },
+      "requests_needing_retry": 0,
+      "total_attempts": 100,
+      "shed_counts": {},
+      "total_waited_s": 0.0,
+      "burst_wall_clock_s": 180.07,
+      "throughput_per_s": 0.56,
+      "status_counts": {
+        "200": 99,
+        "transport_error": 1
+      },
+      "transport_failures": 1,
+      "succeeded": 99,
+      "success_rate": 0.99,
+      "distinct_responses": 99,
+      "total_completion_tokens": 25344,
+      "healthy": true,
+      "problems": []
+    },
+    {
+      "model": "moonshotai/Kimi-K2.6",
+      "requested": 100,
+      "concurrency": 100,
+      "max_tokens": 256,
+      "seed_base": 178576465700000,
+      "seed_first": 178576465700000,
+      "seed_last": 178576465701104,
+      "max_attempts": 5,
+      "baseline": {
+        "count": 5,
+        "p50": 10.61,
+        "p90": 47.94,
+        "p95": 47.94,
+        "p99": 47.94,
+        "maximum": 47.94
+      },
+      "loaded": {
+        "count": 100,
+        "p50": 14.8,
+        "p90": 33.17,
+        "p95": 37.22,
+        "p99": 53.58,
+        "maximum": 55.95
+      },
+      "experienced": {
+        "count": 100,
+        "p50": 14.8,
+        "p90": 33.17,
+        "p95": 37.22,
+        "p99": 53.58,
+        "maximum": 55.95
+      },
+      "requests_needing_retry": 0,
+      "total_attempts": 100,
+      "shed_counts": {},
+      "total_waited_s": 0.0,
+      "burst_wall_clock_s": 55.97,
+      "throughput_per_s": 1.79,
+      "status_counts": {
+        "200": 100
+      },
+      "transport_failures": 0,
+      "succeeded": 100,
+      "success_rate": 1.0,
+      "distinct_responses": 100,
+      "total_completion_tokens": 25600,
+      "healthy": true,
+      "problems": []
+    },
+    {
+      "model": "moonshotai/Kimi-K2.6",
+      "requested": 100,
+      "concurrency": 100,
+      "max_tokens": 256,
+      "seed_base": 178576465700000,
+      "seed_first": 178576465700000,
+      "seed_last": 178576465702104,
+      "max_attempts": 5,
+      "baseline": {
+        "count": 5,
+        "p50": 10.61,
+        "p90": 47.94,
+        "p95": 47.94,
+        "p99": 47.94,
+        "maximum": 47.94
+      },
+      "loaded": {
+        "count": 100,
+        "p50": 15.74,
+        "p90": 34.86,
+        "p95": 39.59,
+        "p99": 71.38,
+        "maximum": 88.34
+      },
+      "experienced": {
+        "count": 100,
+        "p50": 15.74,
+        "p90": 34.86,
+        "p95": 39.59,
+        "p99": 71.38,
+        "maximum": 88.34
+      },
+      "requests_needing_retry": 0,
+      "total_attempts": 100,
+      "shed_counts": {},
+      "total_waited_s": 0.0,
+      "burst_wall_clock_s": 88.36,
+      "throughput_per_s": 1.13,
+      "status_counts": {
+        "200": 100
+      },
+      "transport_failures": 0,
+      "succeeded": 100,
+      "success_rate": 1.0,
+      "distinct_responses": 100,
+      "total_completion_tokens": 25600,
+      "healthy": true,
+      "problems": []
+    },
+    {
+      "model": "moonshotai/Kimi-K2.6",
+      "requested": 100,
+      "concurrency": 100,
+      "max_tokens": 256,
+      "seed_base": 178576465700000,
+      "seed_first": 178576465700000,
+      "seed_last": 178576465703104,
+      "max_attempts": 5,
+      "baseline": {
+        "count": 5,
+        "p50": 10.61,
+        "p90": 47.94,
+        "p95": 47.94,
+        "p99": 47.94,
+        "maximum": 47.94
+      },
+      "loaded": {
+        "count": 100,
+        "p50": 13.76,
+        "p90": 37.12,
+        "p95": 38.84,
+        "p99": 81.91,
+        "maximum": 82.08
+      },
+      "experienced": {
+        "count": 100,
+        "p50": 13.76,
+        "p90": 37.12,
+        "p95": 38.84,
+        "p99": 81.91,
+        "maximum": 82.08
+      },
+      "requests_needing_retry": 0,
+      "total_attempts": 100,
+      "shed_counts": {},
+      "total_waited_s": 0.0,
+      "burst_wall_clock_s": 82.11,
+      "throughput_per_s": 1.22,
+      "status_counts": {
+        "200": 100
+      },
+      "transport_failures": 0,
+      "succeeded": 100,
+      "success_rate": 1.0,
+      "distinct_responses": 100,
+      "total_completion_tokens": 25600,
+      "healthy": true,
+      "problems": []
+    },
+    {
+      "model": "moonshotai/Kimi-K2.6",
+      "requested": 100,
+      "concurrency": 100,
+      "max_tokens": 256,
+      "seed_base": 178576465700000,
+      "seed_first": 178576465700000,
+      "seed_last": 178576465704104,
+      "max_attempts": 5,
+      "baseline": {
+        "count": 5,
+        "p50": 10.61,
+        "p90": 47.94,
+        "p95": 47.94,
+        "p99": 47.94,
+        "maximum": 47.94
+      },
+      "loaded": {
+        "count": 100,
+        "p50": 13.94,
+        "p90": 33.09,
+        "p95": 35.81,
+        "p99": 38.15,
+        "maximum": 38.29
+      },
+      "experienced": {
+        "count": 100,
+        "p50": 13.94,
+        "p90": 33.09,
+        "p95": 35.81,
+        "p99": 38.15,
+        "maximum": 38.29
+      },
+      "requests_needing_retry": 0,
+      "total_attempts": 100,
+      "shed_counts": {},
+      "total_waited_s": 0.0,
+      "burst_wall_clock_s": 38.34,
+      "throughput_per_s": 2.61,
+      "status_counts": {
+        "200": 100
+      },
+      "transport_failures": 0,
+      "succeeded": 100,
+      "success_rate": 1.0,
+      "distinct_responses": 100,
+      "total_completion_tokens": 25600,
+      "healthy": true,
+      "problems": []
+    }
+  ]
+}
