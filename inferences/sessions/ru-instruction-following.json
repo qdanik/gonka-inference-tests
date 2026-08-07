@@ -1,0 +1,53 @@
+{
+  "name": "ru-instruction-following",
+  "description": "Verifiable format constraints in the IFEval style, in ru. Every instruction is checked by counting or matching, never by judging quality. Constraints accumulate, so a later turn also tests whether earlier ones are still honoured.",
+  "language": "ru",
+  "turns": [
+    {
+      "say": "Ответь ровно пятью словами: какая столица у Франции?",
+      "grade": {
+        "kind": "word_count",
+        "value": 5
+      }
+    },
+    {
+      "say": "Опиши Эйфелеву башню не более чем в 20 словах и не используй слова «высокая» и «железная».",
+      "grade": {
+        "kind": "forbidden",
+        "value": [
+          "высокая",
+          "железная"
+        ]
+      }
+    },
+    {
+      "say": "Перечисли ровно три европейские столицы, по одной в строке, без ничего лишнего.",
+      "grade": {
+        "kind": "line_count",
+        "value": 3
+      }
+    },
+    {
+      "say": "Ответь только строчными буквами: как называется река, протекающая через Париж?",
+      "grade": {
+        "kind": "case",
+        "value": "lower"
+      }
+    },
+    {
+      "say": "Ответь одной строкой ровно такого вида: CITY=<название> COUNTRY=<название>, подставив столицу, которую ты назвал первой.",
+      "grade": {
+        "kind": "regex",
+        "value": "CITY=\\S+\\s+COUNTRY=\\S+"
+      }
+    },
+    {
+      "say": "Сколько слов я просил в самом первом вопросе? Укажи только число.",
+      "grade": {
+        "kind": "number",
+        "value": 5,
+        "category": "recall"
+      }
+    }
+  ]
+}

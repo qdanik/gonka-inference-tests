@@ -1,0 +1,122 @@
+{
+  "name": "en-json-structured-output",
+  "description": "Structured-output gates over a growing conversation, prompted in en. Uses response_format, supported on every route; structured_outputs is avoided because the Kimi route rejects it. Schema validity and field correctness are graded separately.",
+  "language": "en",
+  "turns": [
+    {
+      "say": "You are helping catalogue an order. Reply with JSON only: an object with keys \"order_id\" (string), \"total\" (number) and \"items\" (array of objects with \"sku\" and \"quantity\"). Use order_id \"A-1042\", total 128.5, and two items: sku \"WIDGET-1\" quantity 3, and sku \"BOLT-9\" quantity 7.",
+      "request": {
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "order",
+            "schema": {
+              "type": "object",
+              "required": [
+                "order_id",
+                "total",
+                "items"
+              ],
+              "properties": {
+                "order_id": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "number"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "sku",
+                      "quantity"
+                    ],
+                    "properties": {
+                      "sku": {
+                        "type": "string"
+                      },
+                      "quantity": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "grade": {
+        "kind": "json_schema",
+        "value": {
+          "type": "object",
+          "required": [
+            "order_id",
+            "total",
+            "items"
+          ],
+          "properties": {
+            "order_id": {
+              "type": "string"
+            },
+            "total": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "quantity"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "say": "Repeat that exact JSON back to me, unchanged.",
+      "grade": {
+        "kind": "json_field",
+        "path": "items[1].sku",
+        "value": "BOLT-9"
+      }
+    },
+    {
+      "say": "Now reply with JSON only: the same object but with total increased by 21.5. Keep every other field identical.",
+      "grade": {
+        "kind": "json_field",
+        "path": "total",
+        "value": 150.0
+      }
+    },
+    {
+      "say": "Reply with JSON only: an object with a single key \"item_count\" whose value is the total quantity across all items in that order.",
+      "grade": {
+        "kind": "json_field",
+        "path": "item_count",
+        "value": 10
+      }
+    },
+    {
+      "say": "What was the order_id? Reply with JSON only, as an object with one key \"order_id\".",
+      "grade": {
+        "kind": "json_field",
+        "path": "order_id",
+        "value": "A-1042",
+        "category": "recall"
+      }
+    }
+  ]
+}

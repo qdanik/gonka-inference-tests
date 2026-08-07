@@ -1,0 +1,31 @@
+{
+  "name": "zh-agent-session",
+  "description": "Chinese conversation: greeting, a fact to hold, arithmetic, a word problem, recall of the fact, then a turn that needs both earlier results. Han script exercises a different tokenization path through the gateway.",
+  "language": "zh",
+  "turns": [
+    {
+      "say": "你好！最近怎么样？",
+      "grade": { "kind": "script", "value": "han" }
+    },
+    {
+      "say": "请记住数字 47，稍后会用到。确认一下你记住了就好。",
+      "grade": { "kind": "none" }
+    },
+    {
+      "say": "计算：(17 × 23) + 41。只回答最终的数字。",
+      "grade": { "kind": "number", "value": 432 }
+    },
+    {
+      "say": "篮子里有 12 个苹果，送走了三分之一，然后又加了 5 个。现在有多少个苹果？只回答数字。",
+      "grade": { "kind": "number", "value": 13 }
+    },
+    {
+      "say": "我在对话开始时让你记住的是哪个数字？",
+      "grade": { "kind": "number", "value": 47 }
+    },
+    {
+      "say": "把那个数字和苹果的答案相加。只回答结果。",
+      "grade": { "kind": "number", "value": 60 }
+    }
+  ]
+}

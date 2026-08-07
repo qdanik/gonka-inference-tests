@@ -101,6 +101,7 @@ class RequestOutcome:
     status: int
     latency_s: float
     completion_tokens: int | None = None
+    prompt_tokens: int | None = None
     finish_reason: str | None = None
     content_digest: str | None = None
     error_message: str | None = None
@@ -300,19 +301,20 @@ def send_one(base_url: str, admin_key: str, body: dict[str, Any], index: int,
         message = error.get("message") if isinstance(error, dict) else str(error)
         return RequestOutcome(index=index, seed=seed, status=response.status_code,
                               latency_s=latency_s, error_message=(message or "")[:200],
-                              retry_after_s=_parse_retry_after(response.headers.get("Retry-After")))
+                              retry_after_s=parse_retry_after(response.headers.get("Retry-After")))
     choices = payload.get("choices") or []
     first_choice = choices[0] if choices else {}
     content = (first_choice.get("message") or {}).get("content") or ""
     return RequestOutcome(
         index=index, seed=seed, status=response.status_code, latency_s=latency_s,
         completion_tokens=(payload.get("usage") or {}).get("completion_tokens"),
+        prompt_tokens=(payload.get("usage") or {}).get("prompt_tokens"),
         finish_reason=first_choice.get("finish_reason"),
         content_digest=hashlib.sha256(content.encode()).hexdigest()[:12],
     )
 
 
-def _parse_retry_after(header_value: str | None) -> float | None:
+def parse_retry_after(header_value: str | None) -> float | None:
     """Seconds from a `Retry-After` header, if the gateway sent a numeric one.
 
     Only the delta-seconds form is honored; the HTTP-date form is rare here and

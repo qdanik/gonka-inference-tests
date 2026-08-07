@@ -1,0 +1,31 @@
+{
+  "name": "es-agent-session",
+  "description": "Spanish conversation: greeting, a fact to hold, arithmetic, a word problem, recall of the fact, then a turn that needs both earlier results.",
+  "language": "es",
+  "turns": [
+    {
+      "say": "¡Hola! ¿Cómo estás?",
+      "grade": { "kind": "script", "value": "latin" }
+    },
+    {
+      "say": "Recuerda el número 47. Lo necesitaré más adelante. Solo confirma que lo tienes.",
+      "grade": { "kind": "none" }
+    },
+    {
+      "say": "Calcula: (17 × 23) + 41. Responde solo con el número final.",
+      "grade": { "kind": "number", "value": 432 }
+    },
+    {
+      "say": "Una cesta tiene 12 manzanas. Se regala un tercio y luego se añaden 5 más. ¿Cuántas manzanas hay ahora? Responde solo con el número.",
+      "grade": { "kind": "number", "value": 13 }
+    },
+    {
+      "say": "¿Qué número te pedí que recordaras al principio de la conversación?",
+      "grade": { "kind": "number", "value": 47 }
+    },
+    {
+      "say": "Suma ese número al resultado de las manzanas. Responde solo con el resultado.",
+      "grade": { "kind": "number", "value": 60 }
+    }
+  ]
+}

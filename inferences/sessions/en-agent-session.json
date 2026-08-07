@@ -1,0 +1,31 @@
+{
+  "name": "en-agent-session",
+  "description": "English conversation: greeting, a fact to hold, arithmetic, a word problem, recall of the fact, then a turn that needs both earlier results.",
+  "language": "en",
+  "turns": [
+    {
+      "say": "Hi! How are you doing?",
+      "grade": { "kind": "script", "value": "latin" }
+    },
+    {
+      "say": "Remember the number 47. I will need it later. Just confirm that you have it.",
+      "grade": { "kind": "none" }
+    },
+    {
+      "say": "Compute: (17 × 23) + 41. Reply with the final number only.",
+      "grade": { "kind": "number", "value": 432 }
+    },
+    {
+      "say": "A basket holds 12 apples. A third of them are given away, then 5 more are added. How many apples are there now? Reply with the number only.",
+      "grade": { "kind": "number", "value": 13 }
+    },
+    {
+      "say": "Which number did I ask you to remember at the start of this conversation?",
+      "grade": { "kind": "number", "value": 47 }
+    },
+    {
+      "say": "Add that number to the apples answer. Reply with the result only.",
+      "grade": { "kind": "number", "value": 60 }
+    }
+  ]
+}

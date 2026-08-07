@@ -1,0 +1,70 @@
+{
+  "name": "zh-needle-recall",
+  "description": "Needle-in-a-haystack over a conversation rather than a document, in zh: two unrelated facts planted early, buried under filler turns, then asked for individually and finally combined. The combination turn is the RULER-style multi-hop variant — no single earlier message contains the answer.",
+  "language": "zh",
+  "turns": [
+    {
+      "say": "我给你两个需要记住的参考值。第一个是保险库代码：8317。确认一下就好。",
+      "grade": {
+        "kind": "none"
+      }
+    },
+    {
+      "say": "第二个是货物重量：264 公斤。确认一下就好。",
+      "grade": {
+        "kind": "none"
+      }
+    },
+    {
+      "say": "先把它们放一边。用两句话解释什么是分布式账本。",
+      "grade": {
+        "kind": "char_count",
+        "min": 20,
+        "max": 300,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "仍然先放一边——用两句话解释负载均衡器的作用。",
+      "grade": {
+        "kind": "char_count",
+        "min": 20,
+        "max": 300,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "现在用一句话解释缓存为什么对网络服务有帮助。",
+      "grade": {
+        "kind": "char_count",
+        "min": 10,
+        "max": 200,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "保险库代码是多少？只回答数字。",
+      "grade": {
+        "kind": "number",
+        "value": 8317,
+        "category": "recall"
+      }
+    },
+    {
+      "say": "货物重量是多少公斤？只回答数字。",
+      "grade": {
+        "kind": "number",
+        "value": 264,
+        "category": "recall"
+      }
+    },
+    {
+      "say": "用保险库代码减去货物重量。只回答数字。",
+      "grade": {
+        "kind": "number",
+        "value": 8053,
+        "category": "recall"
+      }
+    }
+  ]
+}

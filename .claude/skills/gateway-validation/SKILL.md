@@ -25,10 +25,24 @@ e2e/gateway/
 ├── inference.py   # send one chat-completions request to the gateway, decode status/error/content
 ├── cases.py       # load the JSON corpus + schema
 ├── runner.py      # tunnel → discover served models → fan out cases → assert → artifacts
+├── load.py        # concurrent bursts + repeat series (RetryPolicy, seed blocks, scorecard)
+├── session.py     # multi-turn conversations, tool round-trip, structural checks
+├── graders.py     # verifiable gates for session replies (JSON, IFEval-style, recall, tools)
 ├── config.py      # GatewayTarget (ssh, gateway-url, models)
 └── __main__.py    # CLI + .env auto-load
-inferences/gateway/*.json   # the problem-inference corpus (one file per case)
+inferences/gateway/*.json    # the problem-inference corpus (one file per case)
+inferences/sessions/*.json   # multi-turn conversations (one file per scenario)
 ```
+
+Three subcommands, three questions:
+
+| command | question it answers |
+|---|---|
+| `run` | does the gateway clamp / reject / normalize each parameter correctly? |
+| `load` | how does it behave under concurrency — admission, shedding, latency? |
+| `session` | does inference work wrapped in an agent — history, structured output, tools? |
+
+`session` fails only on STRUCTURAL faults (transport, non-200, empty or truncated reply, `prompt_tokens` that stopped growing). Answer quality goes into a capability scorecard and never fails a run — model output is non-deterministic, and a suite that flaps gets ignored. See [docs/agent-inference-eval.md](../../../docs/agent-inference-eval.md).
 
 ## Config & secrets (THIS REPO IS PUBLIC)
 
@@ -56,7 +70,26 @@ python -m e2e.gateway run --pr 1316 --cases n_zero_clamped_to_one,n_above_max_cl
 - `--cases a,b` — run only those case names (targeted runs); empty = all.
 - `--pr <id>` — tag the run as a PR's; results go to `artifacts/<date>/gateway-pr-<id>/`. Fixtures stay flat in `inferences/gateway/`; `--pr` only changes the output dir, so pick the PR's cases with `--cases`.
 
-Exit code is non-zero if any case fails. Results: `artifacts/<date>/gateway-<pr-<id>|chat-params>/summary.json`. After a clean run, write a `README.md` next to it summarizing the validation (models, tallies, anything found/fixed).
+Exit code is non-zero if any case fails. Results: `artifacts/<date>/gateway-<pr-<id>|chat-params>/summary.json`.
+
+## ALWAYS write a README.md next to summary.json
+
+Every run — green, red, or mixed — gets a `README.md` in the same directory, written before reporting the result. `summary.json` is the record; the README is what makes it readable six weeks later, when nobody remembers which gateway version was live or why one number looks odd.
+
+Write a separate output directory per run (`--out-dir`) so nothing is overwritten. Targeted re-runs share the default path and will silently clobber a full run's artifact.
+
+The README must cover:
+
+- **What was run** — the exact command, the model, and the wall-clock window (`HH:MM:SS → HH:MM:SS`). If timestamps are reconstructed rather than recorded, say so.
+- **Headline result** — the tallies, as a table. For a series, medians with min/max, never a median alone.
+- **Per-unit detail** — one row per case / burst / session, with what it did and how long it took. This is the part people actually come back for.
+- **Latency broken down, for a `session` run** — one section per language: a headline line with that language's overall latency (turns, median, min, max, total), then a table under it with one row per capability category (`reasoning`, `recall`, `instruction`, `structured_output`, `tool_use`, `language`) carrying turns, median, min, max, **tokens in (`prompt_tokens`) and tokens out (`completion_tokens`)**, and tokens-per-second. Nesting it this way keeps the comparison honest: a category's latency is driven by how much text its turns ask for, so it is only comparable within one language's scenarios, not across the whole run. Always print the turn count per row — most categories have very few samples, and a median over two turns is not a measurement.
+- **Token accounting, always** — context in and generated out are what explain a latency number. Report per language: the context at the first and last turn (`prompt_tokens` before → after), total generated, and generation speed. A slow turn that produced 500 tokens and a slow turn that produced 2 are different faults, and only the token counts tell them apart. Flag any turn with `completion_tokens` in single digits — an all-but-empty generation returning HTTP 200 is the failure mode hardest to notice.
+- **Findings** — what the run showed, separated into *established* and *not established*. Compare ranges, not medians: if two runs' ranges overlap, the difference is not measurable and must be labelled as such.
+- **What the run does NOT prove** — the SSH tunnel is in the latency path; percentiles cover only requests that returned; `total_waited_s` is thread-seconds, not elapsed time; a duration pinned to a round number is usually a client timeout, not a measurement.
+- **Corrections** — when a later run overturns an earlier conclusion, edit the older README and mark the superseded section rather than leaving a wrong claim in the repo.
+
+Prose in one line per paragraph, no manual wrapping. Real commands only, runnable as written.
 
 ## The corpus (inferences/gateway/)
 

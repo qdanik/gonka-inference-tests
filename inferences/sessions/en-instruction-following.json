@@ -1,0 +1,53 @@
+{
+  "name": "en-instruction-following",
+  "description": "Verifiable format constraints in the IFEval style, in en. Every instruction is checked by counting or matching, never by judging quality. Constraints accumulate, so a later turn also tests whether earlier ones are still honoured.",
+  "language": "en",
+  "turns": [
+    {
+      "say": "Answer in exactly five words: what is the capital of France?",
+      "grade": {
+        "kind": "word_count",
+        "value": 5
+      }
+    },
+    {
+      "say": "Describe the Eiffel Tower in at most 20 words, and do not use the words \"tall\" or \"iron\".",
+      "grade": {
+        "kind": "forbidden",
+        "value": [
+          "tall",
+          "iron"
+        ]
+      }
+    },
+    {
+      "say": "List exactly three European capitals, one per line, nothing else.",
+      "grade": {
+        "kind": "line_count",
+        "value": 3
+      }
+    },
+    {
+      "say": "Reply using only lowercase letters: name the river running through Paris.",
+      "grade": {
+        "kind": "case",
+        "value": "lower"
+      }
+    },
+    {
+      "say": "Reply with a single line in exactly this shape: CITY=<name> COUNTRY=<name>, filled in for the capital you named first.",
+      "grade": {
+        "kind": "regex",
+        "value": "CITY=\\S+\\s+COUNTRY=\\S+"
+      }
+    },
+    {
+      "say": "How many words did I ask for in my very first question? Reply with the number only.",
+      "grade": {
+        "kind": "number",
+        "value": 5,
+        "category": "recall"
+      }
+    }
+  ]
+}

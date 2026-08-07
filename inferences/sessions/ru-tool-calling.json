@@ -1,0 +1,91 @@
+{
+  "name": "ru-tool-calling",
+  "description": "The agent round-trip in ru: the model is offered a function, asks for it, the harness feeds the result back as a tool message, and later turns are graded on whether that result was used. Calls are checked by parsing rather than executing, the proxy BFCL validated. tools[].function.strict is omitted — the gateway silently strips it on the Kimi route.",
+  "language": "ru",
+  "turns": [
+    {
+      "say": "Какая сейчас погода в Праге? Воспользуйся доступным тебе инструментом.",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Current weather for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string",
+                  "description": "City name"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "celsius",
+                    "fahrenheit"
+                  ]
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ],
+      "tool_result": {
+        "city": "Prague",
+        "temperature_c": 14,
+        "condition": "overcast"
+      },
+      "grade": {
+        "kind": "tool_call",
+        "name": "get_weather",
+        "arguments": {
+          "city": [
+            "Prague",
+            "Прага",
+            "Praga",
+            "布拉格"
+          ]
+        }
+      }
+    },
+    {
+      "say": "Исходя из полученного результата, какая температура в Цельсиях? Укажи только число.",
+      "grade": {
+        "kind": "number",
+        "value": 14
+      }
+    },
+    {
+      "say": "Теперь переведи эту же температуру в Фаренгейты. Укажи только число.",
+      "grade": {
+        "kind": "number",
+        "value": 57.2,
+        "tolerance": 0.5
+      }
+    },
+    {
+      "say": "Ответь только JSON: объект с ключами \"city\" и \"condition\", взятыми из результата инструмента.",
+      "grade": {
+        "kind": "json_field",
+        "path": "condition",
+        "value": "overcast"
+      }
+    },
+    {
+      "say": "Какой город ты смотрел? Укажи только название.",
+      "grade": {
+        "kind": "contains",
+        "value": [
+          "Prague",
+          "Прага",
+          "Praga",
+          "布拉格"
+        ],
+        "category": "recall"
+      }
+    }
+  ]
+}

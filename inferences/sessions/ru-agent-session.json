@@ -1,0 +1,31 @@
+{
+  "name": "ru-agent-session",
+  "description": "Russian conversation: greeting, a fact to hold, arithmetic, a word problem, recall of the fact, then a turn that needs both earlier results.",
+  "language": "ru",
+  "turns": [
+    {
+      "say": "Привет! Как дела?",
+      "grade": { "kind": "script", "value": "cyrillic" }
+    },
+    {
+      "say": "Запомни число 47. Оно понадобится позже. Просто подтверди, что запомнил.",
+      "grade": { "kind": "none" }
+    },
+    {
+      "say": "Посчитай: (17 × 23) + 41. В ответе укажи только итоговое число.",
+      "grade": { "kind": "number", "value": 432 }
+    },
+    {
+      "say": "В корзине 12 яблок. Треть отдали, потом добавили ещё 5. Сколько яблок стало? Укажи только число.",
+      "grade": { "kind": "number", "value": 13 }
+    },
+    {
+      "say": "Какое число я просил тебя запомнить в начале разговора?",
+      "grade": { "kind": "number", "value": 47 }
+    },
+    {
+      "say": "Сложи это число с ответом про яблоки. Укажи только результат.",
+      "grade": { "kind": "number", "value": 60 }
+    }
+  ]
+}

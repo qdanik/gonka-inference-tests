@@ -1,0 +1,100 @@
+{"index": 87, "status": 200, "latency_s": 378.45, "completion_tokens": 6398, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 95, "status": 200, "latency_s": 378.44, "completion_tokens": 6398, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 64, "status": 200, "latency_s": 378.49, "completion_tokens": 7668, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 26, "status": 200, "latency_s": 378.72, "completion_tokens": 7820, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 56, "status": 200, "latency_s": 378.71, "completion_tokens": 7902, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 75, "status": 200, "latency_s": 378.7, "completion_tokens": 6398, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 11, "status": 200, "latency_s": 378.76, "completion_tokens": 7902, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 66, "status": 200, "latency_s": 378.75, "completion_tokens": 7902, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 9, "status": 200, "latency_s": 379.17, "completion_tokens": 9474, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 91, "status": 200, "latency_s": 379.16, "completion_tokens": 9477, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 47, "status": 200, "latency_s": 379.21, "completion_tokens": 9475, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 45, "status": 200, "latency_s": 379.38, "completion_tokens": 7534, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 15, "status": 200, "latency_s": 379.44, "completion_tokens": 7133, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 49, "status": 200, "latency_s": 379.54, "completion_tokens": 7133, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 4, "status": 200, "latency_s": 379.81, "completion_tokens": 7534, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 65, "status": 200, "latency_s": 379.75, "completion_tokens": 6827, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 24, "status": 200, "latency_s": 380.0, "completion_tokens": 7529, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 71, "status": 200, "latency_s": 379.97, "completion_tokens": 6827, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 89, "status": 200, "latency_s": 380.05, "completion_tokens": 6827, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 31, "status": 200, "latency_s": 380.36, "completion_tokens": 6827, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 78, "status": 200, "latency_s": 380.43, "completion_tokens": 7566, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 42, "status": 200, "latency_s": 380.48, "completion_tokens": 7133, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 55, "status": 200, "latency_s": 380.49, "completion_tokens": 7564, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 1, "status": 200, "latency_s": 380.58, "completion_tokens": 7133, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 14, "status": 200, "latency_s": 380.61, "completion_tokens": 7329, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 34, "status": 200, "latency_s": 380.65, "completion_tokens": 7568, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 0, "status": 200, "latency_s": 380.67, "completion_tokens": 7565, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 30, "status": 200, "latency_s": 380.77, "completion_tokens": 7329, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 69, "status": 200, "latency_s": 380.93, "completion_tokens": 7329, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 67, "status": 200, "latency_s": 381.42, "completion_tokens": 7638, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 19, "status": 200, "latency_s": 381.76, "completion_tokens": 6611, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 12, "status": 200, "latency_s": 382.1, "completion_tokens": 7388, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 59, "status": 200, "latency_s": 382.1, "completion_tokens": 7636, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 20, "status": 200, "latency_s": 382.28, "completion_tokens": 7638, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 22, "status": 200, "latency_s": 382.33, "completion_tokens": 6611, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 61, "status": 200, "latency_s": 382.39, "completion_tokens": 7638, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 38, "status": 200, "latency_s": 383.56, "completion_tokens": 7668, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 5, "status": 200, "latency_s": 385.51, "completion_tokens": 40, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 2, "status": 200, "latency_s": 385.53, "completion_tokens": 40, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 83, "status": 200, "latency_s": 385.47, "completion_tokens": 40, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 28, "status": 200, "latency_s": 385.74, "completion_tokens": 40, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 84, "status": 200, "latency_s": 386.15, "completion_tokens": 40, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 70, "status": 200, "latency_s": 389.41, "completion_tokens": 7393, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 8, "status": 200, "latency_s": 39.89, "completion_tokens": 395, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 4, "shed_statuses": [503, 503, 503], "waited_s": 0.73}
+{"index": 88, "status": 200, "latency_s": 403.29, "completion_tokens": 7521, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 53, "status": 200, "latency_s": 403.6, "completion_tokens": 7518, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 58, "status": 200, "latency_s": 403.69, "completion_tokens": 7523, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 96, "status": 200, "latency_s": 403.75, "completion_tokens": 7517, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 27, "status": 200, "latency_s": 403.75, "completion_tokens": 7518, "prompt_tokens": 3759, "finish_reason": "abort", "attempts": 1, "shed_statuses": [], "waited_s": 0.0}
+{"index": 6, "status": 502, "latency_s": 40.26, "error_message": "empty content stream", "attempts": 5, "shed_statuses": [502, 503, 503, 503, 502], "waited_s": 3.42}
+{"index": 50, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 1.14}
+{"index": 43, "status": 503, "latency_s": 120.01, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.9}
+{"index": 98, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 1.51}
+{"index": 90, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 1.01}
+{"index": 81, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 1.54}
+{"index": 72, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.0}
+{"index": 40, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.48}
+{"index": 94, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.42}
+{"index": 51, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.77}
+{"index": 25, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.75}
+{"index": 52, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.01}
+{"index": 74, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.0}
+{"index": 41, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.37}
+{"index": 23, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.53}
+{"index": 10, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.27}
+{"index": 85, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.71}
+{"index": 57, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 2.97}
+{"index": 77, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.37}
+{"index": 82, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.55}
+{"index": 21, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.52}
+{"index": 48, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.19}
+{"index": 36, "status": 503, "latency_s": 120.01, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.86}
+{"index": 60, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.62}
+{"index": 76, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 5.24}
+{"index": 29, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 4.39}
+{"index": 93, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 4.37}
+{"index": 32, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 4.41}
+{"index": 73, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.23}
+{"index": 54, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.21}
+{"index": 17, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 5.21}
+{"index": 18, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.45}
+{"index": 99, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 4.86}
+{"index": 68, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 5.16}
+{"index": 13, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 4.64}
+{"index": 79, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 5.96}
+{"index": 97, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 4.63}
+{"index": 92, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 3.82}
+{"index": 44, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 5.75}
+{"index": 63, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 503], "waited_s": 6.59}
+{"index": 35, "status": 503, "latency_s": 120.0, "error_message": "rate limit exceeded: too many concurrent requests", "attempts": 5, "shed_statuses": [502, 502, 503, 503, 503], "waited_s": 2.68}
+{"index": 16, "status": 502, "latency_s": 1215.76, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [502, 503, 503, 503, 502], "waited_s": 3.65}
+{"index": 86, "status": 502, "latency_s": 1200.0, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 502], "waited_s": 2.59}
+{"index": 37, "status": 502, "latency_s": 1200.0, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 502], "waited_s": 3.71}
+{"index": 80, "status": 502, "latency_s": 1200.01, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 502], "waited_s": 4.63}
+{"index": 7, "status": 502, "latency_s": 1200.01, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 502], "waited_s": 4.89}
+{"index": 46, "status": 502, "latency_s": 1200.0, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [503, 503, 503, 502, 502], "waited_s": 5.04}
+{"index": 39, "status": 200, "latency_s": 731.42, "completion_tokens": 16384, "prompt_tokens": 3759, "finish_reason": "length", "attempts": 3, "shed_statuses": [502, 502], "waited_s": 1.12}
+{"index": 33, "status": 502, "latency_s": 1200.01, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [502, 503, 503, 502, 502], "waited_s": 2.03}
+{"index": 62, "status": 502, "latency_s": 1200.0, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [502, 503, 503, 502, 502], "waited_s": 3.0}
+{"index": 3, "status": 502, "latency_s": 1200.01, "error_message": "every attempt failed", "attempts": 5, "shed_statuses": [502, 503, 503, 502, 502], "waited_s": 4.63}

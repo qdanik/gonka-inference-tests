@@ -1,0 +1,122 @@
+{
+  "name": "zh-json-structured-output",
+  "description": "Structured-output gates over a growing conversation, prompted in zh. Uses response_format, supported on every route; structured_outputs is avoided because the Kimi route rejects it. Schema validity and field correctness are graded separately.",
+  "language": "zh",
+  "turns": [
+    {
+      "say": "帮我把一个订单录入目录。只回答 JSON：一个对象，包含键 \"order_id\"（字符串）、\"total\"（数字）和 \"items\"（对象数组，每个含 \"sku\" 和 \"quantity\"）。使用 order_id \"A-1042\"，total 128.5，两个条目：sku \"WIDGET-1\" 数量 3，sku \"BOLT-9\" 数量 7。",
+      "request": {
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "order",
+            "schema": {
+              "type": "object",
+              "required": [
+                "order_id",
+                "total",
+                "items"
+              ],
+              "properties": {
+                "order_id": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "number"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "sku",
+                      "quantity"
+                    ],
+                    "properties": {
+                      "sku": {
+                        "type": "string"
+                      },
+                      "quantity": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "grade": {
+        "kind": "json_schema",
+        "value": {
+          "type": "object",
+          "required": [
+            "order_id",
+            "total",
+            "items"
+          ],
+          "properties": {
+            "order_id": {
+              "type": "string"
+            },
+            "total": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "quantity"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "say": "把刚才那段 JSON 原样重复一遍，不要做任何改动。",
+      "grade": {
+        "kind": "json_field",
+        "path": "items[1].sku",
+        "value": "BOLT-9"
+      }
+    },
+    {
+      "say": "现在只回答 JSON：同一个对象，但 total 增加 21.5。其他字段保持完全一致。",
+      "grade": {
+        "kind": "json_field",
+        "path": "total",
+        "value": 150.0
+      }
+    },
+    {
+      "say": "只回答 JSON：一个对象，只有一个键 \"item_count\"，值为该订单中所有条目数量的总和。",
+      "grade": {
+        "kind": "json_field",
+        "path": "item_count",
+        "value": 10
+      }
+    },
+    {
+      "say": "order_id 是什么？只回答 JSON，一个含有单个键 \"order_id\" 的对象。",
+      "grade": {
+        "kind": "json_field",
+        "path": "order_id",
+        "value": "A-1042",
+        "category": "recall"
+      }
+    }
+  ]
+}

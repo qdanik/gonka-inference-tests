@@ -1,0 +1,53 @@
+{
+  "name": "es-instruction-following",
+  "description": "Verifiable format constraints in the IFEval style, in es. Every instruction is checked by counting or matching, never by judging quality. Constraints accumulate, so a later turn also tests whether earlier ones are still honoured.",
+  "language": "es",
+  "turns": [
+    {
+      "say": "Responde con exactamente cinco palabras: ¿cuál es la capital de Francia?",
+      "grade": {
+        "kind": "word_count",
+        "value": 5
+      }
+    },
+    {
+      "say": "Describe la Torre Eiffel en 20 palabras como máximo, y no uses las palabras «alta» ni «hierro».",
+      "grade": {
+        "kind": "forbidden",
+        "value": [
+          "alta",
+          "hierro"
+        ]
+      }
+    },
+    {
+      "say": "Enumera exactamente tres capitales europeas, una por línea, nada más.",
+      "grade": {
+        "kind": "line_count",
+        "value": 3
+      }
+    },
+    {
+      "say": "Responde usando solo minúsculas: ¿cómo se llama el río que atraviesa París?",
+      "grade": {
+        "kind": "case",
+        "value": "lower"
+      }
+    },
+    {
+      "say": "Responde con una sola línea exactamente con esta forma: CITY=<nombre> COUNTRY=<nombre>, rellenada con la capital que nombraste primero.",
+      "grade": {
+        "kind": "regex",
+        "value": "CITY=\\S+\\s+COUNTRY=\\S+"
+      }
+    },
+    {
+      "say": "¿Cuántas palabras pedí en mi primera pregunta? Responde solo con el número.",
+      "grade": {
+        "kind": "number",
+        "value": 5,
+        "category": "recall"
+      }
+    }
+  ]
+}

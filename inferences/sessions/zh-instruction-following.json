@@ -1,0 +1,54 @@
+{
+  "name": "zh-instruction-following",
+  "description": "Verifiable format constraints in the IFEval style, in zh. Every instruction is checked by counting or matching, never by judging quality. Constraints accumulate, so a later turn also tests whether earlier ones are still honoured.",
+  "language": "zh",
+  "turns": [
+    {
+      "say": "用不超过十个字回答：法国的首都是哪里？",
+      "grade": {
+        "kind": "char_count",
+        "max": 12
+      }
+    },
+    {
+      "say": "用不超过 40 个字描述埃菲尔铁塔，并且不要使用「高」和「铁」这两个字。",
+      "grade": {
+        "kind": "forbidden",
+        "value": [
+          "高",
+          "铁"
+        ]
+      }
+    },
+    {
+      "say": "列出恰好三个欧洲首都，每行一个，不要写别的内容。",
+      "grade": {
+        "kind": "line_count",
+        "value": 3
+      }
+    },
+    {
+      "say": "只用中文字符回答，不要出现任何拉丁字母：流经巴黎的河叫什么名字？",
+      "grade": {
+        "kind": "script",
+        "value": "han",
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "用一行回答，格式必须正好是：CITY=<名称> COUNTRY=<名称>，填入你最先说出的那个首都。",
+      "grade": {
+        "kind": "regex",
+        "value": "CITY=\\S+\\s+COUNTRY=\\S+"
+      }
+    },
+    {
+      "say": "我在第一个问题里要求最多多少个字？只回答数字。",
+      "grade": {
+        "kind": "number",
+        "value": 10,
+        "category": "recall"
+      }
+    }
+  ]
+}

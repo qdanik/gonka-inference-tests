@@ -1,0 +1,91 @@
+{
+  "name": "en-tool-calling",
+  "description": "The agent round-trip in en: the model is offered a function, asks for it, the harness feeds the result back as a tool message, and later turns are graded on whether that result was used. Calls are checked by parsing rather than executing, the proxy BFCL validated. tools[].function.strict is omitted — the gateway silently strips it on the Kimi route.",
+  "language": "en",
+  "turns": [
+    {
+      "say": "What is the weather in Prague right now? Use the tool available to you.",
+      "tools": [
+        {
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "description": "Current weather for a city.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string",
+                  "description": "City name"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "celsius",
+                    "fahrenheit"
+                  ]
+                }
+              },
+              "required": [
+                "city"
+              ]
+            }
+          }
+        }
+      ],
+      "tool_result": {
+        "city": "Prague",
+        "temperature_c": 14,
+        "condition": "overcast"
+      },
+      "grade": {
+        "kind": "tool_call",
+        "name": "get_weather",
+        "arguments": {
+          "city": [
+            "Prague",
+            "Прага",
+            "Praga",
+            "布拉格"
+          ]
+        }
+      }
+    },
+    {
+      "say": "Given that result, what is the temperature in Celsius? Reply with the number only.",
+      "grade": {
+        "kind": "number",
+        "value": 14
+      }
+    },
+    {
+      "say": "Now convert that same temperature to Fahrenheit. Reply with the number only.",
+      "grade": {
+        "kind": "number",
+        "value": 57.2,
+        "tolerance": 0.5
+      }
+    },
+    {
+      "say": "Reply with JSON only: an object with keys \"city\" and \"condition\", taken from the tool result you received.",
+      "grade": {
+        "kind": "json_field",
+        "path": "condition",
+        "value": "overcast"
+      }
+    },
+    {
+      "say": "Which city did you look up? Reply with the name only.",
+      "grade": {
+        "kind": "contains",
+        "value": [
+          "Prague",
+          "Прага",
+          "Praga",
+          "布拉格"
+        ],
+        "category": "recall"
+      }
+    }
+  ]
+}

@@ -23,9 +23,12 @@ from .cases import load_cases
 from .config import DEFAULT_GATEWAY_URL, GatewayTarget
 from .load import RetryPolicy, load
 from .runner import run
+from .session import load_scenarios, session
+from .throughput import DEFAULT_CONTEXT_LIMIT, PROFILES, bench
 
 _ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_CASES_DIR = _ROOT / "inferences" / "gateway"
+DEFAULT_SCENARIOS_DIR = _ROOT / "inferences" / "sessions"
 DEFAULT_ARTIFACTS = _ROOT / "artifacts"
 
 
@@ -104,6 +107,99 @@ def _add_load_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--timeout", type=int, default=180, help="per-request timeout seconds")
 
 
+def _add_session_args(parser: argparse.ArgumentParser) -> None:
+    _add_connection_args(parser)
+    parser.add_argument("--model", default="",
+                        help="model id to converse with; empty = first served")
+    parser.add_argument("--scenarios", default="",
+                        help="comma-separated scenario names; empty = all")
+    parser.add_argument("--scenarios-dir", type=Path, default=None,
+                        help="override the scenarios dir (default inferences/sessions)")
+    parser.add_argument("--max-tokens", type=int, default=1024,
+                        help="max_tokens per turn; generous so replies are not truncated")
+    parser.add_argument("--seed-base", type=int, default=None,
+                        help="first seed (default: wall clock, so re-runs never replay seeds)")
+    parser.add_argument("--out-dir", type=Path, default=None,
+                        help="override artifacts dir (default artifacts/<date>/gateway-sessions)")
+    parser.add_argument("--timeout", type=int, default=300, help="per-turn timeout seconds")
+    parser.add_argument("--max-attempts", type=int, default=5,
+                        help="attempts per turn while the gateway sheds load (1 = no retry)")
+
+
+def _session_command(args) -> int:
+    from datetime import datetime
+
+    target = GatewayTarget.from_args(args)
+    scenarios_dir = args.scenarios_dir or DEFAULT_SCENARIOS_DIR
+    names = [name.strip() for name in args.scenarios.split(",") if name.strip()] or None
+    scenarios = load_scenarios(scenarios_dir, names)
+    out_dir = args.out_dir or (
+        DEFAULT_ARTIFACTS / datetime.now().strftime("%Y-%m-%d") / "gateway-sessions"
+    )
+    sessions = session(
+        target, scenarios, out_dir,
+        model=args.model,
+        seed_base=args.seed_base,
+        max_tokens=args.max_tokens,
+        timeout_s=args.timeout,
+        policy=RetryPolicy(max_attempts=args.max_attempts),
+    )
+    return 0 if all(outcome.structurally_ok for outcome in sessions) else 1
+
+
+def _add_bench_args(parser: argparse.ArgumentParser) -> None:
+    _add_connection_args(parser)
+    parser.add_argument("--profile", default="decode", choices=sorted(PROFILES),
+                        help="which regime to measure (default %(default)s)")
+    parser.add_argument("--model", default="", help="model id; empty = first served")
+    parser.add_argument("--requests", type=int, default=32, help="total requests in the burst")
+    parser.add_argument("--concurrency", type=int, default=32, help="requests in flight at once")
+    parser.add_argument("--context-limit", type=int, default=DEFAULT_CONTEXT_LIMIT,
+                        help="shared prompt+output ceiling for the route (default %(default)s)")
+    parser.add_argument("--thinking-budget", type=int, default=0,
+                        help="thinking_token_budget; 0 keeps reasoning out of the measurement")
+    parser.add_argument("--seed-base", type=int, default=None,
+                        help="first seed (default: wall clock, so re-runs never replay seeds)")
+    parser.add_argument("--max-attempts", type=int, default=5,
+                        help="attempts per request while the gateway sheds load")
+    parser.add_argument("--out-dir", type=Path, default=None,
+                        help="override artifacts dir (default artifacts/<date>/gateway-bench-<profile>)")
+    parser.add_argument("--timeout", type=int, default=1800,
+                        help="per-request timeout seconds; long outputs need a long ceiling")
+    parser.add_argument("--prompt-tokens", type=int, default=None,
+                        help="override the profile's prompt size (for a size sweep)")
+    parser.add_argument("--output-tokens", type=int, default=None,
+                        help="override the profile's forced output size")
+    parser.add_argument("--on-server", action="store_true",
+                        help="run the burst on the gateway box (uploads a collector to /tmp), "
+                             "taking the SSH tunnel out of the measurement path")
+
+
+def _bench_command(args) -> int:
+    from datetime import datetime
+
+    target = GatewayTarget.from_args(args)
+    out_dir = args.out_dir or (
+        DEFAULT_ARTIFACTS / datetime.now().strftime("%Y-%m-%d") / f"gateway-bench-{args.profile}"
+    )
+    report = bench(
+        target, out_dir,
+        profile_name=args.profile,
+        model=args.model,
+        requests_count=args.requests,
+        concurrency=args.concurrency,
+        seed_base=args.seed_base,
+        timeout_s=args.timeout,
+        context_limit=args.context_limit,
+        thinking_budget=args.thinking_budget,
+        policy=RetryPolicy(max_attempts=args.max_attempts),
+        on_server=args.on_server,
+        prompt_tokens=args.prompt_tokens,
+        output_tokens=args.output_tokens,
+    )
+    return 0 if report.succeeded == report.requested else 1
+
+
 def _run_command(args) -> int:
     target = GatewayTarget.from_args(args)
     pr = args.pr.strip().lstrip("#")
@@ -154,10 +250,16 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     _add_run_args(sub.add_parser("run", help="run the chat-param cases against the gateway"))
     _add_load_args(sub.add_parser("load", help="fire a concurrent burst and report latency/errors"))
+    _add_session_args(sub.add_parser("session", help="drive multi-turn conversations and check them"))
+    _add_bench_args(sub.add_parser("bench", help="measure token throughput under load"))
     args = parser.parse_args(argv)
 
     if args.command == "load":
         return _load_command(args)
+    if args.command == "session":
+        return _session_command(args)
+    if args.command == "bench":
+        return _bench_command(args)
     return _run_command(args)
 
 

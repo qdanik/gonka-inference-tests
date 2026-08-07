@@ -1,0 +1,122 @@
+{
+  "name": "ru-json-structured-output",
+  "description": "Structured-output gates over a growing conversation, prompted in ru. Uses response_format, supported on every route; structured_outputs is avoided because the Kimi route rejects it. Schema validity and field correctness are graded separately.",
+  "language": "ru",
+  "turns": [
+    {
+      "say": "Помоги занести заказ в каталог. Ответь только JSON: объект с ключами \"order_id\" (строка), \"total\" (число) и \"items\" (массив объектов с \"sku\" и \"quantity\"). Используй order_id \"A-1042\", total 128.5 и две позиции: sku \"WIDGET-1\" количество 3 и sku \"BOLT-9\" количество 7.",
+      "request": {
+        "response_format": {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "order",
+            "schema": {
+              "type": "object",
+              "required": [
+                "order_id",
+                "total",
+                "items"
+              ],
+              "properties": {
+                "order_id": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "number"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "sku",
+                      "quantity"
+                    ],
+                    "properties": {
+                      "sku": {
+                        "type": "string"
+                      },
+                      "quantity": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "grade": {
+        "kind": "json_schema",
+        "value": {
+          "type": "object",
+          "required": [
+            "order_id",
+            "total",
+            "items"
+          ],
+          "properties": {
+            "order_id": {
+              "type": "string"
+            },
+            "total": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "quantity"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "say": "Повтори этот же JSON без единого изменения.",
+      "grade": {
+        "kind": "json_field",
+        "path": "items[1].sku",
+        "value": "BOLT-9"
+      }
+    },
+    {
+      "say": "Теперь ответь только JSON: тот же объект, но total увеличен на 21.5. Все остальные поля оставь без изменений.",
+      "grade": {
+        "kind": "json_field",
+        "path": "total",
+        "value": 150.0
+      }
+    },
+    {
+      "say": "Ответь только JSON: объект с единственным ключом \"item_count\", значение — суммарное количество по всем позициям заказа.",
+      "grade": {
+        "kind": "json_field",
+        "path": "item_count",
+        "value": 10
+      }
+    },
+    {
+      "say": "Какой был order_id? Ответь только JSON — объектом с одним ключом \"order_id\".",
+      "grade": {
+        "kind": "json_field",
+        "path": "order_id",
+        "value": "A-1042",
+        "category": "recall"
+      }
+    }
+  ]
+}

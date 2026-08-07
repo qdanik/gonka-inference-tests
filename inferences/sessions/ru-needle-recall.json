@@ -1,0 +1,70 @@
+{
+  "name": "ru-needle-recall",
+  "description": "Needle-in-a-haystack over a conversation rather than a document, in ru: two unrelated facts planted early, buried under filler turns, then asked for individually and finally combined. The combination turn is the RULER-style multi-hop variant — no single earlier message contains the answer.",
+  "language": "ru",
+  "turns": [
+    {
+      "say": "Сейчас дам тебе два значения, которые надо запомнить. Первое — код сейфа: 8317. Просто подтверди.",
+      "grade": {
+        "kind": "none"
+      }
+    },
+    {
+      "say": "Второе — вес партии: 264 килограмма. Просто подтверди.",
+      "grade": {
+        "kind": "none"
+      }
+    },
+    {
+      "say": "Пока отложи их. Объясни в двух предложениях, что такое распределённый реестр.",
+      "grade": {
+        "kind": "word_count",
+        "min": 10,
+        "max": 120,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "По-прежнему отложив те значения — объясни в двух предложениях, что делает балансировщик нагрузки.",
+      "grade": {
+        "kind": "word_count",
+        "min": 10,
+        "max": 120,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "Теперь одним предложением объясни, зачем веб-сервису кэш.",
+      "grade": {
+        "kind": "word_count",
+        "min": 5,
+        "max": 80,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "Какой был код сейфа? Укажи только число.",
+      "grade": {
+        "kind": "number",
+        "value": 8317,
+        "category": "recall"
+      }
+    },
+    {
+      "say": "Какой был вес партии в килограммах? Укажи только число.",
+      "grade": {
+        "kind": "number",
+        "value": 264,
+        "category": "recall"
+      }
+    },
+    {
+      "say": "Вычти вес партии из кода сейфа. Укажи только число.",
+      "grade": {
+        "kind": "number",
+        "value": 8053,
+        "category": "recall"
+      }
+    }
+  ]
+}

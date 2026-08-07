@@ -1,0 +1,70 @@
+{
+  "name": "en-needle-recall",
+  "description": "Needle-in-a-haystack over a conversation rather than a document, in en: two unrelated facts planted early, buried under filler turns, then asked for individually and finally combined. The combination turn is the RULER-style multi-hop variant — no single earlier message contains the answer.",
+  "language": "en",
+  "turns": [
+    {
+      "say": "I am going to give you two reference values to hold onto. The first is the vault code: 8317. Just acknowledge it.",
+      "grade": {
+        "kind": "none"
+      }
+    },
+    {
+      "say": "The second is the shipment weight: 264 kilograms. Just acknowledge it.",
+      "grade": {
+        "kind": "none"
+      }
+    },
+    {
+      "say": "Ignore those for a moment. In two sentences, explain what a distributed ledger is.",
+      "grade": {
+        "kind": "word_count",
+        "min": 10,
+        "max": 120,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "Still setting those aside — in two sentences, explain what a load balancer does.",
+      "grade": {
+        "kind": "word_count",
+        "min": 10,
+        "max": 120,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "Now, in one sentence, explain why caching helps a web service.",
+      "grade": {
+        "kind": "word_count",
+        "min": 5,
+        "max": 80,
+        "category": "instruction"
+      }
+    },
+    {
+      "say": "What was the vault code? Reply with the number only.",
+      "grade": {
+        "kind": "number",
+        "value": 8317,
+        "category": "recall"
+      }
+    },
+    {
+      "say": "What was the shipment weight in kilograms? Reply with the number only.",
+      "grade": {
+        "kind": "number",
+        "value": 264,
+        "category": "recall"
+      }
+    },
+    {
+      "say": "Subtract the shipment weight from the vault code. Reply with the number only.",
+      "grade": {
+        "kind": "number",
+        "value": 8053,
+        "category": "recall"
+      }
+    }
+  ]
+}
