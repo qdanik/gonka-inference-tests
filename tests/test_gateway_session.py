@@ -118,6 +118,21 @@ class TestCheckStructure:
         check_structure(turn, previous_prompt_tokens=100)
         assert any("context did not grow" in problem for problem in turn.structural_problems)
 
+    def test_a_drop_after_a_tools_payload_is_not_a_fault(self):
+        """Turn 1 carries the function schema; turn 2 does not, so the count falls.
+
+        Four tool-calling sessions were failed by this before the payload was
+        accounted for — the history was intact, the request simply got smaller.
+        """
+        turn = make_turn(prompt_tokens=143)
+        check_structure(turn, previous_prompt_tokens=250, previous_turn_carried_payload=True)
+        assert turn.structurally_ok
+
+    def test_a_drop_without_a_payload_is_still_a_fault(self):
+        turn = make_turn(prompt_tokens=143)
+        check_structure(turn, previous_prompt_tokens=250, previous_turn_carried_payload=False)
+        assert any("context did not grow" in p for p in turn.structural_problems)
+
     def test_first_turn_has_nothing_to_compare_against(self):
         turn = make_turn(prompt_tokens=40)
         check_structure(turn, previous_prompt_tokens=None)

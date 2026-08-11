@@ -2,3 +2,5 @@ __pycache__
 *.pem
 .venv/
 .env
+
+corpus/

@@ -34,6 +34,7 @@ silently and quietly invalidate the measurement.
 """
 from __future__ import annotations
 
+import collections
 import json
 import threading
 import time
@@ -53,6 +54,7 @@ from .load import (
     RetryPolicy,
     default_seed_base,
     percentile,
+    resolve_model,
     send_one,
     send_with_retry,
     summarize_latencies,
@@ -123,31 +125,6 @@ class ThroughputReport:
     latency: LatencySummary = field(default_factory=LatencySummary)
     output_hit_target: int = 0
     problems: list[str] = field(default_factory=list)
-
-
-def resolve_model(requested: str, served: list[str]) -> str:
-    """Pick the model to benchmark, refusing to guess when the choice matters.
-
-    Falling back to `served[0]` silently is how a benchmark ends up measuring a
-    different model than the one under discussion: a second model appeared in
-    the served list mid-session and several sweep runs quietly switched to it.
-    With more than one route available the caller must say which, because no
-    default is defensible and the mistake is invisible in the output.
-    """
-    if requested:
-        if requested not in served:
-            raise SystemExit(f"model {requested!r} is not served; served={served}")
-        return requested
-    if not served:
-        raise SystemExit("no models are served")
-    if len(served) > 1:
-        raise SystemExit(
-            f"{len(served)} models are served ({', '.join(served)}); pass --model to "
-            "choose one. Defaulting would silently benchmark whichever happened to "
-            "be listed first."
-        )
-    print(f"[bench] only one model served, using {served[0]}")
-    return served[0]
 
 
 def estimate_chars_per_token(sample_text: str, measured_tokens: int) -> float:
@@ -281,7 +258,10 @@ def bench(target: GatewayTarget, out_dir: Path, profile_name: str = "decode",
           policy: RetryPolicy | None = None,
           on_server: bool = False,
           prompt_tokens: int | None = None,
-          output_tokens: int | None = None) -> ThroughputReport:
+          output_tokens: int | None = None,
+          duration_s: int = 0, save_content: bool = False,
+          logprobs: bool = False, top_logprobs: int = 5,
+          corpus_path: Path | None = None) -> ThroughputReport:
     """Calibrate the prompt, fire the burst, and report token rates.
 
     With `on_server`, the burst runs on the gateway box and only the raw records
@@ -311,7 +291,8 @@ def bench(target: GatewayTarget, out_dir: Path, profile_name: str = "decode",
 
     if on_server:
         return _bench_on_server(target, out_dir, profile, model, requests_count, concurrency,
-                                seed_base, timeout_s, thinking_budget, policy)
+                                seed_base, timeout_s, thinking_budget, policy, duration_s,
+                                save_content, logprobs, top_logprobs, corpus_path)
 
     with forward_tunnel(target.server_target(), remote_port=target.gateway_port) as local_port:
         base_url = f"http://127.0.0.1:{local_port}"
@@ -351,7 +332,10 @@ def bench(target: GatewayTarget, out_dir: Path, profile_name: str = "decode",
 
 def _bench_on_server(target: GatewayTarget, out_dir: Path, profile: Profile, model: str,
                      requests_count: int, concurrency: int, seed_base: int, timeout_s: int,
-                     thinking_budget: int | None, policy: RetryPolicy) -> ThroughputReport:
+                     thinking_budget: int | None, policy: RetryPolicy,
+                     duration_s: int = 0, save_content: bool = False,
+                     logprobs: bool = False, top_logprobs: int = 5,
+                     corpus_path: Path | None = None) -> ThroughputReport:
     """Run the burst on the box; the tunnel is used only to discover the model."""
     with forward_tunnel(target.server_target(), remote_port=target.gateway_port) as local_port:
         served = models_served(f"http://127.0.0.1:{local_port}", target.admin_key)
@@ -361,20 +345,192 @@ def _bench_on_server(target: GatewayTarget, out_dir: Path, profile: Profile, mod
     print(f"[bench] model={chosen_model} requests={requests_count} concurrency={concurrency}")
     print(f"[bench] {describe_placement(on_server=True)}")
     print(f"[bench] retry: max_attempts={policy.max_attempts} on 429/502/503, full jitter")
+    if logprobs:
+        print(f"[bench] logprobs: true, top_logprobs={top_logprobs} "
+              f"(expect much larger responses)")
+    if duration_s:
+        print(f"[bench] SOAK: holding {concurrency} requests in flight for "
+              f"{duration_s / 3600:.1f} h, replacing each as it completes")
     started_at = datetime.now()
-    outcomes, wall_clock_s, chars_per_token = collect_on_server(
+    outcomes, wall_clock_s, chars_per_token, prompt_text, contents, sent = collect_on_server(
         target, chosen_model, profile.prompt_tokens, profile.output_tokens,
         requests_count, concurrency, seed_base, timeout_s, thinking_budget, FILLER_SENTENCE,
-        policy.max_attempts, policy.backoff_base_s, policy.backoff_cap_s)
+        policy.max_attempts, policy.backoff_base_s, policy.backoff_cap_s, duration_s,
+        save_content=save_content, logprobs=logprobs, top_logprobs=top_logprobs,
+        corpus_path=corpus_path)
     finished_at = datetime.now()
     print(f"[bench] calibrated {chars_per_token:.2f} chars/token on the box")
 
     report = build_report(profile, chosen_model, concurrency, chars_per_token, outcomes,
                           wall_clock_s, started_at.isoformat(timespec="seconds"),
                           finished_at.isoformat(timespec="seconds"))
-    _write_artifacts(out_dir, report, outcomes)
+    report.problems.extend(check_model_still_served(target, chosen_model))
+    if duration_s:
+        _write_time_buckets(out_dir, outcomes)
+    _write_devshards(out_dir, outcomes)
+    _write_artifacts(out_dir, report, outcomes, prompt_text, contents, sent)
     _print_report(report)
     return report
+
+
+def time_buckets(outcomes: list[RequestOutcome], bucket_minutes: int = 30) -> list[dict[str, Any]]:
+    """Aggregate a long run into fixed windows of wall-clock time.
+
+    A soak exists to show whether behaviour drifts — throughput sagging, errors
+    creeping in, latency climbing as the hours pass. One average over eight
+    hours hides exactly that, so the records are bucketed by when they finished.
+    """
+    stamped = [o for o in outcomes if o.finished_at]
+    if not stamped:
+        return []
+    origin = min(o.finished_at for o in stamped)
+    width = bucket_minutes * 60
+    grouped: dict[int, list[RequestOutcome]] = {}
+    for outcome in stamped:
+        grouped.setdefault(int((outcome.finished_at - origin) // width), []).append(outcome)
+    buckets = []
+    for index in sorted(grouped):
+        rows = grouped[index]
+        succeeded = [o for o in rows if o.succeeded]
+        tokens = sum(o.completion_tokens or 0 for o in succeeded)
+        latencies = [o.latency_s for o in succeeded]
+        buckets.append({
+            "minute": index * bucket_minutes,
+            "requests": len(rows),
+            "succeeded": len(succeeded),
+            "success_rate": round(len(succeeded) / len(rows), 3) if rows else 0.0,
+            "output_tokens": tokens,
+            "output_tokens_per_s": round(tokens / width, 1),
+            "latency_p50": round(percentile(latencies, 0.50), 1) if latencies else 0.0,
+            "latency_p95": round(percentile(latencies, 0.95), 1) if latencies else 0.0,
+            "statuses": dict(sorted(collections.Counter(
+                "transport" if o.transport_error else str(o.status) for o in rows).items())),
+        })
+    return buckets
+
+
+def _write_time_buckets(out_dir: Path, outcomes: list[RequestOutcome]) -> None:
+    buckets = time_buckets(outcomes)
+    if not buckets:
+        return
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "buckets.json").write_text(json.dumps(buckets, indent=2) + "\n")
+    print(f"\n=== over time, 30-minute windows ===")
+    print(f"  {'minute':>7} {'reqs':>6} {'ok':>6} {'rate':>6} {'tok/s':>8} {'p50':>8} {'p95':>8}")
+    for bucket in buckets:
+        print(f"  {bucket['minute']:>7} {bucket['requests']:>6} {bucket['succeeded']:>6} "
+              f"{bucket['success_rate']:>5.0%} {bucket['output_tokens_per_s']:>8.1f} "
+              f"{bucket['latency_p50']:>7.1f}s {bucket['latency_p95']:>7.1f}s")
+
+
+def devshard_key(response_id: str | None) -> str:
+    """The shard part of a response id: "devshard-48087-4203" -> "devshard-48087".
+
+    The trailing counter is per-request; the middle field identifies the shard
+    that served it, which is the only handle the client has on which host did
+    the work.
+    """
+    if not response_id:
+        return "unknown"
+    parts = response_id.split("-")
+    return "-".join(parts[:2]) if len(parts) >= 2 else response_id
+
+
+def by_devshard(outcomes: list[RequestOutcome]) -> list[dict[str, Any]]:
+    """Per-shard breakdown — which host served how much, and how fast.
+
+    With several hosts behind one route the aggregate says nothing about any of
+    them: a fast shard and a stalled one average into a mediocre middle. Earlier
+    single-host runs measured 4.9 to 20.7 tokens/s per request across GPUs, so
+    the spread between shards is the interesting part, not the mean.
+    """
+    grouped: dict[str, list[RequestOutcome]] = {}
+    for outcome in outcomes:
+        if outcome.succeeded:
+            grouped.setdefault(devshard_key(outcome.response_id), []).append(outcome)
+    rows = []
+    for shard, served in sorted(grouped.items()):
+        decode = sorted((o.completion_tokens or 0) / o.latency_s
+                        for o in served if o.latency_s > 0)
+        latency = sorted(o.latency_s for o in served)
+        rows.append({
+            "devshard": shard,
+            "served": len(served),
+            "output_tokens": sum(o.completion_tokens or 0 for o in served),
+            "decode_p50": round(percentile(decode, 0.50), 1) if decode else 0.0,
+            "decode_min": round(decode[0], 1) if decode else 0.0,
+            "decode_max": round(decode[-1], 1) if decode else 0.0,
+            "latency_p50": round(percentile(latency, 0.50), 1) if latency else 0.0,
+            "latency_p95": round(percentile(latency, 0.95), 1) if latency else 0.0,
+        })
+    return sorted(rows, key=lambda row: -row["served"])
+
+
+def response_shapes(outcomes: list[RequestOutcome]) -> dict[str, dict[str, int]]:
+    """Per-shard tally of where a shard puts its answer.
+
+    Shards run different vLLM builds: some expose a `reasoning` field and leave
+    `content` empty, others have no such field and answer in `content`. A client
+    reading only `content` therefore gets an empty string from some hosts and a
+    full answer from others, with nothing in the request to predict which. The
+    tally makes that visible instead of leaving it as scattered "empty replies".
+    """
+    shapes: dict[str, dict[str, int]] = {}
+    for outcome in outcomes:
+        if not outcome.succeeded:
+            continue
+        bucket = shapes.setdefault(devshard_key(outcome.response_id),
+                                   {"in_content": 0, "in_reasoning": 0, "neither": 0})
+        if outcome.content_chars:
+            bucket["in_content"] += 1
+        elif outcome.reasoning_chars:
+            bucket["in_reasoning"] += 1
+        else:
+            bucket["neither"] += 1
+    return dict(sorted(shapes.items()))
+
+
+def _write_devshards(out_dir: Path, outcomes: list[RequestOutcome]) -> None:
+    rows = by_devshard(outcomes)
+    if not rows:
+        return
+    out_dir.mkdir(parents=True, exist_ok=True)
+    shapes = response_shapes(outcomes)
+    for row in rows:
+        row["answer_shape"] = shapes.get(row["devshard"], {})
+    (out_dir / "devshards.json").write_text(json.dumps(rows, indent=2) + "\n")
+    total = sum(row["served"] for row in rows)
+    print(f"\n=== by devshard ({len(rows)} serving) ===")
+    print(f"  {'devshard':>18} {'served':>7} {'share':>6} {'tokens':>12} "
+          f"{'decode p50':>11} {'lat p50':>9}  answer in")
+    for row in rows:
+        shape = row.get("answer_shape", {})
+        where = ", ".join(f"{name.removeprefix('in_')}={count}"
+                          for name, count in shape.items() if count) or "-"
+        print(f"  {row['devshard']:>18} {row['served']:>7} {row['served']/total:>5.0%} "
+              f"{row['output_tokens']:>12,} {row['decode_p50']:>10.1f} "
+              f"{row['latency_p50']:>8.1f}s  {where}")
+
+
+def check_model_still_served(target: GatewayTarget, model: str) -> list[str]:
+    """Confirm the model was still routable when the burst ended.
+
+    The served set is checked once, before the burst. A model can leave it
+    mid-run — one has, dropping out partway through a 100,000-token burst and
+    turning 19 of 50 requests into `400 unsupported model` in zero seconds. The
+    numbers that come back look like a slow route rather than an absent one, so
+    the artifact has to say which it was.
+    """
+    try:
+        with forward_tunnel(target.server_target(), remote_port=target.gateway_port) as port:
+            served = models_served(f"http://127.0.0.1:{port}", target.admin_key)
+    except Exception as error:  # noqa: BLE001 - a failed check must not lose the run
+        return [f"could not re-check the served models after the burst: {error}"]
+    if model not in served:
+        return [f"{model} was NO LONGER SERVED when the burst finished (served: "
+                f"{served or 'none'}); requests may have been refused as unroutable "
+                "rather than being slow"]
+    return []
 
 
 def _run(base_url: str, admin_key: str, model: str, prompt: str, profile: Profile,
@@ -406,8 +562,29 @@ def _run(base_url: str, admin_key: str, model: str, prompt: str, profile: Profil
 
 
 def _write_artifacts(out_dir: Path, report: ThroughputReport,
-                     outcomes: list[RequestOutcome]) -> None:
+                     outcomes: list[RequestOutcome], prompt_text: str = "",
+                     contents: dict[int, Any] | None = None,
+                     sent: dict[int, Any] | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
+    if prompt_text:
+        # One sample, for a quick look at the shape of a prompt. The full set of
+        # prompts lives in requests.jsonl, since with a document pool each
+        # request sends a different one.
+        (out_dir / "prompt.txt").write_text(prompt_text)
+    # Two files rather than one, keyed on `index`: an answer is worth reading on
+    # its own, and pairing them only when needed keeps either side greppable.
+    if sent:
+        with (out_dir / "requests.jsonl").open("w") as handle:
+            for index in sorted(sent):
+                handle.write(json.dumps({"index": index, **sent[index]},
+                                        ensure_ascii=False) + "\n")
+        print(f"[bench] wrote {len(sent)} request bodies to {out_dir / 'requests.jsonl'}")
+    if contents:
+        with (out_dir / "responses.jsonl").open("w") as handle:
+            for index in sorted(contents):
+                handle.write(json.dumps({"index": index, "response": contents[index]},
+                                        ensure_ascii=False) + "\n")
+        print(f"[bench] wrote {len(contents)} response bodies to {out_dir / 'responses.jsonl'}")
     payload = {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "report": asdict(report),

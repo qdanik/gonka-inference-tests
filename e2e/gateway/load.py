@@ -114,6 +114,16 @@ class RequestOutcome:
     shed_statuses: list[int] = field(default_factory=list)
     waited_s: float = 0.0
     total_elapsed_s: float = 0.0
+    # Epoch seconds when the request finished — lets a long run be bucketed
+    # over time, which is the whole point of a soak.
+    finished_at: float = 0.0
+    # Which devshard served this request, from the response id.
+    response_id: str | None = None
+    system_fingerprint: str | None = None
+    # Visible answer vs hidden reasoning, in characters. A reply can carry
+    # thousands of reasoning characters and an empty content field.
+    content_chars: int = 0
+    reasoning_chars: int = 0
 
     @property
     def succeeded(self) -> bool:
@@ -232,6 +242,29 @@ def summarize_latencies(outcomes: list[RequestOutcome]) -> LatencySummary:
         p99=round(percentile(latencies, 0.99), 2),
         maximum=round(max(latencies), 2),
     )
+
+
+def resolve_model(requested: str, served: list[str]) -> str:
+    """Pick the model to drive, refusing to guess when the choice matters.
+
+    Falling back to `served[0]` silently is how a run ends up measuring a
+    different model than the one under discussion: a second model appeared in
+    the served list mid-session and several runs quietly switched to it. With
+    more than one route available the caller must say which, because no default
+    is defensible and the mistake is invisible in the output.
+    """
+    if requested:
+        if requested not in served:
+            raise SystemExit(f"model {requested!r} is not served; served={served}")
+        return requested
+    if not served:
+        raise SystemExit("no models are served")
+    if len(served) > 1:
+        raise SystemExit(
+            f"{len(served)} models are served ({', '.join(served)}); pass --model to "
+            "choose one. Defaulting would silently measure whichever was listed first."
+        )
+    return served[0]
 
 
 def default_seed_base(now_s: float | None = None) -> int:
@@ -530,9 +563,7 @@ def load(target: GatewayTarget, out_dir: Path, model: str = "", requests_count: 
         base_url = f"http://127.0.0.1:{local_port}"
         served = models_served(base_url, target.admin_key)
         print(f"[load] served={served}")
-        chosen_model = model or (served[0] if served else "")
-        if chosen_model not in served:
-            raise SystemExit(f"model {chosen_model!r} is not served; served={served}")
+        chosen_model = resolve_model(model, served)
         print(f"[load] model={chosen_model} requests={requests_count} "
               f"concurrency={concurrency} max_tokens={max_tokens} seed_base={seed_base} "
               f"repeat={repeat}")

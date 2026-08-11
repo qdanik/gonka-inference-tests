@@ -43,7 +43,8 @@ from ..ssh_tunnel import forward_tunnel
 from .config import GatewayTarget
 from .inference import models_served
 from .graders import Reply, category_for, grade
-from .load import RETRYABLE_STATUSES, RetryPolicy, parse_retry_after, next_backoff_s
+from .load import (RETRYABLE_STATUSES, RetryPolicy, next_backoff_s, parse_retry_after,
+                   resolve_model)
 
 # Generous enough that a thinking-by-default model rarely runs out of budget
 # mid-answer; a truncated answer cannot be graded, so it counts as structural.
@@ -185,7 +186,8 @@ def grade_turn(turn: TurnOutcome, spec: dict[str, Any]) -> None:
     turn.expected, turn.observed, turn.correct = result.expected, result.observed, result.passed
 
 
-def check_structure(turn: TurnOutcome, previous_prompt_tokens: int | None) -> None:
+def check_structure(turn: TurnOutcome, previous_prompt_tokens: int | None,
+                    previous_turn_carried_payload: bool = False) -> None:
     """Fill in the structural problems that make a session fail.
 
     These are all gateway-or-plumbing faults, never opinions about the answer.
@@ -200,7 +202,13 @@ def check_structure(turn: TurnOutcome, previous_prompt_tokens: int | None) -> No
         turn.structural_problems.append("empty reply")
     if turn.finish_reason == "length" and not turn.tool_calls:
         turn.structural_problems.append("reply truncated at max_tokens — answer cannot be graded")
-    if previous_prompt_tokens is not None and turn.prompt_tokens is not None:
+    # A turn that offered `tools` or extra request fields inflates its own
+    # prompt_tokens by the size of that payload, which the next turn does not
+    # carry. The count then falls for a reason that has nothing to do with lost
+    # history, so the growth check has to sit that comparison out — four
+    # tool-calling sessions were failed by this before it was accounted for.
+    if (previous_prompt_tokens is not None and turn.prompt_tokens is not None
+            and not previous_turn_carried_payload):
         if turn.prompt_tokens <= previous_prompt_tokens:
             turn.structural_problems.append(
                 f"context did not grow: prompt_tokens {previous_prompt_tokens} → "
@@ -306,16 +314,19 @@ def run_scenario(base_url: str, admin_key: str, model: str, scenario: Scenario,
     session = SessionOutcome(name=scenario.name, language=scenario.language, model=model)
     messages: list[dict[str, Any]] = []
     previous_prompt_tokens: int | None = None
+    carried_payload = previous_turn_carried_payload = False
     started_wall = datetime.now()
     started = time.monotonic()
 
     for index, turn_spec in enumerate(scenario.turns):
         said = turn_spec["say"]
+        previous_turn_carried_payload = carried_payload
+        carried_payload = bool(turn_spec.get("tools") or turn_spec.get("request"))
         messages.append({"role": "user", "content": said})
         turn = send_turn_with_retry(base_url, admin_key, model, messages, index + 1, said,
                                     max_tokens, seed_base + index, timeout_s, policy,
                                     turn_spec.get("tools"), turn_spec.get("request"))
-        check_structure(turn, previous_prompt_tokens)
+        check_structure(turn, previous_prompt_tokens, previous_turn_carried_payload)
         grade_turn(turn, turn_spec.get("grade") or {})
         session.turns.append(turn)
 
@@ -407,9 +418,7 @@ def session(target: GatewayTarget, scenarios: list[Scenario], out_dir: Path,
         base_url = f"http://127.0.0.1:{local_port}"
         served = models_served(base_url, target.admin_key)
         print(f"[session] served={served}")
-        chosen_model = model or (served[0] if served else "")
-        if chosen_model not in served:
-            raise SystemExit(f"model {chosen_model!r} is not served; served={served}")
+        chosen_model = resolve_model(model, served)
         print(f"[session] model={chosen_model} scenarios={len(scenarios)} "
               f"max_tokens={max_tokens} seed_base={seed_base}")
 

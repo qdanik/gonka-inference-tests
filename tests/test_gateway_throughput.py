@@ -195,3 +195,99 @@ class TestModelResolution:
         from e2e.gateway.throughput import resolve_model
         with pytest.raises(SystemExit, match="no models"):
             resolve_model("", [])
+
+
+class TestFetchRemoteFile:
+    """A dropped scp once destroyed a finished 102-request run.
+
+    The payload only exists on the box until it is copied down, so the fetch
+    retries instead of surrendering to one transient network drop.
+    """
+
+    @staticmethod
+    def _target():
+        from e2e.gateway.config import GatewayTarget
+        return GatewayTarget(ssh_host="user@box", ssh_port=2222, admin_key="k")
+
+    def test_retries_until_a_copy_succeeds(self, monkeypatch, tmp_path):
+        from e2e.gateway import remote_bench
+
+        class Result:
+            def __init__(self, returncode):
+                self.returncode = returncode
+                self.stderr = "" if returncode == 0 else "Operation timed out"
+
+        codes = iter([1, 1, 0])
+        calls: list[list[str]] = []
+
+        def fake_run(command, **kwargs):
+            calls.append(command)
+            return Result(next(codes))
+
+        monkeypatch.setattr(remote_bench.subprocess, "run", fake_run)
+        remote_bench.fetch_remote_file(
+            self._target(), "/tmp/run.result", tmp_path / "run.result", "result")
+
+        assert len(calls) == 3
+        assert calls[0][:2] == ["scp", "-C"]
+        assert "user@box:/tmp/run.result" in calls[0]
+
+    def test_gives_up_and_names_the_file_left_on_the_box(self, monkeypatch, tmp_path):
+        from e2e.gateway import remote_bench
+
+        class Result:
+            returncode = 1
+            stderr = "Connection closed"
+
+        monkeypatch.setattr(remote_bench.subprocess, "run",
+                            lambda command, **kwargs: Result())
+        with pytest.raises(SystemExit, match="/tmp/run.result"):
+            remote_bench.fetch_remote_file(
+                self._target(), "/tmp/run.result", tmp_path / "run.result",
+                "result", attempts=2)
+
+
+class TestExchangeArtifacts:
+    """What was asked and what came back, in two files keyed on `index`.
+
+    Kept apart rather than merged: an answer is worth reading on its own, and a
+    100k-token prompt in the same record would bury it.
+    """
+
+    @staticmethod
+    def _report():
+        from e2e.gateway.throughput import PROFILES, ThroughputReport
+        profile = PROFILES["decode"]
+        return ThroughputReport(profile=profile.name, model="m", requested=2, concurrency=2,
+                                prompt_tokens_target=profile.prompt_tokens,
+                                output_tokens_target=profile.output_tokens)
+
+    def test_requests_and_responses_pair_on_index(self, tmp_path):
+        import json
+        from e2e.gateway.throughput import _write_artifacts
+
+        _write_artifacts(
+            tmp_path, self._report(), [],
+            prompt_text="sample",
+            contents={1: {"id": "devshard-1-2"}, 0: {"id": "devshard-3-4"}},
+            sent={0: {"seed": 7, "document": {"id": 2701, "title": "Moby Dick"},
+                      "request": {"messages": [{"role": "user", "content": "Call me Ishmael."}]}},
+                  1: {"seed": 8, "document": {"id": 84, "title": "Frankenstein"},
+                      "request": {"messages": [{"role": "user", "content": "You will rejoice."}]}}})
+
+        asked = [json.loads(line) for line in
+                 (tmp_path / "requests.jsonl").read_text().splitlines()]
+        answered = [json.loads(line) for line in
+                    (tmp_path / "responses.jsonl").read_text().splitlines()]
+
+        assert [record["index"] for record in asked] == [0, 1]
+        assert [record["index"] for record in answered] == [0, 1]
+        assert asked[0]["document"]["title"] == "Moby Dick"
+        assert asked[0]["request"]["messages"][0]["content"] == "Call me Ishmael."
+        assert answered[0]["response"]["id"] == "devshard-3-4"
+
+    def test_no_requests_file_without_saved_bodies(self, tmp_path):
+        from e2e.gateway.throughput import _write_artifacts
+        _write_artifacts(tmp_path, self._report(), [])
+        assert not (tmp_path / "requests.jsonl").exists()
+        assert not (tmp_path / "responses.jsonl").exists()

@@ -170,9 +170,24 @@ def _add_bench_args(parser: argparse.ArgumentParser) -> None:
                         help="override the profile's prompt size (for a size sweep)")
     parser.add_argument("--output-tokens", type=int, default=None,
                         help="override the profile's forced output size")
+    parser.add_argument("--duration-hours", type=float, default=0.0,
+                        help="soak mode: hold --concurrency requests in flight for this long, "
+                             "replacing each as it completes (implies --on-server)")
+    parser.add_argument("--logprobs", action="store_true",
+                        help="send logprobs=true and top_logprobs=N with every request; "
+                             "responses grow by roughly an order of magnitude")
+    parser.add_argument("--top-logprobs", type=int, default=5,
+                        help="alternatives per token when --logprobs is on (default %(default)s)")
+    parser.add_argument("--save-content", action="store_true",
+                        help="also store each response body (responses.jsonl) and the prompt "
+                             "(prompt.txt, the first request's prompt)")
     parser.add_argument("--on-server", action="store_true",
                         help="run the burst on the gateway box (uploads a collector to /tmp), "
                              "taking the SSH tunnel out of the measurement path")
+    parser.add_argument("--corpus", type=Path, default=None,
+                        help="document pool built by scripts/build_corpus.py; each request is "
+                             "sent one real book instead of generated filler. Needs at least "
+                             "as many documents as requests, or prompts start repeating")
 
 
 def _bench_command(args) -> int:
@@ -196,6 +211,11 @@ def _bench_command(args) -> int:
         on_server=args.on_server,
         prompt_tokens=args.prompt_tokens,
         output_tokens=args.output_tokens,
+        duration_s=int(args.duration_hours * 3600),
+        save_content=args.save_content,
+        logprobs=args.logprobs,
+        top_logprobs=args.top_logprobs,
+        corpus_path=args.corpus,
     )
     return 0 if report.succeeded == report.requested else 1
 
