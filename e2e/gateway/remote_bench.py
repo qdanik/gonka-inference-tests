@@ -224,8 +224,18 @@ def document_for(index):
     benchmark into a cache benchmark.
     """
     document = DOCUMENTS[index % len(DOCUMENTS)]
-    return (document["text"][:target_chars],
-            {"id": document["id"], "title": document["title"]})
+    text = document["text"]
+    # First pass through the pool reads every book from its first page. A soak
+    # runs far past that, so later passes step deeper into the same books rather
+    # than resending a prompt the gateway's prefix cache already holds — which
+    # would measure the cache instead of the fleet.
+    room = max(len(text) - target_chars, 1)
+    start = (index // len(DOCUMENTS)) * target_chars % room
+    if start:
+        paragraph = text.find(chr(10) * 2, start, start + 4000)
+        start = paragraph + 2 if paragraph != -1 else start
+    return (text[start:start + target_chars],
+            {"id": document["id"], "title": document["title"], "offset": start})
 
 def build_prompt_for(seed, index=0):
     """The prompt for one request, and which book it came from."""
@@ -235,10 +245,15 @@ def build_prompt_for(seed, index=0):
     return build_context(_random.Random(seed), target_chars) + SYNTHETIC_TASK, None
 
 prompt = build_prompt_for(config["seed_base"], 0)[0]
-if DOCUMENTS and count_needed > len(DOCUMENTS):
-    sys.stderr.write("warning: %d requests but only %d documents — prompts repeat "
-                     "after that and the prefix cache can serve them%s"
-                     % (count_needed, len(DOCUMENTS), chr(10)))
+if DOCUMENTS:
+    windows = sum(max(len(d["text"]) // target_chars, 1) for d in DOCUMENTS)
+    if count_needed > windows:
+        sys.stderr.write("warning: %d requests but the corpus holds %d distinct "
+                         "windows — prompts repeat past that%s"
+                         % (count_needed, windows, chr(10)))
+    else:
+        sys.stderr.write("corpus: %d books, %d distinct windows of %d chars%s"
+                         % (len(DOCUMENTS), windows, target_chars, chr(10)))
 
 concurrency = config["concurrency"]
 count = config["requests"]
@@ -257,8 +272,9 @@ def dispatch(index):
     body = make_body(prompt, seed)
     record = send_with_retry(body, index, seed)
     record["seed"] = seed
-    if config.get("save_content"):
+    if config.get("save_requests"):
         record["request"] = body
+    if config.get("save_content") or config.get("save_requests"):
         if source:
             record["document"] = source
     return record
@@ -356,7 +372,8 @@ def collect_on_server(target: GatewayTarget, model: str, prompt_tokens: int,
                       seed_base: int, timeout_s: int, thinking_budget: int | None,
                       filler: str, max_attempts: int = 5, backoff_base_s: float = 0.5,
                       backoff_cap_s: float = 30.0, duration_s: int = 0,
-                      save_content: bool = False, logprobs: bool = False,
+                      save_content: bool = False, save_requests: bool = True,
+                      logprobs: bool = False,
                       top_logprobs: int = 5, corpus_path: Path | None = None,
                       poll_seconds: int = 20) -> tuple[list[RequestOutcome], float, float, str,
                                                        dict[int, Any], dict[int, Any]]:
@@ -396,6 +413,7 @@ def collect_on_server(target: GatewayTarget, model: str, prompt_tokens: int,
         "result_path": result_path,
         "duration_s": duration_s,
         "save_content": save_content,
+        "save_requests": save_content and save_requests,
         "logprobs": logprobs,
         "top_logprobs": top_logprobs,
         "corpus_path": corpus_remote,

@@ -260,6 +260,7 @@ def bench(target: GatewayTarget, out_dir: Path, profile_name: str = "decode",
           prompt_tokens: int | None = None,
           output_tokens: int | None = None,
           duration_s: int = 0, save_content: bool = False,
+          save_requests: bool = True,
           logprobs: bool = False, top_logprobs: int = 5,
           corpus_path: Path | None = None) -> ThroughputReport:
     """Calibrate the prompt, fire the burst, and report token rates.
@@ -292,7 +293,8 @@ def bench(target: GatewayTarget, out_dir: Path, profile_name: str = "decode",
     if on_server:
         return _bench_on_server(target, out_dir, profile, model, requests_count, concurrency,
                                 seed_base, timeout_s, thinking_budget, policy, duration_s,
-                                save_content, logprobs, top_logprobs, corpus_path)
+                                save_content, logprobs, top_logprobs, corpus_path,
+                                save_requests)
 
     with forward_tunnel(target.server_target(), remote_port=target.gateway_port) as local_port:
         base_url = f"http://127.0.0.1:{local_port}"
@@ -335,7 +337,8 @@ def _bench_on_server(target: GatewayTarget, out_dir: Path, profile: Profile, mod
                      thinking_budget: int | None, policy: RetryPolicy,
                      duration_s: int = 0, save_content: bool = False,
                      logprobs: bool = False, top_logprobs: int = 5,
-                     corpus_path: Path | None = None) -> ThroughputReport:
+                     corpus_path: Path | None = None,
+                     save_requests: bool = True) -> ThroughputReport:
     """Run the burst on the box; the tunnel is used only to discover the model."""
     with forward_tunnel(target.server_target(), remote_port=target.gateway_port) as local_port:
         served = models_served(f"http://127.0.0.1:{local_port}", target.admin_key)
@@ -356,8 +359,8 @@ def _bench_on_server(target: GatewayTarget, out_dir: Path, profile: Profile, mod
         target, chosen_model, profile.prompt_tokens, profile.output_tokens,
         requests_count, concurrency, seed_base, timeout_s, thinking_budget, FILLER_SENTENCE,
         policy.max_attempts, policy.backoff_base_s, policy.backoff_cap_s, duration_s,
-        save_content=save_content, logprobs=logprobs, top_logprobs=top_logprobs,
-        corpus_path=corpus_path)
+        save_content=save_content, save_requests=save_requests,
+        logprobs=logprobs, top_logprobs=top_logprobs, corpus_path=corpus_path)
     finished_at = datetime.now()
     print(f"[bench] calibrated {chars_per_token:.2f} chars/token on the box")
 

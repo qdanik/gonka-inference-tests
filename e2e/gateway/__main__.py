@@ -184,6 +184,9 @@ def _add_bench_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--on-server", action="store_true",
                         help="run the burst on the gateway box (uploads a collector to /tmp), "
                              "taking the SSH tunnel out of the measurement path")
+    parser.add_argument("--no-save-requests", action="store_true",
+                        help="with --save-content, keep the responses but not the request "
+                             "bodies; the prompts are regenerable from the corpus")
     parser.add_argument("--corpus", type=Path, default=None,
                         help="document pool built by scripts/build_corpus.py; each request is "
                              "sent one real book instead of generated filler. Needs at least "
@@ -216,6 +219,7 @@ def _bench_command(args) -> int:
         logprobs=args.logprobs,
         top_logprobs=args.top_logprobs,
         corpus_path=args.corpus,
+        save_requests=not args.no_save_requests,
     )
     return 0 if report.succeeded == report.requested else 1
 
