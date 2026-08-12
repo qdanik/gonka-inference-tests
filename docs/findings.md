@@ -1,5 +1,29 @@
 # Empirical findings
 
+## Gonka gateway fleet (2026-08)
+
+Measured through `python -m e2e.gateway bench` against the live devshard gateway, not a rented GPU box. Details and caveats live in each run's README under `artifacts/<date>/`.
+
+| shape | concurrency | output tok/s | per-request decode p50 | notes |
+|---|---|---:|---:|---|
+| 30k in / 1k out, 30-min soak, all hosts | 64 | **1,658** | 55.4 | 3,036/3,036, nothing shed ([README](../artifacts/2026-08-12/soak-minimax-64-30k-1k-30m/README.md)) |
+| 100k in / 4k out | 34 | 452 | 47.5 | best of four single-host runs |
+| 100k in / 4k out | 34 | 224 | 13.9 | same shape, three hours earlier |
+| 100k in / 4k out | 34 | 89 | 4.8 | same shape, fleet degraded |
+| 90k in / 4k out | 256 | 2,484 | 14.6 | 2026-08-09, filler prompts |
+
+Established across these runs, and worth knowing before designing another:
+
+- **A devshard id is not a host.** Four runs taken while a different participant was the only one enabled shared most of their shards; the last introduced none that had not already served an earlier run. `system_fingerprint` separates backends; the shard id does not.
+- **`/v1/models` advertised a model that ~97% of requests were refused for** (`400 unsupported model`) — only six of the fleet's shards served Kimi, and a 400 carries no devshard id.
+- **`thinking_token_budget: 0` is ignored fleet-wide.** 22–31% of a fixed output budget went to hidden reasoning, truncating answers mid-structure at a fixed `max_tokens`.
+- **The same model returns answers in two shapes.** `content` with an inline `<think>` block on some shards, an empty `content` with the text in `reasoning` on others — 58% of one soak's 3,036 answers took the second shape.
+- **Per-shard decode varies up to 4× inside one run** (14.9 to 62.3 tok/s), and slow shards still take a full share of traffic.
+- **Prompt-size targets overshoot by 7–37%**, model-dependent, because calibration sizes prompts from a filler sentence and real prose tokenises differently.
+- **Answer quality barely differs between runs** whose throughput differs 10× — see `artifacts/2026-08-11/answer-quality/`.
+
+## Cross-GPU validation (2026-06)
+
 All data collected during the 2026-06-05 → 2026-06-07 test runs on MiniMax M2.7 (FP8 native + AWQ-4bit emulated).
 
 ## PoC throughput (1000 nonces, batch_size=32, `--kv-cache-dtype fp8`)

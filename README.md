@@ -64,6 +64,20 @@ The `e2e.gateway` package targets the **Gonka devshard gateway** rather than a r
 | `python -m e2e.gateway run` | per-parameter validation — what the gateway clamps, rejects or normalizes before forwarding |
 | `python -m e2e.gateway load` | behaviour under concurrency — admission control, shedding, latency percentiles |
 | `python -m e2e.gateway session` | **agent-style inference** — multi-turn conversations with verifiable gates |
+| `python -m e2e.gateway bench` | **token throughput** — decode/prefill/balanced profiles, soaks, load generated on the gateway box |
+
+### Measuring throughput
+
+```bash
+python -m scripts.build_corpus --count 128 --out corpus/documents.json   # once
+
+python -m e2e.gateway bench --profile balanced --model MiniMaxAI/MiniMax-M2.7 \
+  --prompt-tokens 100000 --output-tokens 4096 --requests 100 --concurrency 34 \
+  --on-server --corpus corpus/documents.json --save-content \
+  --out-dir artifacts/<date>/<run>
+```
+
+Prompts are whole public-domain books, one per request — synthetic filler made the model degenerate and told us nothing about production inference. `--on-server` uploads the load generator to the gateway box so the SSH tunnel is out of the measurement path; `--duration-hours` turns a burst into a soak that holds N requests in flight. Profiles, soak mode, artifact shapes, the companion scripts, and a table of every failure that has cost a run are in **[docs/throughput.md](docs/throughput.md)**.
 
 ### Testing agent-style inference
 
@@ -102,8 +116,10 @@ repo/
 │   ├── kimi-specific/  #   hand-authored JSON Schema $ref probes (Kimi report)
 │   ├── gateway/        #   problem-inference corpus for `gateway run`
 │   └── sessions/       #   multi-turn conversations for `gateway session`
-├── scripts/            # generator for inferences/default/
-├── tests/              # 143 pytest cases (math + CLI + smoke)
+├── scripts/            # generator for inferences/default/, plus the bench companions:
+│                       #   build_corpus / recover_run / split_responses / compare_answers
+├── corpus/             # book pool for bench prompts (gitignored — rebuild with build_corpus)
+├── tests/              # 374 pytest cases (math + CLI + gateway + smoke)
 ├── artifacts/          # all per-run outputs (per-date, per-model-gpu)
 └── docs/               # detailed guides (read these next)
 ```
@@ -117,6 +133,7 @@ repo/
 - **[docs/findings.md](docs/findings.md)** — empirical throughput numbers + cross-arch validation similarity matrix
 - **[docs/inferences.md](docs/inferences.md)** — the spec catalog, sets, `--inferences-dir`, and how to add new ones
 - **[docs/kimi.md](docs/kimi.md)** — running `moonshotai/Kimi-K2.6` (tool/reasoning parsers) + the `$ref` probe set
+- **[docs/throughput.md](docs/throughput.md)** — token-rate benchmarking: profiles, soaks, the book corpus, artifact shapes, run recovery, answer scoring, and the gotchas that have cost runs
 - **[docs/agent-inference-eval.md](docs/agent-inference-eval.md)** — evaluating agent-style inference: the gate catalog, what fails a run and what only gets recorded, and how to write a scenario
 
 ### Specialized harnesses (subpackages)
@@ -127,5 +144,5 @@ repo/
 ## Tests
 
 ```bash
-python3 -m pytest          # 143 tests; ~17s
+python3 -m pytest          # 374 tests; ~22s
 ```

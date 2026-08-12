@@ -485,7 +485,7 @@ def collect_on_server(target: GatewayTarget, model: str, prompt_tokens: int,
         fields = status.split()
         done = int(fields[-1]) if fields and fields[-1].isdigit() else last_done
         if done != last_done:
-            scope = (f"in {duration_s // 60} min window" if duration_s
+            scope = (f" in the {duration_s // 60} min window" if duration_s
                      else f"/{requests_count}")
             print(f"[bench] {done}{scope} requests complete")
             last_done = done
@@ -493,7 +493,8 @@ def collect_on_server(target: GatewayTarget, model: str, prompt_tokens: int,
     else:
         raise SystemExit(
             f"collector made no progress for {stall_limit / 60:.0f} min "
-            f"(last seen {last_done}/{requests_count}); records remain at "
+            f"(last seen {last_done}"
+            f"{' completed' if duration_s else '/' + str(requests_count)}); records remain at "
             f"{progress_path} on the box — recover them with "
             f"scripts/recover_run.py rather than rerunning")
 

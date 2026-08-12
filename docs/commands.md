@@ -1,5 +1,7 @@
 # Command reference
 
+This file covers the `python3 -m e2e ...` CLI, which deploys and drives vLLM on a rented GPU box. The gateway harnesses are a separate CLI (`python -m e2e.gateway run|load|session|bench`) — see [throughput.md](throughput.md) for `bench` and [agent-inference-eval.md](agent-inference-eval.md) for `session`.
+
 ## Common arguments (every subcommand except `plot`)
 
 | flag | default | meaning |

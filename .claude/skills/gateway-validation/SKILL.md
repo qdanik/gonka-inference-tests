@@ -1,6 +1,6 @@
 ---
 name: gateway-validation
-description: Use when the user wants to validate the Gonka devshard gateway's request-handling against a live server — chat-completion param clamping/rejection, the max_tokens:0 hang, or any "problem inference" that the gateway should clamp, reject, or normalize before vLLM. Covers the e2e/gateway harness, the inferences/gateway corpus, .env config, per-model fan-out, and the find→root-cause→fix→redeploy→re-verify loop.
+description: Use when the user wants to validate the Gonka devshard gateway's request-handling against a live server — chat-completion param clamping/rejection, the max_tokens:0 hang, or any "problem inference" that the gateway should clamp, reject, or normalize before vLLM. Also covers token-throughput benchmarking (`bench`): decode/prefill/balanced profiles, soaks that hold N requests in flight, real-book prompts, on-server load generation, and recovering a run from the box. Covers the e2e/gateway harness, the inferences/gateway corpus, .env config, per-model fan-out, and the find→root-cause→fix→redeploy→re-verify loop.
 ---
 
 # Gateway request-validation testing for Gonka
@@ -12,7 +12,9 @@ The user wants to verify the **gateway** (not raw vLLM) on a server:
 - a request misbehaves (opaque 400, empty 200, hang) and should be captured as a regression
 - confirm a gateway change end-to-end across every served model
 
-Trigger phrases: "check the gateway", "validate chat params", "why is a request hanging or empty", "add a problem inference", "run the gateway tests".
+Or measure what the network delivers: tokens per second, behaviour held under load for hours, whether one participant serves differently from another.
+
+Trigger phrases: "check the gateway", "validate chat params", "why is a request hanging or empty", "add a problem inference", "run the gateway tests", "measure throughput", "tokens per second", "hold N requests in flight", "test this host".
 
 NOT for raw-vLLM PoC/cross-validation — that is the `cross-gpu-validation` skill (`python -m e2e ...`).
 
@@ -26,12 +28,19 @@ e2e/gateway/
 ├── cases.py       # load the JSON corpus + schema
 ├── runner.py      # tunnel → discover served models → fan out cases → assert → artifacts
 ├── load.py        # concurrent bursts + repeat series (RetryPolicy, seed blocks, scorecard)
+├── throughput.py  # bench: profiles, budget checks, report, per-devshard breakdown
+├── remote_bench.py# the collector shipped to the gateway box + fetch/recovery plumbing
 ├── session.py     # multi-turn conversations, tool round-trip, structural checks
 ├── graders.py     # verifiable gates for session replies (JSON, IFEval-style, recall, tools)
 ├── config.py      # GatewayTarget (ssh, gateway-url, models)
 └── __main__.py    # CLI + .env auto-load
 inferences/gateway/*.json    # the problem-inference corpus (one file per case)
 inferences/sessions/*.json   # multi-turn conversations (one file per scenario)
+
+scripts/build_corpus.py      # download the book pool used as bench prompts
+scripts/recover_run.py       # rebuild artifacts for a run still on the box
+scripts/split_responses.py   # one readable JSON per inference
+scripts/compare_answers.py   # score answers: quote fidelity, structure, degeneracy
 ```
 
 Three subcommands, three questions:
@@ -41,6 +50,7 @@ Three subcommands, three questions:
 | `run` | does the gateway clamp / reject / normalize each parameter correctly? |
 | `load` | how does it behave under concurrency — admission, shedding, latency? |
 | `session` | does inference work wrapped in an agent — history, structured output, tools? |
+| `bench` | how many tokens per second does the network deliver, and does it hold under a soak? |
 
 `session` fails only on STRUCTURAL faults (transport, non-200, empty or truncated reply, `prompt_tokens` that stopped growing). Answer quality goes into a capability scorecard and never fails a run — model output is non-deterministic, and a suite that flaps gets ignored. See [docs/agent-inference-eval.md](../../../docs/agent-inference-eval.md).
 
@@ -56,6 +66,23 @@ GONKA_GATEWAY_URL=http://127.0.0.1:18080
 ```
 
 `.env` is gitignored; `.env.example` is the committed template. The admin key is never logged or written into artifacts. A model id under `expect.per_model` is fine (it pins behavior, not infrastructure); a host/key/IP is not.
+
+## Throughput runs (`bench`)
+
+Full reference: [docs/throughput.md](../../../docs/throughput.md). The rules that matter every time:
+
+- **Always `--on-server`** for a rate measurement. The SSH tunnel inflates median latency from 0.7 s to 8.0 s and saturates near 200 connections — it cannot be in the path.
+- **Always `--corpus corpus/documents.json`.** Prompts are whole public-domain books, one per request. Synthetic filler makes the model degenerate into `(.) (.) (.)` and measures nothing real. Build the pool once with `python -m scripts.build_corpus --count 128`.
+- **Name the model explicitly.** With more than one model served, an implicit choice silently benchmarks the wrong route.
+- **A soak (`--duration-hours`) needs more distinct prompts than requests.** Repeats hand the gateway a prefix its cache already holds and inflate the number. The collector prints how many distinct windows the corpus yields and warns when the request count exceeds it.
+- **Read `status_counts` before trusting any number.** A non-retryable 400 returns in 0.01 s, so a soak against a model most shards do not serve spins at tens of requests per second and produces a large file of nothing.
+- **Report output tokens/s and latency percentiles.** Input tokens/s is an admission probe, not a speed — prefill is ~350× cheaper per token. Do not lead with it.
+- **`--save-content` writes both `requests.jsonl` and `responses.jsonl`**; add `--no-save-requests` to keep only the answers (prompts regenerate from the corpus via `document.id` + `offset`). `--logprobs` grows responses ~30×.
+- **If the poller dies, the run is not lost.** The collector is detached; recover with `python -m scripts.recover_run --seed-base <seed> ...`, which rebuilds through the same report code.
+
+### Attribution: a devshard is not a host
+
+Every response carries `devshard-<n>-<m>`, and it looks like a machine label. It is not. Across four runs taken while a different participant was the only one enabled, the shard sets overlapped heavily and the final run introduced no shard unseen earlier; the same shard number returned different `system_fingerprint` values in different runs. Name a run's directory after the host that was being switched, and say in the README that the attribution is unproven. `system_fingerprint` is the field that does separate backends.
 
 ## Run
 
@@ -83,6 +110,7 @@ The README must cover:
 - **What was run** — the exact command, the model, and the wall-clock window (`HH:MM:SS → HH:MM:SS`). If timestamps are reconstructed rather than recorded, say so.
 - **Headline result** — the tallies, as a table. For a series, medians with min/max, never a median alone.
 - **Per-unit detail** — one row per case / burst / session, with what it did and how long it took. This is the part people actually come back for.
+- **For a `bench` run** — the profile and achieved sizes (the *actual* `prompt_tokens`, which overshoots the target by 7–37% depending on the model's tokenizer), aggregate output tokens/s, per-request decode percentiles, latency percentiles, the per-devshard table, and a token-accounting section. State shed counts and retry counts explicitly: a run where a third of requests were shed is not comparable to one where none were, even at the same tokens/s.
 - **Latency broken down, for a `session` run** — one section per language: a headline line with that language's overall latency (turns, median, min, max, total), then a table under it with one row per capability category (`reasoning`, `recall`, `instruction`, `structured_output`, `tool_use`, `language`) carrying turns, median, min, max, **tokens in (`prompt_tokens`) and tokens out (`completion_tokens`)**, and tokens-per-second. Nesting it this way keeps the comparison honest: a category's latency is driven by how much text its turns ask for, so it is only comparable within one language's scenarios, not across the whole run. Always print the turn count per row — most categories have very few samples, and a median over two turns is not a measurement.
 - **Token accounting, always** — context in and generated out are what explain a latency number. Report per language: the context at the first and last turn (`prompt_tokens` before → after), total generated, and generation speed. A slow turn that produced 500 tokens and a slow turn that produced 2 are different faults, and only the token counts tell them apart. Flag any turn with `completion_tokens` in single digits — an all-but-empty generation returning HTTP 200 is the failure mode hardest to notice.
 - **Findings** — what the run showed, separated into *established* and *not established*. Compare ranges, not medians: if two runs' ranges overlap, the difference is not measurable and must be labelled as such.
@@ -129,6 +157,10 @@ A failing case is the harness working. When a case goes red:
 
 ## Gotchas
 
+- **`/v1/models` is not a promise.** It advertised Kimi while only six devshards actually served it; 97% of a soak's requests came back `400 unsupported model`, and those rejections carry no devshard id. Check `status_counts`, not the model list.
+- **`thinking_token_budget: 0` is ignored** by every participant measured so far — 22–31% of a fixed output budget went to hidden reasoning, which is why answers get truncated mid-structure at a fixed `max_tokens`.
+- **`content` empty does not mean no answer.** MiniMax puts it in `reasoning` on some shards and in `content` with an inline `<think>` block on others, within one run. Read both.
+- **`logprobs.content[].token` format follows the server build** — vLLM 0.23.0 returns token ids, 0.26.0 returns detokenized text. `bytes` is correct in both; parse that.
 - The gateway is loopback-only on the server → always via the SSH tunnel; `--gateway-url` is its address **as seen on the server**, separate from `--ssh-host`.
 - Validation happens **before** forwarding, so non-streaming requests exercise it fully and give deterministic status/body. The `max_latency_s` guard distinguishes a fast reject from a request that hangs until the upstream deadline (e.g. a zero-budget request that produces no tokens).
 - A `clamp` result only proves the request **succeeded** (200 + content) — the response does not echo the clamped value; the exact clamped number is locked by the gateway's Go unit tests, not here.
