@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Refuse a commit that stages a file GitHub will not accept.
+#
+# GitHub hard-rejects any single file over 100 MB, but only at push time — long
+# after the commit exists and the blob is in the object store for good. Catching
+# it here keeps the fix at `git restore --staged <file>` instead of a rebase.
+#
+# Enable for this clone:  git config core.hooksPath .githooks
+# Bypass once (rarely right):  git commit --no-verify
+
+set -euo pipefail
+
+HARD_LIMIT_BYTES=$((100 * 1024 * 1024))
+WARN_LIMIT_BYTES=$((50 * 1024 * 1024))
+
+oversized_files=()
+large_files=()
+
+if git rev-parse --verify -q HEAD >/dev/null; then
+    staged_list_command=(git diff --cached --name-only --diff-filter=ACMR -z HEAD)
+else
+    staged_list_command=(git ls-files --cached -z)
+fi
+
+while IFS= read -r -d '' staged_file_path; do
+    blob_id=$(git rev-parse ":$staged_file_path" 2>/dev/null) || continue
+    blob_size_bytes=$(git cat-file -s "$blob_id")
+    size_megabytes=$((blob_size_bytes / 1024 / 1024))
+    if [ "$blob_size_bytes" -ge "$HARD_LIMIT_BYTES" ]; then
+        oversized_files+=("$staged_file_path (${size_megabytes} MB)")
+    elif [ "$blob_size_bytes" -ge "$WARN_LIMIT_BYTES" ]; then
+        large_files+=("$staged_file_path (${size_megabytes} MB)")
+    fi
+done < <("${staged_list_command[@]}")
+
+if [ "${#large_files[@]}" -gt 0 ]; then
+    echo "warning: large files staged (GitHub warns above 50 MB):" >&2
+    printf '  %s\n' "${large_files[@]}" >&2
+fi
+
+if [ "${#oversized_files[@]}" -gt 0 ]; then
+    cat >&2 <<MESSAGE
+
+commit blocked: GitHub rejects files over 100 MB.
+
+MESSAGE
+    printf '  %s\n' "${oversized_files[@]}" >&2
+    cat >&2 <<'MESSAGE'
+
+Test archives belong in the GitHub Release, not in git:
+
+  git restore --staged artifacts/*.zip
+  python -m scripts.artifacts push
+
+That uploads them as release assets (2 GiB per file, no repo-size cost) and
+records their checksums in artifacts/manifest.json, which is what gets committed.
+MESSAGE
+    exit 1
+fi

@@ -120,9 +120,42 @@ repo/
 │                       #   build_corpus / recover_run / split_responses / compare_answers
 ├── corpus/             # book pool for bench prompts (gitignored — rebuild with build_corpus)
 ├── tests/              # 374 pytest cases (math + CLI + gateway + smoke)
-├── artifacts/          # all per-run outputs (per-date, per-model-gpu)
+├── artifacts/          # per-run outputs (per-date, per-model-gpu); the zipped archives
+│                       #   live in the GitHub Release, only manifest.json is tracked
+├── .githooks/          # pre-commit / pre-push guards against >100 MB blobs
 └── docs/               # detailed guides (read these next)
 ```
+
+## Archived artifacts
+
+Run outputs are large (~600 MB of zipped JSON) and already compressed, so git
+stores every version of them in full — a zip has no usable delta — and GitHub
+rejects any single file over 100 MB. They live as **GitHub Release assets**
+instead. The repository tracks only `artifacts/manifest.json`: the name, size and
+sha256 of every archive, which is what lets a checkout know exactly what to fetch.
+
+```bash
+python3 -m scripts.artifacts status   # what is on disk / in the manifest / in the release
+python3 -m scripts.artifacts pull     # fetch the archives this checkout is missing
+python3 -m scripts.artifacts push     # upload new or changed archives, refresh the manifest
+```
+
+`pull` verifies every download against its checksum and, by default, refuses to
+clobber a local archive that differs from the manifest — that case is ambiguous
+(stale copy, or a newer run nobody pushed). Override with
+`--on-conflict overwrite` or `--on-conflict fail`.
+
+### Size guards
+
+Enable the hooks once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+- `pre-commit` — refuses to commit a staged file over 100 MB, warns above 50 MB.
+- `pre-push` — refuses a push carrying such a blob, catching what arrives by
+  rebase, merge, or `git commit --no-verify` before the upload starts.
 
 ## Documentation
 

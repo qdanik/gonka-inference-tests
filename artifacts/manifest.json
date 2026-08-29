@@ -1,0 +1,102 @@
+{
+  "archives": [
+    {
+      "name": "2026-06-01.zip",
+      "sha256": "753cb5159c486b3f63a416281d088ddb6e625e27a6eaa4e3c29024363e4c39b7",
+      "size_bytes": 51057083,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-06-05.zip",
+      "sha256": "30b3ce5c1cea9efff80b2ac1f304ea4ef274b4c5395d28b6d5fbc7e37a130bdf",
+      "size_bytes": 9538903,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-06-06.zip",
+      "sha256": "4451b3f850438db304d78040ee6b80a3a15ed6e6bdeae28a44643a8ef4b65477",
+      "size_bytes": 7770480,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-06-07.zip",
+      "sha256": "e0f9e07ca26c6b620c295b3ac1c406f669f7d00f8800cd526f1894a162a3612e",
+      "size_bytes": 290424335,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-06-14.zip",
+      "sha256": "4533964eb0b6f72aad93931f0a2a75bcd36c52051c12ae5c766c05391e45d84a",
+      "size_bytes": 8115,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-06-17.zip",
+      "sha256": "047cecb4ae59f8c7915717c6f46ca775b85b549a016ae96c4815e6d0689bfc50",
+      "size_bytes": 1975852,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-06-19.zip",
+      "sha256": "697501ce49d8c5becdf210b1d14a472af7e2e8718dbe58593aee4f3f8860f419",
+      "size_bytes": 297068,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-03.zip",
+      "sha256": "bd1c6b61657cf3294db29c109273f4b1a4c647eebd003dea2d04be6affb6a885",
+      "size_bytes": 151353,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-04.zip",
+      "sha256": "055580c096368395f4c252d814147f865ce6f6be72e9d0e00cbeeafa87178cf9",
+      "size_bytes": 162402,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-06.zip",
+      "sha256": "3f27e5cbc6d6dddb8d92f7afea3dc735285864face1ba2251d18836d726e305b",
+      "size_bytes": 18843,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-07.zip",
+      "sha256": "aacab64f3f783acea73d0615d39e9766cbc92f1f4d5f776f68a986853495fb10",
+      "size_bytes": 99356,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-08.zip",
+      "sha256": "50e7c4aa2f048eb46648d118ee87cd31dd884fd3e94623e579d521e5db271f1e",
+      "size_bytes": 74912,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-09.zip",
+      "sha256": "4ad85ba8646339f952f8636ef6989cdd2a650235912e2b29bfc0546d4d5cc26d",
+      "size_bytes": 185577,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-10.zip",
+      "sha256": "ec15410c0f59cc0ef3ceab7b465f81fa526dc9c8b06d47d5bd2c8d3048fabc2d",
+      "size_bytes": 124492236,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-11.zip",
+      "sha256": "cf338f58e4ad7c966c9aa2e4481a75b55bff14f06b82445c4e0db43fb460517e",
+      "size_bytes": 140680984,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    },
+    {
+      "name": "2026-08-12.zip",
+      "sha256": "b7ff0299481b47966c9c0b64012f51be35815ebf09714c707881f2c78d1b9d44",
+      "size_bytes": 4638362,
+      "uploaded_at": "2026-08-29T21:21:03+00:00"
+    }
+  ],
+  "release_tag": "artifacts",
+  "repository": "qdanik/gonka-inference-tests"
+}

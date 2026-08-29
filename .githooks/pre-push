@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Refuse a push carrying a blob GitHub will reject, before the upload starts.
+#
+# The pre-commit hook covers files staged by hand. This is the second net: a
+# rebase, a merge, a cherry-pick or a `--no-verify` commit can all put an
+# oversized blob on the branch without ever passing through `git add`. Finding
+# out from the remote costs a full upload and leaves the branch unpushable.
+#
+# Enable for this clone:  git config core.hooksPath .githooks
+# Bypass once (rarely right):  git push --no-verify
+
+set -euo pipefail
+
+HARD_LIMIT_BYTES=$((100 * 1024 * 1024))
+EMPTY_OID=$(git hash-object --stdin </dev/null | tr '0-9a-f' '0')
+
+oversized_blobs=""
+
+while read -r _local_ref local_oid _remote_ref remote_oid; do
+    [ "$local_oid" = "$EMPTY_OID" ] && continue   # branch deletion, nothing to check
+
+    if [ "$remote_oid" = "$EMPTY_OID" ]; then
+        revision_range=("$local_oid" --not --remotes)
+    else
+        revision_range=("$remote_oid..$local_oid")
+    fi
+
+    found=$(
+        git rev-list --objects "${revision_range[@]}" |
+            git cat-file --batch-check='%(objecttype) %(objectsize) %(rest)' |
+            awk -v limit="$HARD_LIMIT_BYTES" \
+                '$1 == "blob" && $2 >= limit { printf "  %s (%d MB)\n", $3, $2/1048576 }'
+    )
+    oversized_blobs+="$found"
+done
+
+if [ -n "$oversized_blobs" ]; then
+    cat >&2 <<'MESSAGE'
+
+push blocked: these blobs are over GitHub's 100 MB file limit.
+
+MESSAGE
+    printf '%s' "$oversized_blobs" >&2
+    cat >&2 <<'MESSAGE'
+
+They are already committed, so restaging will not help — the commit has to be
+rewritten. If they are test archives:
+
+  git reset --soft HEAD~1
+  git restore --staged artifacts/*.zip
+  python -m scripts.artifacts push
+  git commit
+
+MESSAGE
+    exit 1
+fi

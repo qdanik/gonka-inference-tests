@@ -4,3 +4,8 @@ __pycache__
 .env
 
 corpus/
+
+# Test archives live in the GitHub Release, not in git — see scripts/artifacts.py.
+# Only the manifest (names + checksums) is tracked, so a checkout knows what to fetch.
+artifacts/*
+!artifacts/manifest.json
